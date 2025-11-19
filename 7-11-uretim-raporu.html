@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>KARDEMİR Çubuk & Kangal Haddehanesi | Detaylı Üretim Raporu</title>
+  <link href="sidebar.css" rel="stylesheet" />
+  <style>
+    :root{
+      /* AÇIK TEMA RENK PALETİ */
+      --bg: #f3f4f6;          /* Arka plan: Çok açık gri */
+      --panel: #ffffff;       /* Paneller: Beyaz */
+      --card: #ffffff;        /* Kartlar: Beyaz */
+      --muted: #6b7280;       /* Silik metin: Orta gri */
+      --text: #1f2937;        /* Ana metin: Koyu antrasit */
+      
+      --accent: #16a34a;      /* Yeşil (Başarı): Daha koyu ve net yeşil */
+      --warn: #d92906;        /* Uyarı: Tok turuncu */
+      --danger: #dc2626;      /* Hata: Kırmızı */
+      
+      --border: #e5e7eb;      /* Kenarlıklar: İnce gri */
+      --header-bg: #f9fafb;   /* Başlık arka planları: Çok hafif gri */
+      --header-text: #111827; /* Başlık metinleri: Siyah */
+      --table-head: #eef2f6;  /* Tablo başlık hücresi */
+      --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0; padding:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:'Inter', 'Segoe UI', sans-serif;
+      font-size:14px;
+    }
+    
+    .container{
+      max-width:1400px;
+      margin:30px auto;
+      padding:0 20px;
+    }
+
+    /* Header */
+    header{ 
+        display:flex; justify-content:space-between; align-items:center; 
+        margin-bottom:25px; padding-bottom:20px; border-bottom:1px solid var(--border); 
+    }
+    h1{
+      margin:0;
+      font-size:1.5rem;
+      color:var(--header-text);
+      letter-spacing:-0.5px;
+    }
+    .date-badge{
+      background:var(--text);
+      color:#fff;
+      padding:6px 12px;
+      border-radius:6px;
+      font-weight:600;
+      font-size:0.9rem;
+    }
+
+    .text-green{ color:var(--accent); }
+    .text-warn{ color:var(--warn); }
+    .text-danger{ color:var(--danger); }
+
+    /* GÜNLÜK TOPLAM + VERİM BANDI */
+    .daily-summary{
+        margin-top: 20px;
+        box-shadow: var(--shadow);
+        border-radius: 8px;
+        overflow: hidden;
+        border:1px solid var(--border);
+        background:#fff;
+    }
+    .daily-summary-table{
+        width:100%;
+        border-collapse:collapse;
+        font-size:12px;
+    }
+    .daily-summary-table td{
+        border:1px solid var(--border);
+        padding:8px 10px;
+        text-align:center;
+        white-space:nowrap;
+    }
+    .daily-summary-table .row-header td{
+        background:#e5e7eb;
+        font-weight:600;
+    }
+    .daily-summary-table .row-header td:first-child{
+        font-weight:700;
+    }
+    .daily-summary-table .daily-values td:first-child{
+        font-weight:700;
+        background:#f3f4f6;
+    }
+
+    .daily-summary-table .daily-values td{
+        background:#fafafa;
+    }
+
+    .daily-summary-table .summary-verim-row td{
+        background:#f96516c3;       /* turuncu bant */
+        color:#fff;
+        font-weight:600;
+    }
+    .daily-summary-table .summary-verim-row .summary-kalite-cell{
+        background:#fde68a;       /* sarı kalite hücresi */
+        color:#111827;
+    }
+    .daily-summary-table .summary-verim-row strong{
+        font-size:1rem;
+    }
+
+    /* ACCORDION STYLES */
+    .accordion {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .acc-item { 
+        background: var(--panel); 
+        border: 1px solid var(--border); 
+        border-radius: 8px; 
+        overflow: hidden; 
+        box-shadow: var(--shadow);
+    }
+    
+    .acc-header {
+        background: var(--header-bg);
+        padding: 18px 25px;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: 600;
+        font-size: 1.05rem;
+        color: var(--header-text);
+        transition: background 0.2s;
+        border-bottom: 1px solid transparent;
+    }
+    .acc-header:hover { background: #f0f2f5; }
+    .acc-item.open .acc-header { border-bottom: 1px solid var(--border); background: #f8fafc; }
+    
+    .acc-header::after {
+      content: '+';
+      font-size: 1.5rem;
+      color:var(--muted);
+      font-weight:300;
+    }
+    .acc-item.open .acc-header::after { content: '-'; }
+
+    .acc-body {
+      display: none;
+      padding: 0;
+    }
+    .acc-item.open .acc-body { display: block; }
+
+    /* TABLE STYLES */
+    .table-wrapper {
+      overflow-x: auto;
+      padding-bottom: 10px;
+    }
+    table { 
+        width: 100%; 
+        border-collapse: collapse; 
+        min-width: 1000px; 
+        font-size: 13px;
+    }
+    
+    th, td { 
+        border: 1px solid var(--border); 
+        padding: 10px 12px; 
+        text-align: center; 
+        white-space: nowrap;
+    }
+
+    /* Tablo Başlıkları (Açık Renk Ayarı) */
+    thead tr:first-child th { 
+        background: #374151; /* En üst başlık koyu kalsın ki ayrışsın */
+        color: #fff; 
+        font-size: 0.85rem; 
+        letter-spacing: 0.5px; 
+        text-transform: uppercase; 
+    }
+    thead tr:nth-child(2) th, thead tr:nth-child(3) th { 
+        background: var(--table-head); 
+        color: var(--text); 
+        font-weight: 600; 
+    }
+    
+    /* Satır Renkleri */
+    tbody tr:nth-child(even) { background: #f9fafb; } /* Zebra şerit */
+    tbody tr:hover { background: #f3f4f6; }
+
+    /* Özel Renklendirmeler */
+    .col-uretim {
+      background: #f0fdf4;
+      color: #15803d;
+      font-weight:500;
+    }
+    .col-kayip {
+      color: var(--danger);
+      font-weight:500;
+      background: #fef2f2;
+    }
+
+    .shift-badge {
+        font-size:0.85rem; font-weight:normal; 
+        background: #e5e7eb; color: var(--text);
+        padding:4px 10px; border-radius:20px; 
+        border: 1px solid #d1d5db;
+    }
+    .shift-info{
+        display:flex;
+        align-items:center;
+        gap:10px;
+    }
+
+    .shift-link{
+        text-decoration:none;
+        padding:6px 12px;
+        border-radius:999px;
+        font-size:0.8rem;
+        font-weight:600;
+        background:var(--accent);
+        color:#fff;
+        box-shadow:0 1px 2px rgba(0,0,0,.15);
+        transition: background .15s, transform .1s, box-shadow .1s;
+    }
+    .shift-link:hover{
+        background:#15803d;
+        transform:translateY(-1px);
+    }
+    .shift-link:active{
+        transform:translateY(0);
+        box-shadow:none;
+    }
+
+    /* ENERJİ / TÜKETİM BÖLÜMÜ */
+    .energy-section{
+      margin-top:25px;
+      margin-bottom:30px;
+    }
+    .energy-card{
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:8px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .energy-title{
+      text-align:center;
+      padding:8px 12px;
+      font-weight:600;
+      background:#e5e7eb;
+      border-bottom:1px solid var(--border);
+      font-size:0.95rem;
+    }
+
+    .energy-table,
+    .energy-subtable,
+    .energy-prod-table,
+    .energy-yearly-table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:12px;
+    }
+
+    .energy-table th, .energy-table td,
+    .energy-subtable th, .energy-subtable td,
+    .energy-prod-table th, .energy-prod-table td,
+    .energy-yearly-table th, .energy-yearly-table td{
+      border:1px solid var(--border);
+      padding:6px 8px;
+      text-align:center;
+      white-space:nowrap;
+    }
+
+    .energy-table thead th{
+      background:#f3f4f6;
+      font-weight:600;
+    }
+
+    .energy-group-header td{
+      background:#e5e7eb;
+      font-weight:600;
+      text-align:left;
+      padding-left:10px;
+      width: 20px;;
+    }
+
+    .energy-row-electric{
+      background:#eef2ff;
+    }
+    .energy-row-gas{
+      background:#eff6ff;
+    }
+
+/* Aylık Birim Sarflar + Vardiya Üretimleri yan yana, tam satır */
+.energy-subgrid{
+  display:flex;
+  justify-content:space-between;
+  align-items:stretch;   /* yükseklik hizalansın */
+  gap:0;
+  padding:0 0 6px 0;     /* üst/alt hafif boşluk */
+}
+
+/* Her iki tablo satırı eşit bölüşsün */
+.energy-subtable,
+.energy-prod-table{
+  flex:1 1 0;    /* eşit paylaşılan genişlik */
+  width:100%;
+  min-width:0;   /* taşmayı engelle */
+}
+
+/* Tablo içi kenar boşluğunu çok hafif tutmak için istersen: */
+/*
+.energy-subtable td,
+.energy-prod-table td{
+  padding:4px 6px;
+}
+*/
+
+/* Küçük ekranlarda alt alta gelsin */
+@media (max-width: 900px){
+  .energy-subgrid{
+    flex-direction:column;
+  }
+  .energy-subtable,
+  .energy-prod-table{
+    width:100%;
+  }
+}
+
+
+
+
+
+    .energy-prod-header td{
+      background:#dcfce7;
+      font-weight:600;
+      text-align:center;
+    }
+
+    .energy-total-cell{
+      background:#22c55e;
+      color:#fff;
+      font-weight:700;
+    }
+
+  </style>
+</head>
+<body>
+    <!-- sidebar -->
+    <aside id="sidebar">
+        <div id="sidebar-container"></div>
+        <script>
+            fetch("sidebar.html")
+                .then(r=>r.text())
+                .then(html=>{document.getElementById("sidebar-container").innerHTML=html});
+        </script>
+    </aside>
+
+<div class="container" style="margin-left: 260px;">
+    <header>
+        <div>
+            <h1>KARDEMİR Çubuk & Kangal Haddehanesi</h1>
+            <small style="color:var(--muted)">Günlük Üretim Raporu</small>
+        </div>
+        <div class="date-badge">16.11.2025</div>
+    </header>
+
+    <!-- VARDİYA DETAYLARI -->
+    <div class="accordion">
+        
+        <div class="acc-item">
+            <div class="acc-header">
+                <div class="shift-info">
+                    <span>Vardiya 00-08</span>
+                    <span class="shift-badge">Üretim: 388,210 Ton</span>
+                </div>
+                <a href="7-12-duruslar.html#v00-08" class="shift-link">Duruş Bilgisi</a>
+            </div>
+
+            <div class="acc-body">
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th colspan="5">FIRIN DEŞARJ (TOPLAM)</th>
+                                <th colspan="2">EBAT-KALİTE</th>
+                                <th colspan="3">ÜRETİM</th>
+                                <th colspan="5">KAYIPLAR (TON)</th>
+                            </tr>
+                            <tr>
+                                <th rowspan="2">KESİT</th>
+                                <th rowspan="2">ADET</th>
+                                <th rowspan="2">BOY (m)</th>
+                                <th rowspan="2">İADE</th>
+                                <th rowspan="2">Ton</th>
+                                <th rowspan="2">Ø18-Ø22</th>
+                                <th rowspan="2">Kalite</th>
+                                <th rowspan="2">Satılabilir<br>Ürün (ton)</th>
+                                <th rowspan="2">Standart<br>Dışı (ton)</th>
+                                <th rowspan="2">Mamül<br>Hurdası</th>
+                                <th rowspan="2">Tufal</th>
+                                <th rowspan="2">Kafa+Kuyruk<br>Kesimi</th>
+                                <th colspan="2">Hadde Bozuğu</th>
+                                <th rowspan="2">Toplam</th>
+                            </tr>
+                            <tr>
+                                <th>Hurda Adet</th>
+                                <th>Hurda (ton)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>170</td><td>35</td><td>12</td><td></td><td>95,760</td>
+                                <td>Ø18</td><td>C10C-01</td>
+                                <td class="col-uretim">88,988</td><td></td><td></td>
+                                <td>1,197</td><td>5,575</td><td></td><td>0,000</td><td class="col-kayip">6,772</td>
+                            </tr>
+                            <tr>
+                                <td>170</td><td>55</td><td>12</td><td></td><td>150,480</td>
+                                <td>Ø18</td><td>17MnB3-04</td>
+                                <td class="col-uretim">139,805</td><td></td><td></td>
+                                <td>1,881</td><td>8,794</td><td></td><td>0,000</td><td class="col-kayip">10,675</td>
+                            </tr>
+                            <tr>
+                                <td>170</td><td>31</td><td>9,3</td><td>1</td><td>63,612</td>
+                                <td>Ø18</td><td>27MnB4-01</td>
+                                <td class="col-uretim">57,485</td><td></td><td></td>
+                                <td>0,795</td><td>5,332</td><td>1</td><td>2,120</td><td class="col-kayip">8,247</td>
+                            </tr>
+                            <tr>
+                                <td>200</td><td>38</td><td>9</td><td></td><td>107,388</td>
+                                <td>Ø18</td><td>41Cr4-00</td>
+                                <td class="col-uretim">101,932</td><td></td><td></td>
+                                <td>1,342</td><td>4,114</td><td></td><td>0,000</td><td class="col-kayip">5,456</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="acc-item">
+            <div class="acc-header">
+                <div class="shift-info">
+                    <span>Vardiya 08-16</span>
+                    <span class="shift-badge">Üretim: 154,689 Ton</span>
+                </div>
+                <a href="7-12-duruslar.html#v08-16" class="shift-link">Duruş Bilgisi</a>
+            </div>
+            <div class="acc-body">
+                <div class="table-wrapper">
+                    <table>
+                         <thead>
+                            <tr>
+                                <th colspan="5">FIRIN DEŞARJ (TOPLAM)</th>
+                                <th colspan="2">EBAT-KALİTE</th>
+                                <th colspan="3">ÜRETİM</th>
+                                <th colspan="5">KAYIPLAR (TON)</th>
+                            </tr>
+                            <tr>
+                                <th rowspan="2">KESİT</th>
+                                <th rowspan="2">ADET</th>
+                                <th rowspan="2">BOY (m)</th>
+                                <th rowspan="2">İADE</th>
+                                <th rowspan="2">Ton</th>
+                                <th rowspan="2">Ø18-Ø22</th>
+                                <th rowspan="2">Kalite</th>
+                                <th rowspan="2">Satılabilir<br>Ürün (ton)</th>
+                                <th rowspan="2">Standart<br>Dışı (ton)</th>
+                                <th rowspan="2">Mamül<br>Hurdası</th>
+                                <th rowspan="2">Tufal</th>
+                                <th rowspan="2">Kafa+Kuyruk<br>Kesimi</th>
+                                <th colspan="2">Hadde Bozuğu</th>
+                                <th rowspan="2">Toplam</th>
+                            </tr>
+                            <tr>
+                                <th>Hurda Adet</th>
+                                <th>Hurda (ton)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>200</td><td>28</td><td>9</td><td></td><td>79,128</td>
+                                <td>Ø18</td><td>41Cr4-00</td>
+                                <td class="col-uretim">74,569</td><td></td><td></td>
+                                <td>0,989</td><td>3,570</td><td></td><td>0,000</td><td class="col-kayip">4,559</td>
+                            </tr>
+                            <tr>
+                                <td>170</td><td>44</td><td>9</td><td></td><td>90,288</td>
+                                <td>Ø22</td><td>1008-00</td>
+                                <td class="col-uretim">80,120</td><td>3,404</td><td></td>
+                                <td>1,129</td><td>9,039</td><td>3</td><td>6,156</td><td class="col-kayip">16,324</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="acc-item">
+            <div class="acc-header">
+                <div class="shift-info">
+                    <span>Vardiya 16-00</span>
+                    <span class="shift-badge">Üretim: 426,714 Ton</span>
+                </div>
+                <a href="7-12-duruslar.html#v16-00" class="shift-link">Duruş Bilgisi</a>
+            </div>
+
+            <div class="acc-body">
+                <div class="table-wrapper">
+                    <table>
+                         <thead>
+                            <tr>
+                                <th colspan="5">FIRIN DEŞARJ (TOPLAM)</th>
+                                <th colspan="2">EBAT-KALİTE</th>
+                                <th colspan="3">ÜRETİM</th>
+                                <th colspan="5">KAYIPLAR (TON)</th>
+                            </tr>
+                            <tr>
+                                <th rowspan="2">KESİT</th>
+                                <th rowspan="2">ADET</th>
+                                <th rowspan="2">BOY (m)</th>
+                                <th rowspan="2">İADE</th>
+                                <th rowspan="2">Ton</th>
+                                <th rowspan="2">Ø18-Ø22</th>
+                                <th rowspan="2">Kalite</th>
+                                <th rowspan="2">Satılabilir<br>Ürün (ton)</th>
+                                <th rowspan="2">Standart<br>Dışı (ton)</th>
+                                <th rowspan="2">Mamül<br>Hurdası</th>
+                                <th rowspan="2">Tufal</th>
+                                <th rowspan="2">Kafa+Kuyruk<br>Kesimi</th>
+                                <th colspan="2">Hadde Bozuğu</th>
+                                <th rowspan="2">Toplam</th>
+                            </tr>
+                            <tr>
+                                <th>Hurda Adet</th>
+                                <th>Hurda (ton)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>170</td><td>38</td><td>9</td><td></td><td>77,976</td>
+                                <td>Ø22</td><td>1008-00</td>
+                                <td class="col-uretim">75,251</td><td></td><td></td>
+                                <td>0,975</td><td>1,750</td><td></td><td>0,000</td><td class="col-kayip">2,725</td>
+                            </tr>
+                            <tr>
+                                <td>170</td><td>120</td><td>9</td><td></td><td>246,240</td>
+                                <td>Ø22</td><td>C10C-01</td>
+                                <td class="col-uretim">229,596</td><td></td><td></td>
+                                <td>3,078</td><td>13,566</td><td></td><td>0,000</td><td class="col-kayip">16,644</td>
+                            </tr>
+                            <tr>
+                                <td>170</td><td>12</td><td>12</td><td></td><td>32,832</td>
+                                <td>Ø22</td><td>C10C-01</td>
+                                <td class="col-uretim">30,971</td><td></td><td></td>
+                                <td>0,410</td><td>1,451</td><td></td><td>0,000</td><td class="col-kayip">1,861</td>
+                            </tr>
+                            <tr>
+                                <td>200</td><td>20</td><td>9</td><td></td><td>56,520</td>
+                                <td>Ø22</td><td>C10C-01</td>
+                                <td class="col-uretim">52,697</td><td></td><td></td>
+                                <td>0,707</td><td>3,117</td><td></td><td>0,000</td><td class="col-kayip">3,823</td>
+                            </tr>
+                             <tr>
+                                <td>170</td><td>20</td><td>9</td><td></td><td>41,040</td>
+                                <td>Ø22</td><td>17MnB3-04</td>
+                                <td class="col-uretim">38,199</td><td></td><td></td>
+                                <td>0,513</td><td>2,328</td><td></td><td>0,000</td><td class="col-kayip">2,841</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- GÜNLÜK TOPLAM + VERİM / KALİTE BANDI -->
+    <section class="daily-summary">
+        <table class="daily-summary-table">
+            <tr class="row-header">
+                <td rowspan="2" style="min-width:110px;">GÜNLÜK<br>TOPLAM</td>
+                <td>Kütük Adedi</td>
+                <td>İade Adedi</td>
+                <td>Fırın Deşarj Ton</td>
+                <td>Satılabilir Ürün Ton</td>
+                <td>Standart Dışı Ton</td>
+                <td>Mamül Hurdası Ton</td>
+                <td>Tufal Ton</td>
+                <td>Kafa+Kuyruk Kesimi Ton</td>
+                <td>Hadde Bozuğu Adet</td>
+                <td>Hadde Bozuğu Ton</td>
+                <td>Toplam Kayıp Ton</td>
+            </tr>
+            <tr class="daily-values">
+                <td>441</td>
+                <td>1</td>
+                <td>1.041,264</td>
+                <td>969,613</td>
+                <td>3,404</td>
+                <td>0,000</td>
+                <td>13,016</td>
+                <td>58,635</td>
+                <td>4</td>
+                <td>8,276</td>
+                <td>79,927</td>
+            </tr>
+            <tr class="summary-verim-row">
+                <td>VERİM / KALİTE</td>
+                <td colspan="3" class="summary-verim-cell">
+                    Verim (%) <strong>93,12</strong>
+                </td>
+                <td colspan="4" class="summary-verim-cell">
+                    Verim Hurdasız (%) <strong>93,86</strong>
+                </td>
+                <td colspan="3" class="summary-kalite-cell">
+                    Kalite Oranı (%) <strong>99,65</strong>
+                </td>
+            </tr>
+        </table>
+    </section>
+
+    <!-- ENERJİ TÜKETİMLERİ & ÜRETİM ÖZETLERİ -->
+    <section class="energy-section">
+      <div class="energy-card">
+        <div class="energy-title">Enerji Tüketimleri &amp; Üretim Özetleri</div>
+
+        <!-- Enerji tüketim ana tablosu -->
+        <table class="energy-table">
+          <thead>
+            <tr>
+              <th style="min-width:140px;">DEĞERLER</th>
+              <th style="min-width:80px;">Birim</th>
+              <th>00-08</th>
+              <th>08-16</th>
+              <th>16-24</th>
+              <th>Aylık</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="energy-group-header">
+              <td colspan="6">Elektrik</td>
+            </tr>
+            <tr class="energy-row-electric">
+              <td>Tüketim</td>
+              <td>kWh</td>
+              <td>48.741,000</td>
+              <td>32.994,000</td>
+              <td>46.299,000</td>
+              <td>3.431.086,000</td>
+            </tr>
+            <tr>
+              <td>Birim Tüketim</td>
+              <td>kWh/ton</td>
+              <td>125,553</td>
+              <td>212,293</td>
+              <td>108,501</td>
+              <td>136,902</td>
+            </tr>
+            <tr>
+              <td>Günlük Ortalama</td>
+              <td>kWh/ton</td>
+              <td>132,046</td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+
+            <tr class="energy-group-header">
+              <td colspan="6">Doğalgaz</td>
+            </tr>
+            <tr class="energy-row-gas">
+              <td>Tüketim</td>
+              <td>Nm³</td>
+              <td>15.279,000</td>
+              <td>9.945,000</td>
+              <td>15.948,000</td>
+              <td>847.183,000</td>
+            </tr>
+            <tr>
+              <td>Birim Tüketim</td>
+              <td>Nm³/ton</td>
+              <td>39,358</td>
+              <td>28,987</td>
+              <td>37,343</td>
+              <td>33,878</td>
+            </tr>
+            <tr>
+              <td>Birim Tüketim</td>
+              <td>Mcal/ton</td>
+              <td>502,384</td>
+              <td>828,832</td>
+              <td>466,356</td>
+              <td>460,508</td>
+            </tr>
+            <tr>
+              <td>Günlük Ortalama</td>
+              <td>Nm³/ton</td>
+              <td>42,462</td>
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Aylık sarf + vardiya üretimleri -->
+        <div class="energy-subgrid">
+          <table class="energy-subtable">
+            <tbody>
+              <tr class="energy-group-header">
+                <td colspan="2">Aylık Birim Sarflar</td>
+              </tr>
+              <tr>
+                <td>Elektrik</td>
+                <td><strong>136,902</strong></td>
+              </tr>
+              <tr>
+                <td>Doğalgaz</td>
+                <td><strong>33,803</strong></td>
+              </tr>
+              <tr class="energy-group-header">
+                <td>Aylık Toplam Üretim</td>
+                <td><strong>25.062,403</strong></td>
+              </tr>
+              <tr class="energy-group-header">
+                <td>Yıllık Toplam Üretim</td>
+                <td><strong>400.685,350</strong></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <table class="energy-prod-table">
+            <tbody>
+              <tr class="energy-prod-header">
+                <td colspan="4">Vardiya Üretimleri (Ton)</td>
+              </tr>
+              <tr>
+                <td>00-08</td>
+                <td>08-16</td>
+                <td>16-24</td>
+                <td>Toplam</td>
+              </tr>
+              <tr>
+                <td>388,210</td>
+                <td>154,689</td>
+                <td>426,714</td>
+                <td class="energy-total-cell">969,613</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Yıllık üretim graf tablosu -->
+        <table class="energy-yearly-table">
+          <tbody>
+            <tr class="energy-prod-header">
+              <td colspan="9">Yıllık Üretimler (Ton)</td>
+            </tr>
+            <tr>
+              <td>2016</td>
+              <td>2017</td>
+              <td>2018</td>
+              <td>2019</td>
+              <td>2020</td>
+              <td>2021</td>
+              <td>2022</td>
+              <td>2023</td>
+              <td>2024</td>
+            </tr>
+            <tr>
+              <td>54,949</td>
+              <td>278,445</td>
+              <td>358,992</td>
+              <td>395,286</td>
+              <td>450,986</td>
+              <td>535,001</td>
+              <td>461,456,60</td>
+              <td>495,731</td>
+              <td>470.306,06</td>
+            </tr>
+          </tbody>
+        </table>
+
+      </div>
+    </section>
+
+</div>
+
+<script>
+    // Accordion + sayfa açılışında saate göre aktif vardiya
+    const accItems = document.querySelectorAll('.acc-item');
+    const headers = document.querySelectorAll('.acc-header');
+
+    (function setDefaultShiftByTime(){
+        const hour = new Date().getHours(); // 0-23
+        let activeIndex = 0;
+
+        if (hour >= 0 && hour < 8) {
+            activeIndex = 0;        // 00-08
+        } else if (hour >= 8 && hour < 16) {
+            activeIndex = 1;        // 08-16
+        } else {
+            activeIndex = 2;        // 16-24
+        }
+
+        accItems.forEach((item, index) => {
+            if (index === activeIndex) {
+                item.classList.add('open');
+            } else {
+                item.classList.remove('open');
+            }
+        });
+    })();
+
+    headers.forEach(header => {
+        header.addEventListener('click', () => {
+            const item = header.parentElement;
+            item.classList.toggle('open');
+        });
+    });
+</script>
+
+</body>
+</html>

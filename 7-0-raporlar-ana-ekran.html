@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>ÇKH Raporlar - Ana Menü</title>
+    
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        :root{
+            --primary:#003d82;
+            --primary-dark:#002855;
+            --primary-light:#0056b3;
+            --accent:#00a8e1;
+            --accent2:#6c757d;
+            --accent3:#495057;
+            --bg:#f4f6f9;
+            --bg-light:#ffffff;
+            --card:#ffffff;
+            --text:#2c3e50;
+            --text-muted:#6c757d;
+            --border:#dee2e6;
+            --shadow:rgba(0,61,130,0.08);
+            --sidebar-bg-dark:#2c3e50;
+            --sidebar-text-light:#ecf0f1;
+            --sidebar-hover-bg:#34495e;
+            --sidebar-active-bg:#007bff;
+        }
+
+        body{
+            background:var(--bg);
+            color:var(--text);
+            font-family:'Inter','Segoe UI',Arial,sans-serif;
+            min-height:100vh !important;
+            overflow-x:hidden !important;
+        }
+
+        /* Sidebar */
+        .sidebar {
+          width: 240px;
+          background-color: var(--sidebar-bg-dark);
+          height: 100vh;
+          padding: 20px;
+          position: fixed;
+          top: 0; left: 0;
+          box-shadow: 3px 0 10px var(--shadow-light);
+          display: flex;
+          flex-direction: column;
+          z-index: 1000;
+          overflow-y: auto;
+          overflow-x: hidden;
+        }
+
+        .sidebar .logo {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          padding: 15px 0;
+          margin-bottom: 30px;
+          border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .sidebar .logo img {
+          max-width: 80%;
+          height: auto;
+          filter: brightness(1.8);
+        }
+
+        .sidebar nav { flex-grow: 1; }
+        .sidebar nav ul { list-style: none; margin: 0; padding: 0; }
+
+        .sidebar nav ul li a,
+        .sidebar nav ul li .dropbtn {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          text-align: left;
+          text-decoration: none;
+          color: var(--sidebar-text-light);
+          padding: 12px 15px;
+          margin-bottom: 5px;
+          border-radius: 6px;
+          font-weight: 500;
+          background: transparent;
+          border: none;
+          cursor: pointer;
+          transition: background-color .3s, color .3s;
+        }
+
+        .sidebar nav ul li a:hover,
+        .sidebar nav ul li .dropbtn:hover {
+          background-color: var(--sidebar-hover-bg);
+          color: #fff;
+        }
+
+        .sidebar nav ul li.dropdown input[type="radio"] { display: none; }
+
+        .sidebar nav ul li.dropdown .dropdown-content {
+          display: block;
+          background-color: var(--sidebar-hover-bg);
+          min-width: 100%;
+          border-radius: 0 0 6px 6px;
+          overflow: hidden;
+          max-height: 0;
+          padding: 0;
+          transition: max-height .25s ease, padding .2s ease;
+        }
+
+        .sidebar nav .dropdown-content a {
+          display: block;
+          text-decoration: none;
+          color: var(--sidebar-text-light);
+          padding: 10px 15px 10px 30px;
+          font-weight: 400;
+          transition: background-color .2s, color .2s;
+        }
+
+        .sidebar nav .dropdown-content a:hover {
+          background-color: var(--sidebar-active-bg);
+          color: #fff;
+        }
+
+        .sidebar nav ul li.dropdown input[type="radio"]:checked ~ .dropdown-content {
+          max-height: 800px;
+          padding: 5px 0;
+        }
+
+        .sidebar nav ul li.dropdown input[type="radio"]:checked ~ .dropbtn {
+          background-color: var(--sidebar-active-bg);
+          color: #fff;
+        }
+
+        /* Background animasyonu */
+        .bg-animation{
+            position:fixed;
+            top:0;
+            left:0;
+            width:100%;
+            height:100%;
+            z-index:0;
+            overflow:hidden;
+            background:linear-gradient(135deg, #f4f6f9 0%, #e8ecf1 50%, #f0f3f7 100%);
+        }
+
+        .bg-animation::before{
+            content:'';
+            position:absolute;
+            width:200%;
+            height:200%;
+            top:-50%;
+            left:-50%;
+            background:radial-gradient(circle, rgba(0,61,130,0.03) 1px, transparent 1px);
+            background-size:50px 50px;
+            animation:moveGrid 20s linear infinite;
+        }
+
+        @keyframes moveGrid{
+            0%{transform:translate(0,0)}
+            100%{transform:translate(50px,50px)}
+        }
+
+        .content-wrapper{
+            position:relative;
+            z-index:1;
+            min-height:100vh;
+            padding:40px 20px;
+            margin-left: 240px;
+        }
+
+        .main-header{
+            text-align:center;
+            margin-bottom:60px;
+        }
+
+        .logo-section{
+            display:inline-flex;
+            align-items:center;
+            gap:16px;
+            background:#ffffff;
+            padding:20px 40px;
+            border-radius:20px;
+            box-shadow:0 10px 40px rgba(0,61,130,0.15);
+            border:2px solid #003d82;
+        }
+
+        .logo-icon{
+            width:60px;
+            height:60px;
+            background:linear-gradient(135deg, #003d82 0%, #0056b3 100%);
+            border-radius:12px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+        }
+
+        .logo-icon svg{
+            width:36px;
+            height:36px;
+            color:white;
+        }
+
+        .logo-text h1{
+            font-size:32px;
+            font-weight:700;
+            color:#003d82;
+        }
+
+        .dashboard-grid{
+            max-width:1400px;
+            margin:0 auto;
+            display:grid;
+            gap:30px;
+        }
+
+        .section-title{
+            font-size:24px;
+            font-weight:600;
+            margin-bottom:24px;
+            display:flex;
+            align-items:center;
+            gap:12px;
+            color:#2c3e50;
+        }
+
+        .section-title .title-line{
+            flex:1;
+            height:2px;
+            background:linear-gradient(90deg, #0056b3 0%, transparent 100%);
+        }
+
+        .cards-grid{
+            display:grid;
+            grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));
+            gap:24px;
+        }
+
+        .menu-card{
+            background:var(--card);
+            border-radius:16px;
+            padding:28px;
+            cursor:pointer;
+            transition:all 0.3s ease;
+            border:1px solid var(--border);
+            text-decoration:none;
+            display:block;
+            color:inherit;
+            box-shadow:0 4px 12px rgba(0,0,0,0.06);
+        }
+.menu-card:hover::before{
+            transform:scaleX(1);
+        }
+        .menu-card:hover{
+            transform:translateY(-8px);
+            box-shadow:0 12px 28px rgba(0,61,130,0.15);
+            border-color:#0056b3;
+        }
+
+        .card-icon{
+            width:64px;
+            height:64px;
+            border-radius:12px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            margin-bottom:20px;
+        }
+.menu-card:hover .card-icon{
+            transform:scale(1.1) rotate(5deg);
+        }   
+        .card-icon svg{
+            width:36px;
+            height:36px;
+            color:white;
+        }
+
+        .card-title{
+            font-size:18px;
+            font-weight:600;
+            margin-bottom:8px;
+            color:#2c3e50;
+        }
+
+        .card-description{
+            font-size:13px;
+            color:var(--text-muted);
+        }
+
+        .card-blue .card-icon{background:linear-gradient(135deg,#003d82,#0056b3);}
+        .card-green .card-icon{background:linear-gradient(135deg,#00a8e1,#33b9e8);}
+        .card-orange .card-icon{background:linear-gradient(135deg,#5a6c7d,#7c8a96);}
+        .card-purple .card-icon{background:linear-gradient(135deg,#495057,#5d6469);}
+        .card-red .card-icon{background:linear-gradient(135deg,#004a99,#0062cc);}
+    </style>
+</head>
+<body>
+  <aside id="sidebar">
+    <div id="sidebar-container" class="sidebar-container"></div>
+    <script>
+      fetch("sidebar.html")
+        .then((res) => res.text())
+        .then((data) => (document.getElementById("sidebar-container").innerHTML = data));
+    </script>
+  </aside>
+
+  <div class="bg-animation"></div>
+
+  <div class="content-wrapper">
+    <div class="main-header">
+      <div class="logo-section">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="logo-text"><h1>📈 RAPORLAR</h1></div>
+      </div>
+    </div>
+
+    <div class="dashboard-grid">
+      <div class="section-title">
+        Tüm Raporlar
+        <div class="title-line"></div>
+      </div>
+
+      <div class="cards-grid">
+        <a href="7-1-uretim-izleme-raporu.html" class="menu-card card-blue">
+          <div class="card-icon">🏭</div>
+          <div class="card-title">Üretim İzleme Raporu</div>
+          <div class="card-description">Üretim verilerinin detaylı takibi</div>
+        </a>
+
+        <a href="7-2-tuketim-raporu.html" class="menu-card card-green">
+          <div class="card-icon">📉</div>
+          <div class="card-title">Tüketim Raporu</div>
+          <div class="card-description">Malzeme tüketim analizleri</div>
+        </a>
+
+        <a href="7-3-stok-raporu.html" class="menu-card card-orange">
+          <div class="card-icon">📦</div>
+          <div class="card-title">Stok İzleme Raporu</div>
+          <div class="card-description">Güncel stok durumu ve hareketler</div>
+        </a>
+
+        <a href="7-4-dokum-gecmis.html" class="menu-card card-purple">
+          <div class="card-icon">🧾</div>
+          <div class="card-title">İş Emri Döküm Geçmişi</div>
+          <div class="card-description">Geçmiş döküm kayıtlarının takibi</div>
+        </a>
+
+        <a href="7-5-proses-parametreleri.html" class="menu-card card-blue">
+          <div class="card-icon">🔬</div>
+          <div class="card-title">Proses Parametreleri</div>
+          <div class="card-description">Proses değişkenlerinin raporu</div>
+        </a>
+
+        <a href="7-6-okan-raporu.html" class="menu-card card-green">
+          <div class="card-icon">📑</div>
+          <div class="card-title">Okan Bey’in Gönderdiği Rapor</div>
+          <div class="card-description">Manuel yüklenen özel rapor</div>
+        </a>
+
+        <a href="7-7-sicak-sarj.html" class="menu-card card-red">
+          <div class="card-icon">🔥</div>
+          <div class="card-title">Sıcak Şarj Raporu</div>
+          <div class="card-description">Sıcak şarj işlemlerinin gerçekleşme oranı</div>
+        </a>
+
+        <a href="7-8-talep-1.html" class="menu-card card-blue">
+          <div class="card-icon">📘</div>
+          <div class="card-title">Talep 1</div>
+          <div class="card-description">Talep bazlı raporlama ekranı</div>
+        </a>
+
+        <a href="7-9-talep-2.html" class="menu-card card-orange">
+          <div class="card-icon">📗</div>
+          <div class="card-title">Talep 2</div>
+          <div class="card-description">Ürün istek detay raporu</div>
+        </a>
+
+        <a href="7-10-talep-3.html" class="menu-card card-purple">
+          <div class="card-icon">📙</div>
+          <div class="card-title">Talep 3</div>
+          <div class="card-description">Ek raporlar ve talepler</div>
+        </a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

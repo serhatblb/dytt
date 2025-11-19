@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Kardemir - DYTT Gerçekleşen İş Emri Bilgileri</title>
+  <link href="style.css" rel="stylesheet" />
+  <style>
+    :root {
+      --k-blue: #1976d2;
+      --k-green: #2e7d32;
+      --k-gray: #f5f7fa;
+      --k-border: #ddd;
+      --k-text: #333;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+      table-layout: auto
+    }
+
+    .data-table th,
+    .data-table td {
+      padding: 8px 10px;
+      text-align: center;
+      border-bottom: 1px solid var(--border-color, #ccc);
+      font-size: 12px;
+      word-wrap: break-word;
+      white-space: normal
+    }
+
+    .data-table thead th {
+      background: var(--main-bg-light, #f2f2f2);
+      font-weight: 700;
+      color: var(--text-color-dark, #333);
+      text-transform: uppercase;
+      font-size: 12px
+    }
+
+    .filters {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 12px;
+      margin-bottom: 10px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, .08)
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 12px
+    }
+
+    .field label {
+      font-weight: bold;
+      color: #444
+    }
+
+    .field input,
+    .field select {
+      padding: 6px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 13px
+    }
+
+    .btn-filter {
+      background: var(--k-blue);
+      color: #fff;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 4px;
+      cursor: pointer
+    }
+
+    /* Özet / Trend Bar */
+    .summary {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: #fff;
+      border: 1px solid var(--k-border);
+      border-radius: 8px;
+      padding: 12px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, .06)
+    }
+
+    .summary .range {
+      text-align: left;
+      font-size: 12px;
+      color: #555
+    }
+
+    .chips {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap
+    }
+
+    .chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--k-gray);
+      border: 1px solid var(--k-border);
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px
+    }
+
+    .chip b {
+      font-weight: 700;
+      color: #111
+    }
+
+    .bars {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px
+    }
+
+    @media (max-width: 1024px) {
+      .bars {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      .bars {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .bar-card {
+      border: 1px solid var(--k-border);
+      border-radius: 8px;
+      padding: 10px;
+      background: #fff
+    }
+
+    .bar-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      margin-bottom: 6px
+    }
+
+    .bar-title {
+      font-weight: 700;
+      color: #222
+    }
+
+    .bar-value {
+      font-weight: 700
+    }
+
+    .bar {
+      height: 8px;
+      background: #e9eef5;
+      border-radius: 999px;
+      overflow: hidden
+    }
+
+    .bar>span {
+      display: block;
+      height: 100%;
+      background: linear-gradient(90deg, var(--k-blue), #42a5f5)
+    }
+
+    .summary-wrapper {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, .08);
+      overflow: hidden;
+    }
+
+    .summary-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #42a5f5;
+      color: #fff;
+      padding: 6px 10px;
+      font-size: 13px;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .toggle-btn {
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+      transition: transform .2s;
+    }
+
+    .toggle-btn.rotated {
+      transform: rotate(180deg);
+    }
+
+    .collapsible {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: all .3s ease;
+    }
+
+    .collapsible.open {
+      max-height: 800px;
+      opacity: 1;
+    }
+
+    .table-button {
+      display: inline-block;
+      /* flex olmasına gerek yok */
+      padding: 6px 14px;
+      background-color: #42a5f5;
+      /* mavi */
+      color: white;
+      border-radius: 5px;
+      text-decoration: none;
+      font-size: 11px;
+      font-weight: 500;
+      transition: 0.2s ease;
+
+      white-space: normal;
+      max-width: 120px;
+      /* butona bir genişlik sınırı veriyoruz */
+      text-align: center;
+      /* ortalansın */
+      word-break: break-word;
+      /* gerekirse kelimeyi böler */
+    }
+
+    .table-button:hover {
+      background-color: #303f9f;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Sidebar -->
+  <aside id="sidebar">
+    <div id="sidebar-container"></div>
+    <script>
+      fetch("sidebar.html")
+        .then(res => res.text())
+        .then(html => document.getElementById("sidebar-container").innerHTML = html);
+    </script>
+  </aside>
+
+  <div class="content-wrapper">
+    <header class="header">
+      <div class="breadcrumbs">
+        <a href="#">Ana Sayfa</a> <span>&gt;</span>
+        <span>DYTT İş Emirleri</span>
+      </div>
+    </header>
+
+    <!-- Filtreler -->
+    <div class="filters">
+      <div class="field">
+        <label>İş Emri No</label>
+        <input type="text" id="fSiparis" placeholder="4000…">
+      </div>
+      <div class="field">
+        <label>Malzeme Tanımı</label>
+        <input type="text" id="fMalzeme" placeholder="8003… veya ad">
+      </div>
+      <div class="field">
+        <label>Ürün Tipi</label>
+        <select id="fUrunTipi">
+          <option value="">Tümü</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Kalite</label>
+        <select id="fKalite">
+          <option value="">Tümü</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Başlangıç</label>
+        <input type="date" id="fStart">
+      </div>
+      <div class="field">
+        <label>Bitiş</label>
+        <input type="date" id="fEnd">
+      </div>
+      <button class="btn-filter" onclick="applyFilters()">Filtrele</button>
+    </div>
+
+    <!-- Özet / Trend -->
+    <div class="summary-wrapper">
+      <div class="summary-header">
+        <h3>Özet / Trend Bilgileri</h3>
+        <button id="toggleSummaryBtn" class="toggle-btn" onclick="toggleSummary()">▲</button>
+      </div>
+
+      <div id="summary" class="summary collapsible open">
+        <div class="range" id="summary-range"></div>
+        <div class="chips" id="summary-chips"></div>
+        <div class="bars" id="summary-bars"></div>
+      </div>
+    </div>
+
+
+
+    <div class="main-report-area">
+      <h2 class="report-title">DYTT – Gerçekleşen İş Emirleri</h2>
+      <div style="overflow-x:auto; width:100%;">
+        <table class="data-table" style="min-width:2000px;">
+          <thead>
+            <tr>
+              <th>Detay</th>
+              <th>Kayıt tarihi</th>
+              <th>Ürün Tipi</th>
+              <th>İş Emri No</th>
+              <th>Şartname Numarası</th>
+              <!-- <th>Şartname Açıklama</th> -->
+              <th>Yerli / İhraç</th>
+              <th>Malzeme</th>
+              <th>Malzeme Tanımı</th>
+              <th>Kalite</th>
+              <th>Kesit (mm)</th>
+              <th>Boy (m)</th>
+              <th>Döküm Tipi</th>
+              <th>Toplam miktar</th>
+              <th>Günlük Üretim</th>
+              <th>1. Sınıf Miktar</th>
+              <th>2. Sınıf Miktar</th>
+              <th>Hurda Dönüşüm</th>
+              <th>Diğer Dönüşüm</th>
+              <th>1. Sınıfa Diğer Dön.</th>
+              <th>2. Sınıfa Diğer Dön.</th>
+              <th>Şartname Dönüşüm Miktarı</th>
+              <th>Hold Mikt.</th>
+              <th>Hadde Boz.</th>
+              <th>Otomotiv</th>
+              <th>Ay</th>
+              <th>Yıl</th>
+              <th>Satış Açıklama</th>
+            </tr>
+          </thead>
+          <tbody id="detail-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* -------------------------
+       1) ÖRNEK VERİLER (ARTTIRILDI)
+    ------------------------- */
+    const ordersCKH = [
+      // 01.10.2025
+      { detay: "Yari Mamul Listesine Git", kayit: "01.10.2025", urunTipi: "KALINKANGAL", siparis: "400000006665", sartNo: "ST-4521", sartAck: "S275JR_02 Kalın Kangal Şartname", yerliIhrac: "Y", malzeme: "80039028", malzemeTanim: "Ø52,50 S275JR_02 Kalın Kangal Y", kalite: "S275JR_02", kesit: "52,50", boy: "52,50", dokumTipi: "K", toplamMiktar: "175,000", gunlukUretim: "58,542", s1Miktar: "120,000", s2Miktar: "30,000", hurdaDon: "5,000", digerDon: "2,000", s1DigerDon: "500", s2DigerDon: "200", sartnameDon: "3,000", hold: "58,842", haddeBoz: "1,200", otomotiv: "Evet", ay: "10", yil: "2025", satisAck: "Akçelik" },
+      { kayit: "01.10.2025", urunTipi: "İNCEKANGAL", siparis: "400000006663", sartNo: "ST-4522", sartAck: "S235JR_00 İnce Kangal Şartname", yerliIhrac: "Y", malzeme: "80039030", malzemeTanim: "Ø32,00 S235JR_00 İnce Kangal Y", kalite: "S235JR_00", kesit: "32,00", boy: "32,00", dokumTipi: "A", toplamMiktar: "30,000", gunlukUretim: "70,062", s1Miktar: "28,000", s2Miktar: "1,500", hurdaDon: "500", digerDon: "250", s1DigerDon: "100", s2DigerDon: "50", sartnameDon: "400", hold: "70,262", haddeBoz: "2,844", otomotiv: "Hayır", ay: "10", yil: "2025", satisAck: "Akçelik" },
+
+      // 03-05.10.2025
+      { kayit: "03.10.2025", urunTipi: "KALINKANGAL", siparis: "400000006670", sartNo: "ST-4523", sartAck: "S355J2 Kangal", yerliIhrac: "İ", malzeme: "80039040", malzemeTanim: "Ø60,00 S355J2 Kangal", kalite: "S355J2", kesit: "60,00", boy: "60,00", dokumTipi: "K", toplamMiktar: "210,000", gunlukUretim: "62,100", s1Miktar: "150,000", s2Miktar: "40,000", hurdaDon: "6,000", digerDon: "3,000", s1DigerDon: "800", s2DigerDon: "300", sartnameDon: "5,000", hold: "59,000", haddeBoz: "1,450", otomotiv: "Evet", ay: "10", yil: "2025", satisAck: "İhracat" },
+      { kayit: "04.10.2025", urunTipi: "İNCEKANGAL", siparis: "400000006671", sartNo: "ST-4524", sartAck: "S235JR_00 İnce", yerliIhrac: "Y", malzeme: "80039031", malzemeTanim: "Ø28,00 S235JR_00", kalite: "S235JR_00", kesit: "28,00", boy: "28,00", dokumTipi: "A", toplamMiktar: "45,000", gunlukUretim: "55,500", s1Miktar: "40,000", s2Miktar: "3,000", hurdaDon: "700", digerDon: "200", s1DigerDon: "120", s2DigerDon: "40", sartnameDon: "300", hold: "50,000", haddeBoz: "1,100", otomotiv: "Hayır", ay: "10", yil: "2025", satisAck: "Yurtiçi" },
+      { kayit: "05.10.2025", urunTipi: "KALINKANGAL", siparis: "400000006672", sartNo: "ST-4525", sartAck: "S275JR_02 Kalın", yerliIhrac: "Y", malzeme: "80039029", malzemeTanim: "Ø50,00 S275JR_02", kalite: "S275JR_02", kesit: "50,00", boy: "50,00", dokumTipi: "K", toplamMiktar: "160,000", gunlukUretim: "60,000", s1Miktar: "115,000", s2Miktar: "25,000", hurdaDon: "4,500", digerDon: "1,800", s1DigerDon: "600", s2DigerDon: "220", sartnameDon: "2,500", hold: "58,000", haddeBoz: "900", otomotiv: "Evet", ay: "10", yil: "2025", satisAck: "Akçelik" },
+
+      // 07-10.10.2025
+      { kayit: "07.10.2025", urunTipi: "İNCEKANGAL", siparis: "400000006680", sartNo: "ST-4526", sartAck: "S235JR_00 İnce", yerliIhrac: "İ", malzeme: "80039033", malzemeTanim: "Ø22,00 S235JR_00", kalite: "S235JR_00", kesit: "22,00", boy: "22,00", dokumTipi: "A", toplamMiktar: "35,000", gunlukUretim: "52,200", s1Miktar: "31,000", s2Miktar: "2,000", hurdaDon: "400", digerDon: "150", s1DigerDon: "80", s2DigerDon: "30", sartnameDon: "250", hold: "51,000", haddeBoz: "900", otomotiv: "Hayır", ay: "10", yil: "2025", satisAck: "İhracat" },
+      { kayit: "08.10.2025", urunTipi: "KALINKANGAL", siparis: "400000006681", sartNo: "ST-4527", sartAck: "S355J2 Kalın", yerliIhrac: "Y", malzeme: "80039041", malzemeTanim: "Ø65,00 S355J2", kalite: "S355J2", kesit: "65,00", boy: "65,00", dokumTipi: "K", toplamMiktar: "220,000", gunlukUretim: "64,800", s1Miktar: "158,000", s2Miktar: "42,000", hurdaDon: "6,500", digerDon: "3,200", s1DigerDon: "900", s2DigerDon: "320", sartnameDon: "5,500", hold: "60,500", haddeBoz: "1,300", otomotiv: "Evet", ay: "10", yil: "2025", satisAck: "Yurtiçi" },
+      { kayit: "09.10.2025", urunTipi: "İNCEKANGAL", siparis: "400000006682", sartNo: "ST-4528", sartAck: "S235JR_00 İnce", yerliIhrac: "Y", malzeme: "80039035", malzemeTanim: "Ø20,00 S235JR_00", kalite: "S235JR_00", kesit: "20,00", boy: "20,00", dokumTipi: "A", toplamMiktar: "38,000", gunlukUretim: "50,300", s1Miktar: "34,000", s2Miktar: "2,500", hurdaDon: "450", digerDon: "150", s1DigerDon: "85", s2DigerDon: "35", sartnameDon: "240", hold: "49,700", haddeBoz: "800", otomotiv: "Hayır", ay: "10", yil: "2025", satisAck: "Akçelik" },
+      { kayit: "10.10.2025", urunTipi: "KALINKANGAL", siparis: "400000006683", sartNo: "ST-4529", sartAck: "S275JR_02 Kalın", yerliIhrac: "İ", malzeme: "80039042", malzemeTanim: "Ø55,00 S275JR_02", kalite: "S275JR_02", kesit: "55,00", boy: "55,00", dokumTipi: "K", toplamMiktar: "185,000", gunlukUretim: "61,100", s1Miktar: "130,000", s2Miktar: "35,000", hurdaDon: "5,200", digerDon: "2,200", s1DigerDon: "620", s2DigerDon: "240", sartnameDon: "3,200", hold: "58,900", haddeBoz: "1,150", otomotiv: "Evet", ay: "10", yil: "2025", satisAck: "İhracat" },
+
+      // 12.10.2025
+      { kayit: "12.10.2025", urunTipi: "İNCEKANGAL", siparis: "400000006690", sartNo: "ST-4530", sartAck: "S235JR_00 İnce", yerliIhrac: "Y", malzeme: "80039036", malzemeTanim: "Ø24,00 S235JR_00", kalite: "S235JR_00", kesit: "24,00", boy: "24,00", dokumTipi: "A", toplamMiktar: "42,000", gunlukUretim: "54,000", s1Miktar: "37,000", s2Miktar: "2,800", hurdaDon: "480", digerDon: "180", s1DigerDon: "95", s2DigerDon: "38", sartnameDon: "260", hold: "52,000", haddeBoz: "850", otomotiv: "Hayır", ay: "10", yil: "2025", satisAck: "Yurtiçi" }
+    ];
+
+    /* -------------------------
+       2) YARDIMCI FONKSİYONLAR
+    ------------------------- */
+    // "175,000" -> 175.000 (float)
+    function toFloat(str) {
+      if (typeof str === "number") return str;
+      if (!str) return 0;
+      // Binlik ayırıcı yok, ondalık virgül var gibi kabul edelim
+      return parseFloat(String(str).replace(/\./g, '').replace(',', '.')) || 0;
+    }
+
+    // dd.MM.yyyy -> yyyy-MM-dd
+    function toISO(dmy) {
+      const [d, m, y] = dmy.split(".");
+      return `${y}-${m}-${d}`;
+    }
+
+    /* -------------------------
+       3) TABLO RENDER
+    ------------------------- */
+    function renderTable(rows) {
+      const tb = document.getElementById("detail-table-body");
+      tb.innerHTML = "";
+      rows.forEach(r => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+      <td><a href="1-2-yari-mamul-listesi.html" class="table-button">Yarı Mamul Listesine Git</a></td>
+      <td>${r.kayit}</td>
+      <td>${r.urunTipi}</td>
+      <td><a href="2-1-is-emri-detay.html?no=${r.siparis}" style="color:#1976d2;font-weight:600;text-decoration:none">${r.siparis}</a></td>
+      <td>${r.sartNo}</td>
+      
+      <td>${r.yerliIhrac}</td>
+      <td>${r.malzeme}</td>
+      <td>${r.malzemeTanim}</td>
+      <td>${r.kalite}</td>
+      <td>${r.kesit}</td>
+      <td>${r.boy}</td>
+      <td>${r.dokumTipi}</td>
+      <td>${r.toplamMiktar}</td>
+      <td>${r.gunlukUretim}</td>
+      <td>${r.s1Miktar}</td>
+      <td>${r.s2Miktar}</td>
+      <td>${r.hurdaDon}</td>
+      <td>${r.digerDon}</td>
+      <td>${r.s1DigerDon}</td>
+      <td>${r.s2DigerDon}</td>
+      <td>${r.sartnameDon}</td>
+      <td>${r.hold}</td>
+      <td>${r.haddeBoz}</td>
+      <td>${r.otomotiv}</td>
+      <td>${r.ay}</td>
+      <td>${r.yil}</td>
+      <td>${r.satisAck}</td>
+    `;
+        tb.appendChild(tr);
+      });
+    }
+
+    /* -------------------------
+       4) DROPDOWN INIT
+    ------------------------- */
+    function initDropdowns() {
+      const urunSet = [...new Set(ordersCKH.map(r => r.urunTipi))];
+      const kaliteSet = [...new Set(ordersCKH.map(r => r.kalite))];
+      const urunSel = document.getElementById("fUrunTipi");
+      const kalSel = document.getElementById("fKalite");
+      urunSet.forEach(u => {
+        const opt = document.createElement("option");
+        opt.value = u; opt.textContent = u; urunSel.appendChild(opt);
+      });
+      kaliteSet.forEach(k => {
+        const opt = document.createElement("option");
+        opt.value = k; opt.textContent = k; kalSel.appendChild(opt);
+      });
+    }
+
+    /* -------------------------
+       5) ÖZET / TREND HESABI
+    ------------------------- */
+    function computeTotals(rows) {
+      const sum = (key) => rows.reduce((acc, r) => acc + toFloat(r[key]), 0);
+
+      const totals = {
+        toplamMiktar: sum('toplamMiktar'),
+        s1Miktar: sum('s1Miktar'),
+        s2Miktar: sum('s2Miktar'),
+        hurdaDon: sum('hurdaDon'),
+        digerDon: sum('digerDon'),
+        s1DigerDon: sum('s1DigerDon'),
+        s2DigerDon: sum('s2DigerDon'),
+        sartnameDon: sum('sartnameDon'),
+        hold: sum('hold'),
+        haddeBoz: sum('haddeBoz'),
+        gunlukUretim: sum('gunlukUretim')
+      };
+      return totals;
+    }
+
+    function formatTon(v) {
+      // 12345.67 -> "12.345,67"
+      const s = (Math.round(v * 100) / 100).toLocaleString('tr-TR', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+      return s + " ton";
+    }
+
+    function renderSummaryBar(rows) {
+      const wrap = document.getElementById('summary');
+      const rangeEl = document.getElementById('summary-range');
+      const chipsEl = document.getElementById('summary-chips');
+      const barsEl = document.getElementById('summary-bars');
+
+      if (!rows.length) {
+        wrap.style.display = 'none';
+        return;
+      }
+      wrap.style.display = '';
+
+      // Tarih aralığı (filtre girişlerinden okunur, boşsa veri içinden min/max)
+      const qS = document.getElementById("fStart").value;
+      const qE = document.getElementById("fEnd").value;
+
+      const dates = rows.map(r => new Date(toISO(r.kayit)));
+      const minD = new Date(Math.min.apply(null, dates));
+      const maxD = new Date(Math.max.apply(null, dates));
+
+      const fmt = (d) => d.toLocaleDateString('tr-TR');
+
+      const showS = qS ? new Date(qS) : minD;
+      const showE = qE ? new Date(qE) : maxD;
+
+      rangeEl.textContent = `${fmt(showS)} – ${fmt(showE)} aralığı için özet`;
+
+      // Toplamları hesapla
+      const t = computeTotals(rows);
+
+      // Üstte hızlı chip’ler
+      chipsEl.innerHTML = '';
+      [
+        ["Toplam miktar", t.toplamMiktar],
+        ["1. Sınıf miktar", t.s1Miktar],
+        ["2. Sınıf miktar", t.s2Miktar],
+        ["Hurda dönüşüm", t.hurdaDon]
+      ].forEach(([label, val]) => {
+        const div = document.createElement('div');
+        div.className = 'chip';
+        div.innerHTML = `<span>${label}:</span> <b>${formatTon(val)}</b>`;
+        chipsEl.appendChild(div);
+      });
+
+      // Mini bar kartları (en anlamlı metrikler)
+      const items = [
+        { key: "toplamMiktar", title: "Toplam miktar" },
+        { key: "s1Miktar", title: "1. Sınıf" },
+        { key: "s2Miktar", title: "2. Sınıf" },
+        { key: "hurdaDon", title: "Hurda Dönüşüm" },
+        { key: "digerDon", title: "Diğer Dönüşüm" },
+        { key: "hold", title: "Hold Miktarı" }
+      ];
+
+      const maxVal = Math.max(...items.map(i => t[i.key] || 0), 1);
+      barsEl.innerHTML = '';
+      items.forEach(i => {
+        const val = t[i.key] || 0;
+        const pct = Math.max(3, Math.min(100, Math.round((val / maxVal) * 100))); // min 3% görünürlük
+        const card = document.createElement('div');
+        card.className = 'bar-card';
+        card.innerHTML = `
+      <div class="bar-head">
+        <div class="bar-title">${i.title}</div>
+        <div class="bar-value">${formatTon(val)}</div>
+      </div>
+      <div class="bar"><span style="width:${pct}%"></span></div>
+    `;
+        barsEl.appendChild(card);
+      });
+    }
+
+    /* -------------------------
+       6) FİLTRELEME
+    ------------------------- */
+    function applyFilters() {
+      const qSip = document.getElementById("fSiparis").value.trim();
+      const qMal = document.getElementById("fMalzeme").value.trim();
+      const qUrun = document.getElementById("fUrunTipi").value;
+      const qKalite = document.getElementById("fKalite").value;
+      const qS = document.getElementById("fStart").value;
+      const qE = document.getElementById("fEnd").value;
+
+      let out = ordersCKH.slice();
+
+      if (qSip) out = out.filter(r => r.siparis.includes(qSip));
+      if (qMal) out = out.filter(r => r.malzeme.includes(qMal) || r.malzemeTanim.toLowerCase().includes(qMal.toLowerCase()));
+      if (qUrun) out = out.filter(r => r.urunTipi === qUrun);
+      if (qKalite) out = out.filter(r => r.kalite === qKalite);
+      if (qS) out = out.filter(r => new Date(toISO(r.kayit)) >= new Date(qS));
+      if (qE) out = out.filter(r => new Date(toISO(r.kayit)) <= new Date(qE));
+
+      renderTable(out);
+      renderSummaryBar(out);
+    }
+
+    /* -------------------------
+       7) INIT
+    ------------------------- */
+    document.addEventListener("DOMContentLoaded", () => {
+      renderTable(ordersCKH);
+      initDropdowns();
+      renderSummaryBar(ordersCKH);
+    });
+    function toggleSummary() {
+      const summary = document.getElementById("summary");
+      const btn = document.getElementById("toggleSummaryBtn");
+      const isOpen = summary.classList.toggle("open");
+
+      if (isOpen) {
+        btn.innerHTML = "▲"; // açıkken yukarı ok
+      } else {
+        btn.innerHTML = "▼"; // kapalıyken aşağı ok
+      }
+    }
+
+
+
+  </script>
+
+</body>
+
+</html>

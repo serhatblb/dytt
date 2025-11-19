@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>KARDEMİR Çubuk & Kangal Haddehanesi | Üretim ve Enerji Dashboard</title>
+  <style>
+    :root{
+      --bg:#0f1419;
+      --panel:#141a22;
+      --card:#1b2430;
+      --muted:#8aa0b7;
+      --text:#eaf1fb;
+      --accent:#2ea043;
+      --accent2:#238636;
+      --warn:#d29922;
+      --danger:#f85149;
+      --border:#223045;
+      --shadow:0 8px 24px rgba(0,0,0,0.25);
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ margin:0; padding:0; background:var(--bg); color:var(--text); font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial, sans-serif; }
+    a{ color:var(--accent); text-decoration:none; }
+    .container{ max-width:1200px; margin:24px auto 64px; padding:0 16px; }
+
+    header{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:16px; margin-bottom:20px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:14px;
+    }
+    .brand .logo{
+      width:42px; height:42px; border-radius:8px; background:linear-gradient(135deg,#1f6feb,#58a6ff);
+      box-shadow:var(--shadow);
+    }
+    .brand h1{ font-size:20px; margin:0; }
+    .brand p{ margin:2px 0 0; color:var(--muted); font-size:13px; }
+
+    .kpi-grid{
+      display:grid; grid-template-columns: repeat(4, minmax(0,1fr));
+      gap:12px; margin:16px 0 24px;
+    }
+    .kpi{
+      background:var(--card); border:1px solid var(--border);
+      border-radius:12px; padding:14px; box-shadow:var(--shadow);
+    }
+    .kpi h4{ margin:0 0 8px; font-size:13px; color:var(--muted); letter-spacing:.2px; }
+    .kpi .val{ font-size:20px; font-weight:600; }
+    .kpi small{ display:block; color:var(--muted); margin-top:6px; }
+
+    .grid{
+      display:grid; grid-template-columns: 1.2fr .8fr;
+      gap:16px;
+    }
+    @media (max-width: 980px){
+      .grid{ grid-template-columns: 1fr; }
+      .kpi-grid{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+    }
+    @media (max-width: 560px){
+      .kpi-grid{ grid-template-columns: 1fr; }
+    }
+
+    .panel{
+      background:var(--panel); border:1px solid var(--border);
+      border-radius:14px; padding:16px; box-shadow:var(--shadow);
+    }
+    .panel h2{
+      margin:0 0 12px; font-size:18px; letter-spacing:.2px;
+    }
+    .subhead{ color:var(--muted); font-size:13px; margin-bottom:10px; }
+
+    /* Accordion */
+    .accordion{ display:flex; flex-direction:column; gap:10px; }
+    .acc-item{ border:1px solid var(--border); border-radius:12px; overflow:hidden; background:var(--card); }
+    .acc-header{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:12px 14px; cursor:pointer; user-select:none;
+    }
+    .acc-header h3{ margin:0; font-size:15px; }
+    .acc-header .chip{
+      background:#0c1116; border:1px solid var(--border);
+      color:var(--muted); padding:4px 8px; border-radius:999px; font-size:12px;
+    }
+    .acc-header:hover{ background:#1e2734; }
+    .acc-body{ display:none; padding:12px 14px; border-top:1px solid var(--border); }
+    .acc-item.open .acc-body{ display:block; }
+
+    /* Tables */
+    table{ width:100%; border-collapse:collapse; font-size:13px; }
+    thead th{
+      text-align:left; color:var(--muted); font-weight:600; border-bottom:1px solid var(--border);
+      padding:10px 8px;
+    }
+    tbody td{ padding:9px 8px; border-bottom:1px dashed #1f2b3f; }
+    tbody tr:hover{ background:#101726; }
+
+    .t-right{ text-align:right; }
+    .tag{ display:inline-block; padding:2px 8px; border-radius:999px; font-size:12px; border:1px solid var(--border); color:var(--muted); }
+    .good{ color:#2ea043; }
+    .warn{ color:var(--warn); }
+    .bad{ color:var(--danger); }
+
+    .row{
+      display:flex; gap:10px; align-items:flex-start; margin:10px 0;
+    }
+    .card{
+      flex:1; background:var(--card); border:1px solid var(--border);
+      border-radius:12px; padding:12px;
+    }
+
+    .footer-note{
+      margin-top:16px; color:var(--muted); font-size:12px;
+    }
+
+    /* Mini bar visuals */
+    .bar{
+      height:8px; border-radius:6px; background:#0c1116; border:1px solid var(--border);
+      overflow:hidden;
+    }
+    .bar > span{
+      display:block; height:100%; background:linear-gradient(90deg,#2ea043,#3fb950);
+      width:0%;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1>KARDEMİR A.Ş. — Çubuk & Kangal Haddehanesi</h1>
+          <p>Günlük Üretim ve Enerji Dashboard — 16.11.2025</p>
+        </div>
+      </div>
+      <div class="tag">Rapor Kodu: CKH-GUR-16112025</div>
+    </header>
+
+    <!-- Top KPIs -->
+    <section class="kpi-grid">
+      <div class="kpi">
+        <h4>Günlük toplam üretim (ton)</h4>
+        <div class="val">969.613</div>
+        <small>Satılabilir ürün toplamı</small>
+      </div>
+      <div class="kpi">
+        <h4>Verim</h4>
+        <div class="val">93.12%</div>
+        <small>Hurdasız: 93.86%</small>
+      </div>
+      <div class="kpi">
+        <h4>Kalite oranı</h4>
+        <div class="val good">99.65%</div>
+        <small>Standart dışı: 3.404 ton</small>
+      </div>
+      <div class="kpi">
+        <h4>Toplam kayıplar</h4>
+        <div class="val warn">79.927 ton</div>
+        <small>Tufal: 13.016 | Kafa+Kuyruk: 58.635 | Hadde bozuğu: 8.276</small>
+      </div>
+    </section>
+
+    <section class="grid">
+      <!-- Production report with collapsible shifts -->
+      <div class="panel">
+        <h2>Günlük üretim raporu</h2>
+        <div class="subhead">Vardiyalar açılır/kapanır. Ebata ve kaliteye göre üretim, kayıplar ve verimler aşağıdadır.</div>
+
+        <div class="accordion" id="shiftAccordion">
+          <!-- 00-08 -->
+          <div class="acc-item" data-shift="00-08">
+            <div class="acc-header">
+              <h3>Vardiya 00-08</h3>
+              <span class="chip">Toplam fırın deşarj ton: 417.732</span>
+            </div>
+            <div class="acc-body">
+              <div class="row">
+                <div class="card">
+                  <strong>Fırın deşarj özetleri:</strong>
+                  <table aria-label="Fırın deşarj 00-08">
+                    <thead>
+                      <tr>
+                        <th>Kesit</th>
+                        <th class="t-right">Adet</th>
+                        <th class="t-right">Boy (m)</th>
+                        <th class="t-right">İade</th>
+                        <th class="t-right">Ton</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>170</td><td class="t-right">—</td><td class="t-right">—</td><td class="t-right">—</td><td class="t-right">—</td>
+                      </tr>
+                      <tr>
+                        <td>200</td><td class="t-right">—</td><td class="t-right">—</td><td class="t-right">—</td><td class="t-right">—</td>
+                      </tr>
+                      <tr>
+                        <td><em>Toplam</em></td><td class="t-right">—</td><td class="t-right">—</td><td class="t-right">—</td><td class="t-right">417.732</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div class="footer-note">Kesit/adet/boy detay hücreleri raporda farklı satırlara dağılmıştır; toplam ton değeri kullanılmıştır.</div>
+                </div>
+                <div class="card">
+                  <strong>Üretim & kayıplar:</strong>
+                  <table aria-label="Üretim ve kayıplar 00-08">
+                    <thead>
+                      <tr>
+                        <th>Gösterge</th>
+                        <th class="t-right">Değer</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>Satılabilir ürün (ton)</td><td class="t-right">319.403</td></tr>
+                      <tr><td>Standart dışı (ton)</td><td class="t-right">3.342</td></tr>
+                      <tr><td>Mamül hurdası (ton)</td><td class="t-right">0.000</td></tr>
+                      <tr><td>Tufal (ton)</td><td class="t-right">4.977</td></tr>
+                      <tr><td>Kafa + Kuyruk kesimi (ton)</td><td class="t-right">23.815</td></tr>
+                      <tr><td>Hadde bozuğu (adet | ton)</td><td class="t-right">3 | 4.240</td></tr>
+                      <tr><td><strong>Toplam kayıplar (ton)</strong></td><td class="t-right warn"><strong>36.374</strong></td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="card">
+                  <strong>Ebata-kalite:</strong>
+                  <table aria-label="Ebat kalite 00-08">
+                    <thead>
+                      <tr>
+                        <th>Çap aralığı</th>
+                        <th class="t-right">Kalite</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>Ø18–Ø22</td><td class="t-right">—</td></tr>
+                    </tbody>
+                  </table>
+                  <div class="footer-note">Kalite satırlarında raporda kod/standart belirtilmemiş; çap aralığı gösterilmiştir.</div>
+                </div>
+                <div class="card">
+                  <strong>Basit verim görselleştirme:</strong>
+                  <div class="bar" aria-label="Verim çubuğu">
+                    <span style="width: 93.12%;"></span>
+                  </div>
+                  <small class="subhead">Günlük verime göre normalize görsel.</small>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 08-16 -->
+          <div class="acc-item" data-shift="08-16">
+            <div class="acc-header">
+              <h3>Vardiya 08-16</h3>
+              <span class="chip">Toplam fırın deşarj ton: 169.416</span>
+            </div>
+            <div class="acc-body">
+              <div class="row">
+                <div class="card">
+                  <strong>Üretim & kayıplar:</strong>
+                  <table aria-label="Üretim ve kayıplar 08-16">
+                    <thead><tr><th>Gösterge</th><th class="t-right">Değer</th></tr></thead>
+                    <tbody>
+                      <tr><td>Satılabilir ürün (ton)</td><td class="t-right">154.689</td></tr>
+                      <tr><td>Standart dışı (ton)</td><td class="t-right">3.404</td></tr>
+                      <tr><td>Mamül hurdası (ton)</td><td class="t-right">0.000</td></tr>
+                      <tr><td>Tufal (ton)</td><td class="t-right">2.118</td></tr>
+                      <tr><td>Kafa + Kuyruk kesimi (ton)</td><td class="t-right">6.570</td></tr>
+                      <tr><td>Hadde bozuğu (adet | ton)</td><td class="t-right">0 | 0.000</td></tr>
+                      <tr><td><strong>Toplam kayıplar (ton)</strong></td><td class="t-right warn"><strong>9.687</strong></td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="card">
+                  <strong>Ebata-kalite:</strong>
+                  <table aria-label="Ebat kalite 08-16">
+                    <thead><tr><th>Çap aralığı</th><th class="t-right">Kalite</th></tr></thead>
+                    <tbody><tr><td>Ø18–Ø22</td><td class="t-right">—</td></tr></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 16-00 -->
+          <div class="acc-item" data-shift="16-00">
+            <div class="acc-header">
+              <h3>Vardiya 16-00</h3>
+              <span class="chip">Toplam fırın deşarj ton: 454.116</span>
+            </div>
+            <div class="acc-body">
+              <div class="row">
+                <div class="card">
+                  <strong>Üretim & kayıplar:</strong>
+                  <table aria-label="Üretim ve kayıplar 16-00">
+                    <thead><tr><th>Gösterge</th><th class="t-right">Değer</th></tr></thead>
+                    <tbody>
+                      <tr><td>Satılabilir ürün (ton)</td><td class="t-right">495.523</td></tr>
+                      <tr><td>Standart dışı (ton)</td><td class="t-right">0.000</td></tr>
+                      <tr><td>Mamül hurdası (ton)</td><td class="t-right">0.000</td></tr>
+                      <tr><td>Tufal (ton)</td><td class="t-right">5.911</td></tr>
+                      <tr><td>Kafa + Kuyruk kesimi (ton)</td><td class="t-right">28.250</td></tr>
+                      <tr><td>Hadde bozuğu (adet | ton)</td><td class="t-right">1 | 4.036</td></tr>
+                      <tr><td><strong>Toplam kayıplar (ton)</strong></td><td class="t-right warn"><strong>38.197</strong></td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="card">
+                  <strong>Ebata-kalite:</strong>
+                  <table aria-label="Ebat kalite 16-00">
+                    <thead><tr><th>Çap aralığı</th><th class="t-right">Kalite</th></tr></thead>
+                    <tbody><tr><td>Ø18–Ø22</td><td class="t-right">—</td></tr></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Daily totals -->
+        <div class="row" style="margin-top:14px;">
+          <div class="card">
+            <strong>Günlük toplamlar:</strong>
+            <table aria-label="Günlük toplamlar">
+              <thead>
+                <tr>
+                  <th>Gösterge</th>
+                  <th class="t-right">Değer</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Adet</td><td class="t-right">441</td></tr>
+                <tr><td>İade</td><td class="t-right">1</td></tr>
+                <tr><td>Fırın deşarj toplam (ton)</td><td class="t-right">1041.264</td></tr>
+                <tr><td>Satılabilir ürün (ton)</td><td class="t-right">969.613</td></tr>
+                <tr><td>Standart dışı (ton)</td><td class="t-right">3.404</td></tr>
+                <tr><td>Mamül hurdası (ton)</td><td class="t-right">0.000</td></tr>
+                <tr><td>Tufal (ton)</td><td class="t-right">13.016</td></tr>
+                <tr><td>Kafa + Kuyruk kesimi (ton)</td><td class="t-right">58.635</td></tr>
+                <tr><td>Hadde bozuğu (adet | ton)</td><td class="t-right">4 | 8.276</td></tr>
+                <tr><td><strong>Toplam kayıplar (ton)</strong></td><td class="t-right warn"><strong>79.927</strong></td></tr>
+                <tr><td><strong>Verim</strong></td><td class="t-right"><strong>93.12% (hurdasız: 93.86%)</strong></td></tr>
+                <tr><td><strong>Kalite Oranı</strong></td><td class="t-right good"><strong>99.65%</strong></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Energy & production metrics -->
+      <div class="panel">
+        <h2>Enerji tüketimleri ve üretim metrikleri</h2>
+        <div class="subhead">Elektrik ve doğalgaz birim tüketimleri; vardiya ve dönemsel üretim özetleri.</div>
+
+        <div class="row">
+          <div class="card">
+            <strong>Elektrik tüketimi (kWh)</strong>
+            <table aria-label="Elektrik tüketimi">
+              <thead>
+                <tr>
+                  <th>Dilim</th>
+                  <th class="t-right">Tüketim</th>
+                  <th class="t-right">Birim tüketim (kWh/ton)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>00-08</td><td class="t-right">48,741.000</td><td class="t-right">125.553</td></tr>
+                <tr><td>08-16</td><td class="t-right">32,994.000</td><td class="t-right">213.292</td></tr>
+                <tr><td>16-00</td><td class="t-right">46,299.000</td><td class="t-right">108.501</td></tr>
+                <tr><td><strong>Aylık toplam</strong></td><td class="t-right"><strong>3,431,086.000</strong></td><td class="t-right"><strong>136.902</strong></td></tr>
+              </tbody>
+            </table>
+            <small class="subhead">Günlük ortalama: 132.046 kWh/ton</small>
+          </div>
+          <div class="card">
+            <strong>Doğalgaz tüketimi</strong>
+            <table aria-label="Doğalgaz tüketimi">
+              <thead>
+                <tr>
+                  <th>Dilim</th>
+                  <th class="t-right">Tüketim (Nm³)</th>
+                  <th class="t-right">Birim (Nm³/ton)</th>
+                  <th class="t-right">Mcal/ton</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>00-08</td><td class="t-right">15,279.000</td><td class="t-right">39.358</td><td class="t-right">502.384</td></tr>
+                <tr><td>08-16</td><td class="t-right">9,945.000</td><td class="t-right">64.290</td><td class="t-right">828.832</td></tr>
+                <tr><td>16-00</td><td class="t-right">15,948.000</td><td class="t-right">37.734</td><td class="t-right">466.356</td></tr>
+                <tr><td><strong>Aylık toplam</strong></td><td class="t-right"><strong>847,183.000</strong></td><td class="t-right"><strong>33.803</strong></td><td class="t-right"><strong>460.508</strong></td></tr>
+              </tbody>
+            </table>
+            <small class="subhead">Günlük ortalama: 42.462 Nm³/ton</small>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="card">
+            <strong>Vardiya üretimleri (ton)</strong>
+            <table aria-label="Vardiya üretimleri">
+              <thead>
+                <tr>
+                  <th>Vardiya</th>
+                  <th class="t-right">Üretim</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>00-08</td><td class="t-right">388.210</td></tr>
+                <tr><td>08-16</td><td class="t-right">154.689</td></tr>
+                <tr><td>16-24</td><td class="t-right">426.714</td></tr>
+                <tr><td><strong>Toplam</strong></td><td class="t-right"><strong>969.613</strong></td></tr>
+              </tbody>
+            </table>
+            <div class="bar" style="margin-top:8px;">
+              <span id="bar-00-08"></span>
+            </div>
+            <div class="bar" style="margin-top:6px;">
+              <span id="bar-08-16"></span>
+            </div>
+            <div class="bar" style="margin-top:6px;">
+              <span id="bar-16-24"></span>
+            </div>
+            <small class="subhead">Çubuklar vardiyalar arası göreli payı gösterir.</small>
+          </div>
+          <div class="card">
+            <strong>Üretim — dönemsel</strong>
+            <table aria-label="Üretim dönemsel">
+              <thead>
+                <tr>
+                  <th>Dönem</th>
+                  <th class="t-right">Toplam üretim</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Aylık toplam</td><td class="t-right">25,062.403</td></tr>
+                <tr><td>Yıllık toplam</td><td class="t-right">400,685.350</td></tr>
+              </tbody>
+            </table>
+
+            <strong style="display:block; margin-top:12px;">Yıllık üretimler (2018–2024)</strong>
+            <table aria-label="Yıllık üretimler">
+              <thead>
+                <tr>
+                  <th>Yıl</th>
+                  <th class="t-right">Üretim</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>2018</td><td class="t-right">358.926</td></tr>
+                <tr><td>2019</td><td class="t-right">395.286</td></tr>
+                <tr><td>2020</td><td class="t-right">450.986</td></tr>
+                <tr><td>2021</td><td class="t-right">535.001</td></tr>
+                <tr><td>2022</td><td class="t-right">461.456</td></tr>
+                <tr><td>2023</td><td class="t-right">495.731</td></tr>
+                <tr><td>2024</td><td class="t-right">470,306.060</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <footer class="container" style="max-width:1200px;">
+      <div class="footer-note">
+        Not: Bazı kesit/kalite satırları raporda parça parça olduğundan özet tablolar toplamları temel alır. İhtiyaç halinde hücreleri ayrıntılandırabiliriz.
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Accordion toggle logic
+    document.querySelectorAll('.acc-header').forEach(h => {
+      h.addEventListener('click', () => {
+        const item = h.parentElement;
+        const isOpen = item.classList.contains('open');
+        // close others
+        document.querySelectorAll('.acc-item').forEach(i => i.classList.remove('open'));
+        // toggle current
+        if (!isOpen) item.classList.add('open');
+      });
+    });
+    // Open first by default
+    document.querySelector('.acc-item')?.classList.add('open');
+
+    // Mini bars for shift production shares
+    const prod = {
+      '00-08': 388.210,
+      '08-16': 154.689,
+      '16-24': 426.714
+    };
+    const total = 969.613;
+    const pct = Object.fromEntries(Object.entries(prod).map(([k,v]) => [k, Math.max(0, Math.min(100, (v/total)*100))]));
+    document.getElementById('bar-00-08').style.width = pct['00-08'].toFixed(2) + '%';
+    document.getElementById('bar-08-16').style.width = pct['08-16'].toFixed(2) + '%';
+    document.getElementById('bar-16-24').style.width = pct['16-24'].toFixed(2) + '%';
+
+    // Optional: keyboard accessibility for accordion
+    document.querySelectorAll('.acc-header').forEach(h => {
+      h.setAttribute('tabindex', '0');
+      h.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') h.click();
+      });
+    });
+  </script>
+</body>
+</html>

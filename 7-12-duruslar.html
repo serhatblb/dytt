@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CKH Duruş Raporu</title>
+  <link href="sidebar.css" rel="stylesheet" />
+  <style>
+    :root{
+      --bg: #f3f4f6;
+      --panel: #ffffff;
+      --card: #ffffff;
+      --muted: #6b7280;
+      --text: #1f2937;
+      --accent: #16a34a;
+      --border: #e5e7eb;
+      --header-bg: #f9fafb;
+      --header-text: #111827;
+      --shadow: 0 1px 3px rgba(0,0,0,.1), 0 1px 2px rgba(0,0,0,.06);
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0; padding:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family:'Inter','Segoe UI',sans-serif;
+      font-size:14px;
+    }
+
+    .container{
+      max-width:1400px;
+      margin:30px auto;
+      padding:0 20px;
+    }
+
+    header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-bottom:20px;
+      padding-bottom:15px;
+      border-bottom:1px solid var(--border);
+    }
+
+    h1{ margin:0; font-size:1.5rem; color:var(--header-text); }
+    .date-badge{
+      background:#111827; color:#fff;
+      padding:6px 12px; border-radius:6px;
+      font-size:0.9rem; font-weight:600;
+    }
+
+    .back-link{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      text-decoration:none;
+      font-size:0.85rem;
+      color:var(--accent);
+      padding:6px 10px;
+      border-radius:999px;
+      background:#e0f2f1;
+      margin-bottom:10px;
+    }
+    .back-link:hover{ background:#bbf7d0; }
+
+    /* ÖZET TABLO BUTONU + KÜÇÜK KART */
+    .summary-toggle{
+      margin-top:5px;
+      margin-bottom:10px;
+    }
+    .summary-toggle button{
+      border:none;
+      background:var(--accent);
+      color:#fff;
+      padding:6px 14px;
+      border-radius:10px;
+      font-size:1.1rem;
+      font-weight:600;
+      cursor:pointer;
+      box-shadow:0 1px 2px rgba(0,0,0,.15);
+    }
+    .summary-toggle button:hover{
+      background:#15803d;
+    }
+
+    .summary-card{
+      display:none;           /* butona basılmadan görünmesin */
+      max-width:800px;
+      font-size:12px;
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:8px;
+      box-shadow:var(--shadow);
+      margin-bottom:20px;
+      overflow:hidden;
+    }
+    .summary-card.open{
+      display:block;
+    }
+    .summary-header{
+      background:#e5e7eb;
+      padding:8px 12px;
+      font-weight:600;
+      text-align:center;
+      font-size:0.85rem;
+    }
+    .summary-table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:12px;
+    }
+    .summary-table th,
+    .summary-table td{
+      border:1px solid var(--border);
+      padding:4px 6px;
+      text-align:center;
+      white-space:nowrap;
+    }
+    .summary-table thead th{
+      background:#f3f4f6;
+      font-weight:600;
+    }
+    .summary-table tbody tr:last-child td{
+      background:#e5e7eb;
+      font-weight:700;
+    }
+
+    /* VARDİYA DETAY KARTLARI (AÇILIR/KAPANIR) */
+    .shift-section{
+      margin-bottom:25px;
+      background:var(--panel);
+      border-radius:8px;
+      border:1px solid var(--border);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+    .shift-header{
+      background:var(--header-bg);
+      padding:10px 15px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      font-weight:600;
+      cursor:pointer;
+      position:relative;
+    }
+    .shift-header small{
+      font-weight:500;
+      color:var(--muted);
+      font-size:0.8rem;
+      margin-right: 30px;
+    }
+    .shift-header::after{
+      content:'+';
+      position:absolute;
+      right:15px;
+      top:50%;
+      transform:translateY(-50%);
+      font-size:25px;
+      color:var(--muted);
+    }
+    .shift-section.open .shift-header::after{
+      content:'−';
+    }
+
+    .durus-table-wrapper{
+      display:none;
+      overflow-x:auto;
+    }
+    .shift-section.open .durus-table-wrapper{
+      display:block;
+    }
+
+    /* DURUŞ TABLOSU */
+    .durus-table{
+      width:100%;
+      min-width:1100px;
+      border-collapse:collapse;
+      font-size:12px;
+    }
+    .durus-table th,
+    .durus-table td{
+      border:1px solid var(--border);
+      padding:4px 6px;
+      text-align:center;
+      white-space:nowrap;
+    }
+    .durus-table thead th{
+      background:#e5e7eb;
+      font-weight:600;
+    }
+    .durus-table tbody tr:nth-child(even){
+      background:#f9fafb;
+    }
+    .durus-table tbody tr:hover{
+      background:#eef2ff;
+    }
+    .durus-table td.aciklama{
+      text-align:left;
+      white-space:normal;
+    }
+    .durus-total-row td{
+      font-weight:700;
+      background:#f3f4f6;
+    }
+    .daily-total-row td{
+      font-weight:700;
+      background:#fecaca;
+    }
+
+  </style>
+</head>
+<body>
+  <!-- sidebar -->
+  <aside id="sidebar">
+    <div id="sidebar-container"></div>
+    <script>
+      fetch("sidebar.html")
+        .then(r=>r.text())
+        .then(html=>{document.getElementById("sidebar-container").innerHTML=html});
+    </script>
+  </aside>
+
+  <div class="container" style="margin-left:300px;">
+    <header>
+      <div>
+        <h1>CKH Duruş Raporu</h1>
+        <small style="color:var(--muted)">Vardiya Bazlı Duruş Süreleri ve Açıklamalar</small>
+      </div>
+      <div class="date-badge">16.11.2025</div>
+    </header>
+
+    <!-- ÖZET TABLO BUTONU + KÜÇÜK KART -->
+    <div class="summary-toggle">
+        <a href="7-11-uretim-raporu.html" class="back-link">← Üretim Raporuna Dön</a>
+      <button id="summaryToggleBtn" type="button">Özet Tablo</button>
+    </div>
+
+    <section class="summary-card" id="summaryCard">
+      <div class="summary-header">DURUŞLAR – ÖZET</div>
+      <table class="summary-table">
+        <thead>
+          <tr>
+            <th style="min-width:220px;">VARDİYA / NEDEN</th>
+            <th>00-08</th>
+            <th>08-16</th>
+            <th>16-00</th>
+            <th>Günlük</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Haddeleme Süresi</td>
+            <td>310</td>
+            <td>107</td>
+            <td>335</td>
+            <td>752</td>
+          </tr>
+          <tr>
+            <td>Mekanik Arıza</td>
+            <td>10</td>
+            <td>0</td>
+            <td>0</td>
+            <td>10</td>
+          </tr>
+          <tr>
+            <td>Proses</td>
+            <td>115</td>
+            <td>42</td>
+            <td>74</td>
+            <td>231</td>
+          </tr>
+          <tr>
+            <td>İşletme</td>
+            <td>0</td>
+            <td>0</td>
+            <td>7</td>
+            <td>7</td>
+          </tr>
+          <tr>
+            <td>Elektrik Arıza</td>
+            <td>0</td><td>0</td><td>0</td><td>0</td>
+          </tr>
+          <tr>
+            <td>Merdane Değişimi</td>
+            <td>0</td><td>0</td><td>0</td><td>0</td>
+          </tr>
+          <tr>
+            <td>Üretim Planlama</td>
+            <td>45</td><td>0</td><td>38</td><td>83</td>
+          </tr>
+          <tr>
+            <td>Ünite Dış</td>
+            <td>0</td><td>0</td><td>0</td><td>0</td>
+          </tr>
+          <tr>
+            <td>Kütük Değişimi</td>
+            <td>0</td><td>0</td><td>0</td><td>0</td>
+          </tr>
+          <tr>
+            <td>Merdane Kırılma</td>
+            <td>0</td><td>0</td><td>0</td><td>0</td>
+          </tr>
+          <tr>
+            <td>Kalite Kontrol İç</td>
+            <td>0</td><td>0</td><td>0</td><td>0</td>
+          </tr>
+          <tr>
+            <td>Kalite Kontrol Dış</td>
+            <td>0</td><td>0</td><td>0</td><td>0</td>
+          </tr>
+          <tr>
+            <td>Ebat Değişimi</td>
+            <td>0</td><td>181</td><td>0</td><td>181</td>
+          </tr>
+          <tr>
+            <td>Kalibrasyon ve Yedek Hazırlama</td>
+            <td>0</td><td>150</td><td>26</td><td>176</td>
+          </tr>
+          <tr>
+            <td>Proses İyileştirme</td>
+            <td>0</td><td>0</td><td>0</td><td>0</td>
+          </tr>
+          <tr>
+            <td>DURUŞLAR TOPLAMI</td>
+            <td>170</td>
+            <td>373</td>
+            <td>145</td>
+            <td>688</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 00-08 DETAY -->
+    <section class="shift-section open" id="v00-08">
+      <div class="shift-header">
+        <span>Vardiya 00-08 – Duruş Detayları</span>
+        <small>Toplam Duruş: 170 dk</small>
+      </div>
+      <div class="durus-table-wrapper">
+        <table class="durus-table">
+          <thead>
+            <tr>
+              <th style="width:45px;">Vard.</th>
+              <th>Başlama</th>
+              <th>Bitiş</th>
+              <th>Süre</th>
+              <th>Kısım</th>
+              <th class="aciklama">AÇIKLAMALAR</th>
+              <th>Hat</th>
+              <th>Yer</th>
+              <th>Ekipman</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Buradaki içerikler Excel örneğine göre dolduruldu / uyarlanmış durumda -->
+            <tr>
+              <td>00-08</td>
+              <td>00:30</td>
+              <td>01:40</td>
+              <td>70</td>
+              <td>Proses</td>
+              <td class="aciklama">Malzeme kafa tarafı bozuk olduğundan asansöre dökülmesi beklendi.</td>
+              <td>Kangal</td>
+              <td>Sermetkafa</td>
+              <td>Atöpar</td>
+            </tr>
+            <tr>
+              <td>00-08</td>
+              <td>01:40</td>
+              <td>02:35</td>
+              <td>55</td>
+              <td>Proses</td>
+              <td class="aciklama">Malzeme kuyruk tarafı şekillendirme alanında taktı kesilip alındı, TMB 34 giriş kasa değişti.</td>
+              <td>Kangal</td>
+              <td>Şekillendirme</td>
+              <td>Kuyruk Takılması</td>
+            </tr>
+            <tr>
+              <td>00-08</td>
+              <td>02:35</td>
+              <td>03:05</td>
+              <td>30</td>
+              <td>Üretim Planlama</td>
+              <td class="aciklama">17MnB3-04 kalteye geçildi.</td>
+              <td>Kangal</td>
+              <td>Kalite değişimi</td>
+              <td>Kalite değişimi</td>
+            </tr>
+            <tr>
+              <td>00-08</td>
+              <td>07:15</td>
+              <td>07:35</td>
+              <td>20</td>
+              <td>Proses</td>
+              <td class="aciklama">Malzeme kafa kısmı şekillendirme altına sıkıştı, role yolu durduruldu.</td>
+              <td>Kangal</td>
+              <td>Şekillendirme</td>
+              <td>Katkı Sıkışma</td>
+            </tr>
+            <tr>
+              <td>00-08</td>
+              <td>07:35</td>
+              <td>07:45</td>
+              <td>10</td>
+              <td>Proses</td>
+              <td class="aciklama">Malzeme kafa kısmı şekillendirme altına sıkıştı role yolu durduruldu. (1. hurda iade)</td>
+              <td>Kangal</td>
+              <td>Kalite değişimi</td>
+              <td>Kalite değişimi</td>
+            </tr>
+            <tr>
+              <td>00-08</td>
+              <td>07:45</td>
+              <td>07:55</td>
+              <td>10</td>
+              <td>Mekanik Arıza</td>
+              <td class="aciklama">Makas 2 kova değişimi yapıldı.</td>
+              <td>Kangal</td>
+              <td>Malz.D.</td>
+              <td>Devirme</td>
+            </tr>
+            <tr>
+              <td>00-08</td>
+              <td>07:55</td>
+              <td>08:05</td>
+              <td>10</td>
+              <td>Üretim Planlama</td>
+              <td class="aciklama">41Cr4-00 kalite 200x9mm kütüğe geçildi, TMB 34 kasa değişti, 16. pas topo değişti.</td>
+              <td>Kangal</td>
+              <td>Kalite değişimi</td>
+              <td>Kalite değişimi</td>
+            </tr>
+
+            <tr class="durus-total-row">
+              <td></td>
+              <td></td>
+              <td></td>
+              <td>170</td>
+              <td>TOPLAM</td>
+              <td class="aciklama" colspan="4">
+                MEHMET YALÇINKAYA – MUHAMMED ALİ YAŞAR – AYHAN YORULMAZ – SİNAN YURDABAKAN –
+                SALİM AKDUMAN – İBRAHİM YAVUZ
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 08-16 DETAY -->
+    <section class="shift-section open" id="v08-16">
+      <div class="shift-header">
+        <span>Vardiya 08-16 – Duruş Detayları</span>
+        <small>Toplam Duruş: 373 dk</small>
+      </div>
+      <div class="durus-table-wrapper">
+        <table class="durus-table">
+          <thead>
+            <tr>
+              <th style="width:45px;">Vard.</th>
+              <th>Başlama</th>
+              <th>Bitiş</th>
+              <th>Süre</th>
+              <th>Kısım</th>
+              <th class="aciklama">AÇIKLAMALAR</th>
+              <th>Hat</th>
+              <th>Yer</th>
+              <th>Ekipman</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>08-16</td>
+              <td>08:59</td>
+              <td>12:00</td>
+              <td>181</td>
+              <td>Ebat Değişimi</td>
+              <td class="aciklama">
+                22mm ebat değişimi. Hadde 4,14,16,17 paso 18tgr, PRS6, PR8, hız makas deviator, TMB set değişti.
+              </td>
+              <td>Kangal</td>
+              <td>Ebat değişimi</td>
+              <td>Ebat değişimi</td>
+            </tr>
+            <tr>
+              <td>08-16</td>
+              <td>12:00</td>
+              <td>12:15</td>
+              <td>15</td>
+              <td>Proses</td>
+              <td class="aciklama">İlk malzeme makaslarda doğranıp giriş kontrolü yapıldı (1. hurda).</td>
+              <td>Kangal</td>
+              <td>Malzeme kontrolü</td>
+              <td>Malzeme kontrolü</td>
+            </tr>
+            <tr>
+              <td>08-16</td>
+              <td>12:15</td>
+              <td>13:20</td>
+              <td>65</td>
+              <td>Proses</td>
+              <td class="aciklama">Aralıklı mil anda kontrol edildi.</td>
+              <td>Kangal</td>
+              <td>Malzeme kontrolü</td>
+              <td>Malzeme kontrolü</td>
+            </tr>
+            <tr>
+              <td>08-16</td>
+              <td>13:20</td>
+              <td>14:50</td>
+              <td>90</td>
+              <td>Kalibrasyon ve Yedek Hazırlama</td>
+              <td class="aciklama">10. çıkış giriş geri gelen giriş aşşagı salvadan gidişinden kontrol edildi.</td>
+              <td>Kangal</td>
+              <td>Tezgah10</td>
+              <td>Çıkış Yolu</td>
+            </tr>
+            <tr>
+              <td>08-16</td>
+              <td>14:50</td>
+              <td>15:20</td>
+              <td>30</td>
+              <td>Kalibrasyon ve Yedek Hazırlama</td>
+              <td class="aciklama">10. çıkış giriş geri gelen çıkış söküldü (hurda). TMB 10 giriş çıkış değişti.</td>
+              <td>Kangal</td>
+              <td>Tezgah10</td>
+              <td>Çıkış Yolu</td>
+            </tr>
+            <tr>
+              <td>08-16</td>
+              <td>15:20</td>
+              <td>15:35</td>
+              <td>15</td>
+              <td>Proses</td>
+              <td class="aciklama">10. çıkış giriş kontrol edildi.</td>
+              <td>Kangal</td>
+              <td>Tezgah10</td>
+              <td>Giriş Kasası</td>
+            </tr>
+
+            <tr class="durus-total-row">
+              <td></td>
+              <td></td>
+              <td></td>
+              <td>373</td>
+              <td>TOPLAM</td>
+              <td class="aciklama" colspan="4">
+                CENGİZ COŞKUN – AHMET ERORHAN – ABDULLAH DEMİR – ERCAN DEMİR – SELÇUK ERDEMİR –
+                BİLAL ALTIN – VEDAT ATICI
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 16-00 DETAY (Excel’de 16-00 olarak geçiyor) -->
+    <section class="shift-section open" id="v16-00">
+      <div class="shift-header">
+        <span>Vardiya 16-00 – Duruş Detayları</span>
+        <small>Toplam Duruş: 155 dk</small>
+      </div>
+      <div class="durus-table-wrapper">
+        <table class="durus-table">
+          <thead>
+            <tr>
+              <th style="width:45px;">Vard.</th>
+              <th>Başlama</th>
+              <th>Bitiş</th>
+              <th>Süre</th>
+              <th>Kısım</th>
+              <th class="aciklama">AÇIKLAMALAR</th>
+              <th>Hat</th>
+              <th>Yer</th>
+              <th>Ekipman</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>16-00</td>
+              <td>16:05</td>
+              <td>16:15</td>
+              <td>10</td>
+              <td>Proses</td>
+              <td class="aciklama">Hadde 10. ve giriş kasası kontrol edildi, mastar yapılıp ölçüsüne bakıldı.</td>
+              <td>Kangal</td>
+              <td>Tezgah 10</td>
+              <td>Giriş Kasası</td>
+            </tr>
+            <tr>
+              <td>16-00</td>
+              <td>17:35</td>
+              <td>18:05</td>
+              <td>30</td>
+              <td>Proses</td>
+              <td class="aciklama">Kalite malzeme üretimi öncesi TMB 34 giriş kasası değişti.</td>
+              <td>Kangal</td>
+              <td>TMB2</td>
+              <td>Kasa</td>
+            </tr>
+            <tr>
+              <td>16-00</td>
+              <td>18:05</td>
+              <td>18:25</td>
+              <td>20</td>
+              <td>Üretim Planlama</td>
+              <td class="aciklama">C10C-04 kalte değişimi.</td>
+              <td>Kangal</td>
+              <td>Kalite değişimi</td>
+              <td>Malzeme kontrolü</td>
+            </tr>
+            <tr>
+              <td>16-00</td>
+              <td>21:15</td>
+              <td>22:10</td>
+              <td>55</td>
+              <td>Kalibrasyon ve Yedek Hazırlama</td>
+              <td class="aciklama">2 adet mil alındı, devirmede malzeme kontrolü yapıldı.</td>
+              <td>Kangal</td>
+              <td>TMB2</td>
+              <td>---</td>
+            </tr>
+            <tr>
+              <td>16-00</td>
+              <td>22:10</td>
+              <td>22:45</td>
+              <td>35</td>
+              <td>Kalibrasyon ve Yedek Hazırlama</td>
+              <td class="aciklama">Kütük kontrolü yapılarak TMB 34 giriş değişti. (108 mlz.)</td>
+              <td>Kangal</td>
+              <td>Kütük kesit değişimi</td>
+              <td>Kütük kesit</td>
+            </tr>
+            <tr>
+              <td>16-00</td>
+              <td>22:45</td>
+              <td>23:30</td>
+              <td>45</td>
+              <td>Üretim Planlama</td>
+              <td class="aciklama">170x21 mm kütüğe geçildi.</td>
+              <td>Kangal</td>
+              <td>Kalite değişimi</td>
+              <td>Kalite değişimi</td>
+            </tr>
+            <tr>
+              <td>16-00</td>
+              <td>23:30</td>
+              <td>23:55</td>
+              <td>25</td>
+              <td>Üretim Planlama</td>
+              <td class="aciklama">200x9 mm kütüğe geçildi.</td>
+              <td>Kangal</td>
+              <td>Kalite değişimi</td>
+              <td>Kalite değişimi</td>
+            </tr>
+
+            <tr class="durus-total-row">
+              <td></td>
+              <td></td>
+              <td></td>
+              <td>155</td>
+              <td>TOPLAM</td>
+              <td class="aciklama" colspan="4">
+                FATİH ÇENGELCİK – SABAHATTİN GÜNEY – İBRAHİM KARA – RECEP EMİRLİK –
+                ŞAKİR SAĞIR – YASİN BAŞDEMİR – BİLAL KORKMAZ – FERDİ ÇAYIR
+              </td>
+            </tr>
+
+            <tr class="daily-total-row">
+              <td></td>
+              <td></td>
+              <td></td>
+              <td>698</td>
+              <td>GÜNLÜK TOPLAM</td>
+              <td class="aciklama" colspan="4">
+                Günlük vardiya toplam duruş süresi ve ilgili ekipler.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    // Özet tablo aç/kapa
+    const summaryBtn = document.getElementById('summaryToggleBtn');
+    const summaryCard = document.getElementById('summaryCard');
+    summaryBtn.addEventListener('click', () => {
+      summaryCard.classList.toggle('open');
+    });
+
+    // Vardiya bölümlerini aç/kapa
+    document.querySelectorAll('.shift-header').forEach(header => {
+      header.addEventListener('click', () => {
+        const section = header.parentElement;
+        section.classList.toggle('open');
+      });
+    });
+  </script>
+</body>
+</html>

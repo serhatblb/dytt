@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Yeniden Etiket Alma Ekranı</title>
+  <link href="style.css" rel="stylesheet" />
+  <style>
+    :root{
+      --k-blue:#1976d2;
+      --k-green:#2e7d32;
+      --k-red:#dc3545;
+      --k-soft:#f5f6f7;
+      --k-border:#e3e6ea;
+      --row-alt:#f9fbfd;
+      --text:#2c3e50;
+    }
+    body{margin:0;background:var(--k-soft);font-family:Arial,Helvetica,sans-serif;color:var(--text)}
+    .content-wrapper{margin-left:250px;padding:20px}
+
+    .breadcrumbs{color:#5b6b7b;font-size:14px;margin-bottom:14px}
+    .breadcrumbs a{color:var(--k-blue);text-decoration:none;font-weight:600}
+    .breadcrumbs span{margin:0 6px}
+
+    .topbar{background:#fff;border:1px solid var(--k-border);border-radius:12px;
+      padding:14px 16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+      box-shadow:0 2px 8px rgba(0,0,0,.05);margin-bottom:20px}
+    .title{font-size:18px;font-weight:700;color:var(--text);margin-right:auto;display:flex;align-items:center;gap:8px}
+    .dot{width:10px;height:10px;border-radius:50%;background:var(--k-blue)}
+    .toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .iinput{min-width:240px;padding:8px 10px;border:1px solid var(--k-border);border-radius:8px;background:#fff;font-size:14px}
+    .btn{border:0;border-radius:8px;padding:6px 12px;font-size:13px;cursor:pointer;transition:.2s}
+    .btn:hover{opacity:.92}
+    .btn-green{background:#1ba94c;color:#fff}
+    .btn-dark{background:#2f3947;color:#fff}
+
+    .table-card{background:#fff;border:1px solid var(--k-border);border-radius:12px;
+      padding:12px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+    .table-wrap{overflow:auto;border-radius:8px}
+    table{width:100%;border-collapse:collapse}
+    th,td{border-bottom:1px solid var(--k-border);padding:12px 10px;text-align:center;white-space:nowrap}
+    thead th{background:#f8f9fb;text-transform:uppercase;font-size:12px;letter-spacing:.02em;font-weight:700}
+    tbody tr:nth-child(even){background:var(--row-alt)}
+    tbody tr:hover{background:#eef5ff;cursor:pointer}
+    .ok-chip{font-size:18px}
+    tr.selected{background:#dbeafe !important}
+  </style>
+</head>
+<body>
+  <aside id="sidebar">
+    <div id="sidebar-container"></div>
+    <script>
+      fetch("sidebar.html").then(r=>r.text()).then(html=>{document.getElementById("sidebar-container").innerHTML=html});
+    </script>
+  </aside>
+
+  <div class="content-wrapper">
+    <header class="header">
+      <div class="breadcrumbs">
+        <a href="izleme-ekrani.html">Ana Sayfa</a> <span>&gt;</span>
+        <span>Yeniden Etiket Alma Ekranı</span>
+      </div>
+    </header>
+
+    <div class="topbar">
+      <div class="title"><span class="dot"></span> Yeniden Etiket Alma Ekranı </div>
+      <div class="toolbar">
+        <input class="iinput" id="searchCast" placeholder="İş emri numarası giriniz" />
+        <button class="btn btn-green" onclick="filterByCast()">Dökümü Getir</button>
+        <div class="pill">📅 <span id="shiftText">23 Eyl 2025 - 02-ÖğleVardiya</span></div>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <!-- Buton üstte solda -->
+      <div style="margin-bottom:12px; text-align:left;">
+        <button id="etiketBtnTop" class="btn btn-dark" style="display:none;" onclick="yenidenEtiket()">🏷️ Yeniden Etiket Bas</button>
+      </div>
+
+      <div class="table-wrap">
+        <table id="pkgTable">
+          <thead>
+            <tr>
+              <th>Etiket Durumu</th>
+              <th>Döküm No</th>
+              <th>İş Emri No</th>
+              <th>Paket Tipi</th>
+              <th>Kayıt Tarihi</th>
+              <th>Paket Ağırlığı</th>
+              <th>Teyit Saati</th>
+              <th>Paket ID</th>
+              <th>Çapı</th>
+              <th>Ürün Kalitesi</th>
+              <th>Boyu</th>
+              <th>Sıra No</th>
+              <th>Ekleyen Kullanıcı</th>
+            </tr>
+          </thead>
+          <tbody id="pkgBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const data = [
+      {cast:'2525282', order:'500000001593', type:'Standart', date:'23/09/2025', weight:1718, confirm:'07:45:08', pid:'25N1727607', dia:16, grade:'B420C_01', length:12000, seq:'1067590', user:'PCO_USER'},
+      {cast:'2525282', order:'500000001593', type:'Standart', date:'23/09/2025', weight:1720, confirm:'08:10:17', pid:'25N1727608', dia:16, grade:'B420C_01', length:12000, seq:'1067591', user:'PCO_USER'},
+      {cast:'2525282', order:'500000001593', type:'Standart', date:'23/09/2025', weight:1814, confirm:'07:43:56', pid:'25N1727606', dia:16, grade:'B420C_01', length:12000, seq:'1067589', user:'PCO_USER'}
+    ];
+
+    const pkgBody = document.getElementById('pkgBody');
+    const etiketBtnTop = document.getElementById('etiketBtnTop');
+    let selectedRows = [];
+
+    function render(rows){
+      pkgBody.innerHTML = rows.map((r,i)=>{
+        return `
+        <tr onclick="toggleSelect(${i}, this)">
+          <td><span class="ok-chip" title="Etiket Basıldı">🏷️</span></td>
+          <td><a class="link" href="#">${r.cast}</a></td>
+          <td class="muted">${r.order}</td>
+          <td>${r.type}</td>
+          <td>${r.date}</td>
+          <td>${r.weight.toLocaleString('tr-TR')}</td>
+          <td>${r.confirm}</td>
+          <td>${r.pid}</td>
+          <td>${r.dia}</td>
+          <td>${r.grade}</td>
+          <td>${r.length}</td>
+          <td>${r.seq}</td>
+          <td>${r.user}</td>
+        </tr>`;
+      }).join('');
+    }
+    render(data);
+
+    function toggleSelect(index, row){
+      row.classList.toggle("selected");
+      if(selectedRows.includes(index)){
+        selectedRows = selectedRows.filter(i=>i!==index);
+      } else {
+        selectedRows.push(index);
+      }
+      etiketBtnTop.style.display = selectedRows.length > 0 ? "inline-block" : "none";
+    }
+
+    function yenidenEtiket(){
+      alert("Seçili paket(ler) için etiket yeniden basıldı!");
+      selectedRows = [];
+      document.querySelectorAll("tr.selected").forEach(tr=>tr.classList.remove("selected"));
+      etiketBtnTop.style.display = "none";
+    }
+
+    function filterByCast(){
+      const q = document.getElementById('searchCast').value.trim();
+      if(!q){render(data);return;}
+      render(data.filter(r=>r.cast.includes(q)));
+    }
+  </script>
+</body>
+</html>

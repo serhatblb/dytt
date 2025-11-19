@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>ÇKH KRD Takip Ekranı</title>
+    <link href="sidebar.css" rel="stylesheet" />
+    <style>
+        :root{
+            --bg:#f5f7fa;
+            --card:#fff;
+            --text:#2c3e50;
+            --muted:#6b7a8c;
+            --border:#e2e8f0;
+            --primary:#2c5f7e;
+            --primary-light:#4a8bb3;
+            --success:#38a169;
+            --filter-bg-light: #f7f9fb;
+            --filter-border-focus: #4a8bb3;
+        }
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body{
+            background:var(--bg);
+            color:var(--text);
+            font-family:Inter,'Segoe UI',Arial,Helvetica,sans-serif;
+            font-size:14px;
+            padding:20px;
+        }
+
+        .container{
+            max-width:1800px;
+            margin:0 auto;
+            margin-left: 240px;
+        }
+
+        .header-card{
+            background:linear-gradient(135deg, #6887a5 0%, #e1e4e5 100%);
+            color:white;
+            border-radius:12px;
+            padding:20px 32px;
+            margin-bottom:24px;
+            box-shadow:0 2px 8px rgba(44,95,126,0.15);
+            display:flex;
+            align-items:center;
+            gap:16px;
+        }
+
+        .header-card svg{
+            width:36px;
+            height:36px;
+            opacity:0.95;
+        }
+
+        .header-card h1{
+            font-size:24px;
+            font-weight:600;
+            margin:0;
+            letter-spacing:0.5px;
+        }
+
+        /* FİLTRE BÖLÜMÜ */
+        .filter-card{
+            background:white;
+            border-radius:10px;
+            padding:28px 32px;
+            margin-bottom:24px;
+            box-shadow:0 2px 6px rgba(0,0,0,0.08);
+            border:1px solid var(--border);
+        }
+
+        .filter-title{
+            font-size:16px;
+            font-weight:600;
+            color:var(--text);
+            margin-bottom:20px;
+            padding-bottom:12px;
+            border-bottom:2px solid var(--border);
+            display:flex;
+            align-items:center;
+            gap:10px;
+        }
+
+        .filter-grid{
+            display:grid;
+            grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));
+            gap:20px;
+            align-items:end;
+            margin-bottom:20px;
+        }
+
+        .filter-item{
+            display:flex;
+            flex-direction:column;
+            gap:8px;
+        }
+
+        .filter-item label{
+            font-weight:500;
+            color:var(--text);
+            font-size:13px;
+            margin-bottom:2px;
+        }
+
+        .filter-item input,
+        .filter-item select{
+            padding:11px 14px;
+            border:1px solid #cbd5e0;
+            border-radius:6px;
+            font-size:14px;
+            transition:all 0.2s;
+            background:var(--filter-bg-light);
+            color:var(--text);
+            height:44px;
+        }
+
+        .filter-item input:focus,
+        .filter-item select:focus{
+            outline:none;
+            border-color:var(--filter-border-focus);
+            box-shadow:0 0 0 3px rgba(74,139,179,0.15);
+            background:white;
+        }
+
+        .filter-actions{
+            display:flex;
+            gap:12px;
+            justify-content:flex-end;
+        }
+
+        .btn{
+            padding:11px 28px;
+            border:none;
+            border-radius:6px;
+            font-size:14px;
+            font-weight:600;
+            cursor:pointer;
+            transition:all 0.2s;
+            height:44px;
+            display:inline-flex;
+            align-items:center;
+            gap:8px;
+        }
+
+        .btn-primary{
+            background:#3d7193;
+            color:white;
+        }
+
+        .btn-primary:hover{
+            background:#2c5f7e;
+            transform:translateY(-1px);
+            box-shadow:0 3px 12px rgba(44,95,126,0.3);
+        }
+
+        .btn-secondary{
+            background:#e2e8f0;
+            color:var(--text);
+        }
+
+        .btn-secondary:hover{
+            background:#cbd5e0;
+            transform:translateY(-1px);
+        }
+
+        .btn-success{
+            background:#38a169;
+            color:white;
+        }
+
+        .btn-success:hover{
+            background:#2f855a;
+            transform:translateY(-1px);
+            box-shadow:0 3px 12px rgba(56,161,105,0.3);
+        }
+
+        /* TABLO BÖLÜMÜ */
+        .table-card{
+            background:white;
+            border-radius:10px;
+            padding:24px;
+            box-shadow:0 2px 6px rgba(0,0,0,0.08);
+            border:1px solid var(--border);
+        }
+
+        .table-header{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:20px;
+            padding-bottom:16px;
+            border-bottom:2px solid var(--border);
+        }
+
+        .table-title{
+            font-size:18px;
+            font-weight:600;
+            color:var(--text);
+            display:flex;
+            align-items:center;
+            gap:10px;
+        }
+
+        .record-count{
+            background:#e6f4ea;
+            color:#2f855a;
+            padding:6px 16px;
+            border-radius:20px;
+            font-size:13px;
+            font-weight:600;
+        }
+
+        .table-wrapper{
+            overflow-x:auto;
+            border-radius:8px;
+            border:1px solid var(--border);
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+            background:white;
+            font-size:12px;
+        }
+
+        thead{
+            background:#2c5f7e;
+            color:white;
+            position:sticky;
+            top:0;
+            z-index:10;
+        }
+
+        th{
+            padding:12px 10px;
+            text-align:center;
+            font-weight:600;
+            border:1px solid #1a3a52;
+            white-space:nowrap;
+            font-size:11px;
+            letter-spacing:0.3px;
+        }
+
+        tbody tr{
+            border-bottom:1px solid var(--border);
+            transition:background 0.15s;
+        }
+
+        tbody tr:hover{
+            background:#f7fafc;
+        }
+
+        tbody tr:nth-child(even){
+            background:#fafbfc;
+        }
+
+        tbody tr:nth-child(even):hover{
+            background:#f0f4f8;
+        }
+
+        td{
+            padding:10px;
+            text-align:center;
+            border:1px solid #e8ecf1;
+            color:#4a5568;
+            white-space:nowrap;
+            font-size:12px;
+        }
+
+        td:first-child{
+            font-weight:500;
+        }
+
+        .status-ok{
+            color:#38a169;
+            font-weight:600;
+        }
+
+        .status-warning{
+            color:#ed8936;
+            font-weight:600;
+        }
+
+        .highlight-row{
+            background:#e6f4ea !important;
+        }
+
+        .export-buttons{
+            display:flex;
+            gap:10px;
+        }
+
+        .btn-export{
+            padding:8px 20px;
+            border:none;
+            border-radius:6px;
+            font-size:13px;
+            font-weight:500;
+            cursor:pointer;
+            transition:all 0.2s;
+            display:inline-flex;
+            align-items:center;
+            gap:6px;
+        }
+
+        .btn-excel{
+            background:#217346;
+            color:white;
+        }
+
+        .btn-excel:hover{
+            background:#1a5c37;
+            transform:translateY(-1px);
+            box-shadow:0 2px 8px rgba(33,115,70,0.3);
+        }
+
+        .btn-print{
+            background:#5a67d8;
+            color:white;
+        }
+
+        .btn-print:hover{
+            background:#4c51bf;
+            transform:translateY(-1px);
+            box-shadow:0 2px 8px rgba(90,103,216,0.3);
+        }
+
+        /* RESPONSIVE */
+        @media print{
+            body{background:white;padding:0}
+            .filter-card,.export-buttons{display:none}
+        }
+
+        @media(max-width:768px){
+            .filter-grid{
+                grid-template-columns:1fr;
+            }
+            .table-header{
+                flex-direction:column;
+                align-items:flex-start;
+                gap:12px;
+            }
+            .export-buttons{
+                width:100%;
+            }
+            .btn-export{
+                flex:1;
+            }
+        }
+
+        /* LOADING SPINNER */
+        .spinner{
+            border:3px solid #f3f3f3;
+            border-top:3px solid #3d7193;
+            border-radius:50%;
+            width:20px;
+            height:20px;
+            animation:spin 1s linear infinite;
+        }
+
+        @keyframes spin{
+            0%{transform:rotate(0deg)}
+            100%{transform:rotate(360deg)}
+        }
+        .menuye-don-btn {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    margin-right: 20px;
+    gap: 8px;
+    background: linear-gradient(135deg, #004080, #0078d7);
+    color: #fff;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.menuye-don-btn:hover {
+    background: linear-gradient(135deg, #0078d7, #00b894);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+}
+
+.arrow-icon {
+    font-size: 18px;
+}
+    </style>
+</head>
+<body>
+     <!-- Sidebar -->
+  <aside id="sidebar">
+    <div id="sidebar-container"></div>
+    <script>
+      fetch("sidebar.html")
+        .then(r=>r.text())
+        .then(html=>{document.getElementById("sidebar-container").innerHTML=html});
+    </script>
+  </aside>
+<div class="container">
+    <!-- HEADER -->
+    <div class="header-card">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z" fill="currentColor"/>
+        </svg>
+        <h1>ÇKH KRD TAKİP EKRANI</h1>
+        <a href="5-0-kalite-kontrol-ana-ekran.html" class="menuye-don-btn">
+        <span class="arrow-icon">⬅</span> Menüye Dön
+    </a>
+    </div>
+
+    <!-- FİLTRE KARTI -->
+    <div class="filter-card">
+        <div class="filter-title">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z" fill="currentColor"/>
+            </svg>
+            Filtreleme Kriterleri
+        </div>
+
+        <div class="filter-grid">
+            <div class="filter-item">
+                <label>Başlangıç Tarihi</label>
+                <input type="date" id="startDate" value="2025-01-01">
+            </div>
+
+            <div class="filter-item">
+                <label>Bitiş Tarihi</label>
+                <input type="date" id="endDate" value="2025-01-08">
+            </div>
+
+            <div class="filter-item">
+                <label>Döküm No</label>
+                <input type="text" id="dokumNo" placeholder="Döküm No giriniz">
+            </div>
+
+            <div class="filter-item">
+                <label>KRD No</label>
+                <input type="text" id="krdNo" placeholder="KRD No giriniz">
+            </div>
+
+            <div class="filter-item">
+                <label>Ürün ID</label>
+                <input type="text" id="urunId" placeholder="Ürün ID giriniz">
+            </div>
+        </div>
+
+        <div class="filter-actions">
+            <button class="btn btn-secondary" onclick="clearFilters()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="currentColor"/>
+                </svg>
+                Filtreleri Temizle
+            </button>
+            <button class="btn btn-primary" onclick="filterData()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill="currentColor"/>
+                </svg>
+                Filtrele
+            </button>
+        </div>
+    </div>
+
+    <!-- TABLO KARTI -->
+    <div class="table-card">
+        <div class="table-header">
+            <div style="display:flex;align-items:center;gap:16px">
+                <div class="table-title">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" fill="currentColor"/>
+                    </svg>
+                    KRD Kayıtları
+                </div>
+                <span class="record-count" id="recordCount">13 Kayıt</span>
+            </div>
+
+            <div class="export-buttons">
+                <button class="btn-export btn-excel" onclick="exportToExcel()">
+                    📊 Excel'e Aktar
+                </button>
+                <button class="btn-export btn-print" onclick="sendEmail()">
+                    📧 E-MAİL GÖNDER
+                </button>
+            </div>
+        </div>
+
+        <div class="table-wrapper">
+            <table id="krdTable">
+                <thead>
+                <tr>
+                    <th>TARİH</th>
+                    <th>EBAT</th>
+                    <th>KALİTE</th>
+                    <th>KRD NO</th>
+                    <th>M.KODU</th>
+                    <th>DÖKÜM NO</th>
+                    <th>PARTİ NO</th>
+                    <th>ÜRÜN ID</th>
+                    <th>FİZİK KABUL<br>DURUMU</th>
+                    <th>İLİŞKİLENDİRİLME<br>DURUMU</th>
+                    <th>SONUÇ GİRME<br>DURUMU</th>
+                    <th>SONUÇ<br>KOPYALAMA</th>
+                </tr>
+                </thead>
+                <tbody id="tableBody">
+                <tr>
+                    <td>1.01.2025</td>
+                    <td>6 MM</td>
+                    <td>1008_00</td>
+                    <td>KRD100570744</td>
+                    <td>80000667</td>
+                    <td>2417452</td>
+                    <td>0002463198</td>
+                    <td>241223384</td>
+                    <td class="status-ok">OK</td>
+                    <td class="status-ok">OK</td>
+                    <td class="status-ok">OK</td>
+                    <td class="status-ok">OK</td>
+                </tr>
+                <tr>
+                    <td>1.01.2025</td>
+                    <td>6 MM</td>
+                    <td>1008_00</td>
+                    <td>KRD100570773</td>
+                    <td>80000667</td>
+                    <td>2417453</td>
+                    <td>0002463380</td>
+                    <td>251223435</td>
+                    <td class="status-ok">OK</td>
+                    <td class="status-ok">OK</td>
+                    <td class="status-ok">OK</td>
+                    <td class="status-ok">OK</td>
+                </tr>
+                <tr>
+                    <td>1.01.2025</td>
+                    <td>6 MM</td>
+                    <td>1008_00</td>
+                    <td>KRD100570775</td>
+                    <td>80000667</td>
+                    <td>2417454</td>
+                    <td>0002463525</td>
+                    <td>251223491</td>
+                    <td class="status-ok">OK</td>
+                    <td class="status-ok">OK</td>
+                    <td class="status-ok">OK</td>
+                    <td class="status-ok">OK</td>
+                </tr>
+                <tr>
+                    <td>1.01.2025</td>
+                    <td>6 MM</td>
+                    <td>1008_00</td>
+                    <td>KRD100570783</td>
+                    <td>80000667</td>
+                    <td>2427298</td>
+                    <td>0002463615</td>
+                    <td>251000049</td>
+                    <td class="status-ok">OK</td>
+                    <td class="status-ok">OK</td>
+                    <td class="status-ok">OK</td>
+                    <td class="status-ok">OK</td>
+                </tr>
+                <tr>
+                    <td>1.01.2025</td>
+                    <td>6 MM</td>
+                    <td>1008_00</td>
+                    <td>KRD100570784</td>
+                    <td>80000667</td>
+                    <td>2417455</td>
+                    <td>0002463763</td>
+                    <td>251000106</td>
+                    <td class="status-ok">OK</td>
+                    <td class="status-ok">OK</td>
+                    <td class="status-ok">OK</td>
+                    <td class="status-ok">OK</td>
+                </tr>
+                <tr>
+                    <td>1.01.2025</td>
+                    <td>6 MM</td>
+                    <td>1008_00</td>
+                    <td>KRD100570786</td>
+                    <td>80000667</td>
+                    <td>2437499</td>
+                    <td>0002463891</td>
+                    <td>251000159</td>
+                    <td class="status-ok">OK</td>
+                    <td class="status-ok">OK</td>
+                    <td class="status-ok">OK</td>
+                    <td class="status-ok">OK</td>
+                </tr>
+                <tr>
+                    <td>1.01.2025</td>
+                    <td>6 MM</td>
+                    <td>1008_00</td>
+                    <td>KRD100571044</td>
+                    <td>80000667</td>
+                    <td>2427297</td>
+                    <td>0002464017</td>
+                    <td>251000210</td>
+                    <td class="status-ok">OK</td>
+                    <td class="status-ok">OK</td>
+                    <td class="status-ok">OK</td>
+                    <td class="status-ok">OK</td>
+                </tr>
+                <tr>
+                    <td>1.01.2025</td>
+                    <td>6 MM</td>
+                    <td>1008_00</td>
+                    <td>KRD100571082</td>
+                    <td>80000667</td>
+                    <td>2437473</td>
+                    <td>0002464115</td>
+                    <td>251000263</td>
+                    <td class="status-ok">OK</td>
+                    <td class="status-ok">OK</td>
+                    <td class="status-ok">OK</td>
+                    <td class="status-ok">OK</td>
+                </tr>
+                <tr>
+                    <td>1.01.2025</td>
+                    <td>6 MM</td>
+                    <td>1008_00</td>
+                    <td>KRD100571083</td>
+                    <td>80000667</td>
+                    <td>2417428</td>
+                    <td>0002464238</td>
+                    <td>251000317</td>
+                    <td class="status-ok">OK</td>
+                    <td class="status-ok">OK</td>
+                    <td class="status-ok">OK</td>
+                    <td class="status-ok">OK</td>
+                </tr>
+                <tr>
+                    <td>1.01.2025</td>
+                    <td>6 MM</td>
+                    <td>1008_00</td>
+                    <td>KRD100570985</td>
+                    <td>80000667</td>
+                    <td>2437472</td>
+                    <td>0002464356</td>
+                    <td>251000368</td>
+                    <td class="status-ok">OK</td>
+                    <td class="status-ok">OK</td>
+                    <td class="status-ok">OK</td>
+                    <td class="status-ok">OK</td>
+                </tr>
+                <tr>
+                    <td>1.01.2025</td>
+                    <td>6 MM</td>
+                    <td>1008_00</td>
+                    <td>KRD100570987</td>
+                    <td>80000667</td>
+                    <td>2520007</td>
+                    <td>0002464518</td>
+                    <td>251000421</td>
+                    <td class="status-ok">OK</td>
+                    <td class="status-ok">OK</td>
+                    <td class="status-ok">OK</td>
+                    <td class="status-ok">OK</td>
+                </tr>
+                <tr>
+                    <td>2.01.2025</td>
+                    <td>6 MM</td>
+                    <td>1008_00</td>
+                    <td>KRD100571340</td>
+                    <td>80000667</td>
+                    <td>2530011</td>
+                    <td>0002464691</td>
+                    <td>251000476</td>
+                    <td class="status-ok">OK</td>
+                    <td class="status-ok">OK</td>
+                    <td class="status-ok">OK</td>
+                    <td class="status-ok">OK</td>
+                </tr>
+                <tr>
+                    <td>2.01.2025</td>
+                    <td>6 MM</td>
+                    <td>1008_00</td>
+                    <td>KRD100571323</td>
+                    <td>80000667</td>
+                    <td>2520011</td>
+                    <td>0002464803</td>
+                    <td>251000525</td>
+                    <td class="status-ok">OK</td>
+                    <td class="status-ok">OK</td>
+                    <td class="status-ok">OK</td>
+                    <td class="status-ok">OK</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tüm satırları sakla
+    const allRows = [];
+    const tableBody = document.getElementById('tableBody');
+    const rows = tableBody.getElementsByTagName('tr');
+
+    // İlk yüklemede tüm satırları sakla
+    for(let i = 0; i < rows.length; i++){
+        allRows.push(rows[i].cloneNode(true));
+    }
+
+    function filterData(){
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+        const dokumNo = document.getElementById('dokumNo').value.toUpperCase();
+        const krdNo = document.getElementById('krdNo').value.toUpperCase();
+        const urunId = document.getElementById('urunId').value;
+
+        tableBody.innerHTML = '';
+        let count = 0;
+
+        allRows.forEach(row => {
+            const cells = row.cells;
+            const rowDate = cells[0].textContent;
+            const rowKrdNo = cells[3].textContent;
+            const rowDokumNo = cells[5].textContent;
+            const rowUrunId = cells[7].textContent;
+
+            // Tarih kontrolü (basit format için)
+            let dateMatch = true;
+            if(startDate || endDate){
+                const [day, month, year] = rowDate.split('.');
+                const rowDateObj = new Date(`${year}-${month.padStart(2,'0')}-${day.padStart(2,'0')}`);
+                if(startDate && new Date(startDate) > rowDateObj) dateMatch = false;
+                if(endDate && new Date(endDate) < rowDateObj) dateMatch = false;
+            }
+
+            const dokumMatch = !dokumNo || rowDokumNo.includes(dokumNo);
+            const krdMatch = !krdNo || rowKrdNo.includes(krdNo);
+            const urunIdMatch = !urunId || rowUrunId.includes(urunId);
+
+            if(dateMatch && dokumMatch && krdMatch && urunIdMatch){
+                tableBody.appendChild(row.cloneNode(true));
+                count++;
+            }
+        });
+
+        document.getElementById('recordCount').textContent = count + ' Kayıt';
+    }
+
+    function clearFilters(){
+        document.getElementById('startDate').value = '2025-01-01';
+        document.getElementById('endDate').value = '2025-01-08';
+        document.getElementById('dokumNo').value = '';
+        document.getElementById('krdNo').value = '';
+        document.getElementById('urunId').value = '';
+
+        tableBody.innerHTML = '';
+        allRows.forEach(row => {
+            tableBody.appendChild(row.cloneNode(true));
+        });
+
+        document.getElementById('recordCount').textContent = allRows.length + ' Kayıt';
+    }
+
+    function exportToExcel(){
+        alert('Excel dosyası hazırlanıyor...\nToplam ' + tableBody.getElementsByTagName('tr').length + ' kayıt aktarılacak.');
+    }
+
+    function sendEmail(){
+        alert('E-mail gönderme formu açılıyor...');
+    }
+
+    // Sayfa yüklendiğinde kayıt sayısını güncelle
+    document.getElementById('recordCount').textContent = allRows.length + ' Kayıt';
+</script>
+</body>
+</html>

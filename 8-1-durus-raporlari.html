@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Duruş Rapor Tablosu</title>
+  <link rel="stylesheet" href="sidebar.css">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: #f6f7fb;
+      color: #2c3e50;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      padding: 24px;
+    }
+
+    .page {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #1a2332, #2c3e50);
+      color: #fff;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,.15);
+    }
+
+    .header h1 {
+      font-size: 24px;
+      margin-bottom: 6px;
+    }
+
+    .header small {
+      color: #9fb3c8;
+      font-size: 14px;
+    }
+
+    .filters {
+      background: white;
+      border: 1px solid #e6e9ef;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .filter-group label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #6b7a8c;
+    }
+
+    .filter-group input,
+    .filter-group select {
+      padding: 10px 12px;
+      border: 1px solid #e6e9ef;
+      border-radius: 8px;
+      font-size: 14px;
+      background: white;
+      color: #2c3e50;
+    }
+
+    .filter-group input:focus,
+    .filter-group select:focus {
+      outline: none;
+      border-color: #1976d2;
+    }
+
+    .filter-actions {
+      display: flex;
+      gap: 10px;
+      align-items: end;
+      grid-column: span 2;
+    }
+
+    .btn {
+      padding: 10px 16px;
+      border: 1px solid #e6e9ef;
+      border-radius: 8px;
+      background: white;
+      color: #2c3e50;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn:hover {
+      background: #f6f7fb;
+    }
+
+    .btn-primary {
+      background: #1976d2;
+      color: white;
+      border-color: #1976d2;
+    }
+
+    .btn-primary:hover {
+      background: #125a9c;
+    }
+
+    .btn-danger {
+      background: #e74c3c;
+      color: white;
+      border-color: #e74c3c;
+    }
+
+    .btn-danger:hover {
+      background: #c0392b;
+    }
+
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .kpi {
+      background: white;
+      border: 1px solid #e6e9ef;
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .kpi h3 {
+      font-size: 13px;
+      color: #6b7a8c;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .kpi .value {
+      font-size: 28px;
+      font-weight: 700;
+      color: #1976d2;
+      margin-bottom: 4px;
+    }
+
+    .kpi small {
+      color: #6b7a8c;
+      font-size: 12px;
+    }
+
+    .table-container {
+      background: white;
+      border: 1px solid #e6e9ef;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .table-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      border-bottom: 1px solid #e6e9ef;
+      background: #fafbff;
+    }
+
+    .legend {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: #6b7a8c;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .table-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+      max-height: 600px;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .table thead th {
+      background: #f8f9fb;
+      color: #475569;
+      font-size: 13px;
+      font-weight: 600;
+      text-align: left;
+      padding: 12px 16px;
+      border-bottom: 2px solid #e6e9ef;
+      position: sticky;
+      top: 0;
+      white-space: nowrap;
+    }
+
+    .table tbody td {
+      padding: 12px 16px;
+      border-bottom: 1px solid #e6e9ef;
+      font-size: 14px;
+    }
+
+    .table tfoot td {
+      padding: 14px 16px;
+      font-weight: 700;
+      background: #f8fafc;
+      border-top: 2px solid #e6e9ef;
+    }
+
+    .group-row {
+      background: #eef2ff;
+      color: #334155;
+      font-weight: 600;
+    }
+
+    .group-row td {
+      padding: 10px 16px;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .pill.planned {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .pill.unplanned {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .nowrap {
+      white-space: nowrap;
+    }
+
+    @media (max-width: 1024px) {
+      .filters {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .filters {
+        grid-template-columns: 1fr;
+      }
+      
+      .kpis {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <aside id="sidebar">
+        <div id="sidebar-container"></div>
+        <script>
+            fetch("sidebar.html").then(r => r.text()).then(t => document.getElementById("sidebar-container").innerHTML = t);
+        </script>
+    </aside>
+  <div class="page" style="margin-left: 240px;">
+    <div class="header">
+      <h1>Duruş Raporları</h1>
+      
+    </div>
+
+    <div class="filters">
+      <div class="filter-group">
+        <label>Başlangıç Tarihi</label>
+        <input type="date" id="startDate" />
+      </div>
+
+      <div class="filter-group">
+        <label>Bitiş Tarihi</label>
+        <input type="date" id="endDate" />
+      </div>
+
+      <div class="filter-group">
+        <label>Hat / Bölge</label>
+        <select id="hat">
+          <option value="">Hepsi</option>
+          <option>Ray Profil Haddehanesi</option>
+          <option>Çelik Haddehanesi</option>
+          <option>Sürekli Döküm</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Kaynak</label>
+        <select id="kaynak">
+          <option value="">Hepsi</option>
+          <option>Operatör Girişi</option>
+          <option>Seviye 2 Entegrasyonu</option>
+          <option>ERP</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Duruş Tipi</label>
+        <select id="durusTipi">
+          <option value="">Hepsi</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Duruş Nedeni</label>
+        <select id="durusNedeni">
+          <option value="">Hepsi</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Planlı / Plansız</label>
+        <select id="planlilik">
+          <option value="">Hepsi</option>
+          <option value="PL">Planlı</option>
+          <option value="PS">Plansız</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Vardiya</label>
+        <select id="vardiya">
+          <option value="">Hepsi</option>
+          <option>00:00-08:00</option>
+          <option>08:00-16:00</option>
+          <option>16:00-00:00</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label>Min. Süre (dk)</label>
+        <input type="number" id="minSure" placeholder="0" />
+      </div>
+
+      <div class="filter-group">
+        <label>Maks. Süre (dk)</label>
+        <input type="number" id="maxSure" placeholder="" />
+      </div>
+
+      <div class="filter-group">
+        <label>Serbest Arama</label>
+        <input type="text" id="q" placeholder="Açıklama, kayıt no, operatör..." />
+      </div>
+
+      <div class="filter-actions">
+        <button class="btn" id="clearBtn">Temizle</button>
+        <button class="btn btn-primary" id="applyBtn">Uygula</button>
+      </div>
+    </div>
+
+    <div class="kpis">
+      <div class="kpi">
+        <h3>Toplam Duruş (dk)</h3>
+        <div class="value" id="kpiTotal">0</div>
+        <small>Filtreye göre</small>
+      </div>
+      <div class="kpi">
+        <h3>Plansız Oran</h3>
+        <div class="value" id="kpiUnplanned">0%</div>
+        <small>Plansız / Toplam</small>
+      </div>
+      <div class="kpi">
+        <h3>En Sık Neden</h3>
+        <div class="value" id="kpiTopReason">-</div>
+        <small>Görünür aralık</small>
+      </div>
+      <div class="kpi">
+        <h3>En Uzun Kayıt</h3>
+        <div class="value" id="kpiMax">0 dk</div>
+        <small>Tek kayıt</small>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <div class="table-toolbar">
+        <div class="legend">
+          <div class="legend-item">
+            <div class="dot" style="background:#10b981"></div>
+            <span>Planlı</span>
+          </div>
+          <div class="legend-item">
+            <div class="dot" style="background:#ef4444"></div>
+            <span>Plansız</span>
+          </div>
+        </div>
+        <div class="table-actions">
+          <button class="btn" id="csvBtn">Excel</button>
+          <button class="btn" id="printBtn">Yazdır</button>
+        </div>
+      </div>
+
+      <div class="table-wrapper">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Tarih</th>
+              <th>Vardiya</th>
+              <th>Hat / Bölge</th>
+              <th>Kaynak</th>
+              <th>Duruş Tipi</th>
+              <th>Duruş Nedeni</th>
+              <th>Başlangıç</th>
+              <th>Bitiş</th>
+              <th class="nowrap">Süre (dk)</th>
+              <th>Planlılık</th>
+              <th>OEE Etkisi</th>
+              <th>Operatör</th>
+              <th>Kayıt No</th>
+              <th>Açıklama</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+          <tfoot>
+            <tr>
+              <td colspan="8">Toplam</td>
+              <td id="footTotal">0</td>
+              <td colspan="5"></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const durusVerileri = {
+      "Planlı Duruş": ["Yeni Ürün Geliştirme","Yönetim Kararı ile Duruş"],
+      "Planlı Bakım Duruşu": ["Planlı Elektrik Bakım","Planlı Mekanik Bakım","Planlı Otonom Bakım"],
+      "Proses Gereği Duruşlar": ["Kesit / Ebat Değişimi","Matkap Değişimi","Merdane değişimi","Ölçü ayarı","Paso Değişimi","Tandiş Değişimi","Testere değişimi","Walking beam boşluk verilmesi","Yolluk ve Kasa Değişimi"],
+      "İşletme Duruşu": ["İşletme Ekibi Kaynaklı Duruş","Merdane Kırılması"],
+      "Elektrik - Otomasyon Duruşu": ["Elektrik Arıza"],
+      "Mekanik Duruş": ["Mekanik Arıza"],
+      "Yardımcı Tesisler-İşletmeler Nedeniyle Duruş": ["HAT Gaz Kesılme","Elektrik Kesintisi","Kalite","Klima","Nakliyat","Planlama","Refrakter","Akıllı Çözümler","Su Borusu Patlaması","Su Kesintisi","Torpido Deray","Vinç Bakım","Operasyonel Teknolojiler"],
+      "Önceki Tesis Nedeniyle Duruş": ["Çelıkhane Bekleme","Hammadde Bekleme","Katran Kesilmesi","Kok","Yüksek Fırın Gecikmeleri"],
+      "Sonraki Tesis Nedeniyle Duruş": ["Cüruf Potası Gecikmesi","Çelıkhane Bekleme","Konverter Refrakter","Pota Fırını Bekleme","SDM Bekleme"]
+    };
+
+    const sample = [
+      {tarih:'2025-11-10', vardiya:'00:00-08:00', hat:'Ray Profil Haddehanesi', kaynak:'Operatör Girişi', tip:'Proses Gereği Duruşlar', neden:'Kesit / Ebat Değişimi', bas:'08:10', bit:'08:45', sure:35, planli:'PL', oee:'Orta', op:'SB', id:'DK-10231', acik:'Kesit geçişi planlıydı.'},
+      {tarih:'2025-11-10', vardiya:'00:00-08:00', hat:'Ray Profil Haddehanesi', kaynak:'Seviye 2 Entegrasyonu', tip:'Elektrik - Otomasyon Duruşu', neden:'Elektrik Arıza', bas:'09:12', bit:'09:47', sure:35, planli:'PS', oee:'Yüksek', op:'ME', id:'DK-10232', acik:'Motor koruma attı.'},
+      {tarih:'2025-11-10', vardiya:'08:00-16:00', hat:'Çelik Haddehanesi', kaynak:'Operatör Girişi', tip:'Mekanik Duruş', neden:'Mekanik Arıza', bas:'15:05', bit:'15:40', sure:35, planli:'PS', oee:'Yüksek', op:'AK', id:'DK-10240', acik:'Rulman değişimi.'},
+      {tarih:'2025-11-11', vardiya:'16:00-00:00', hat:'Sürekli Döküm', kaynak:'ERP', tip:'Planlı Bakım Duruşu', neden:'Planlı Mekanik Bakım', bas:'00:00', bit:'01:00', sure:60, planli:'PL', oee:'Düşük', op:'ERP', id:'DK-10252', acik:'Yıllık bakım'},
+      {tarih:'2025-11-11', vardiya:'16:00-00:00', hat:'Sürekli Döküm', kaynak:'Seviye 2 Entegrasyonu', tip:'Yardımcı Tesisler-İşletmeler Nedeniyle Duruş', neden:'Elektrik Kesintisi', bas:'02:20', bit:'03:05', sure:45, planli:'PS', oee:'Yüksek', op:'OT', id:'DK-10253', acik:'Şebeke dalgalanması'},
+      {tarih:'2025-11-12', vardiya:'00:00-08:00', hat:'Ray Profil Haddehanesi', kaynak:'Operatör Girişi', tip:'İşletme Duruşu', neden:'İşletme Ekibi Kaynaklı Duruş', bas:'07:20', bit:'07:35', sure:15, planli:'PS', oee:'Orta', op:'SB', id:'DK-10277', acik:'Malzeme hazırlığı gecikti'}
+    ];
+
+    const tipSel = document.getElementById('durusTipi');
+    const nedenSel = document.getElementById('durusNedeni');
+    
+    Object.keys(durusVerileri).forEach(t => {
+      const o = document.createElement('option');
+      o.value = t;
+      o.textContent = t;
+      tipSel.appendChild(o);
+    });
+
+    tipSel.addEventListener('change', () => {
+      const val = tipSel.value;
+      nedenSel.innerHTML = '<option value="">Hepsi</option>';
+      if(!val) return;
+      durusVerileri[val].forEach(n => {
+        const o = document.createElement('option');
+        o.value = n;
+        o.textContent = n;
+        nedenSel.appendChild(o);
+      });
+    });
+
+    let rows = [...sample];
+
+    function applyFilters() {
+      const s = document.getElementById('startDate').value || '';
+      const e = document.getElementById('endDate').value || '';
+      const hat = document.getElementById('hat').value;
+      const kaynak = document.getElementById('kaynak').value;
+      const tip = document.getElementById('durusTipi').value;
+      const neden = document.getElementById('durusNedeni').value;
+      const planlilik = document.getElementById('planlilik').value;
+      const vardiya = document.getElementById('vardiya').value;
+      const min = +(document.getElementById('minSure').value || 0);
+      const max = +(document.getElementById('maxSure').value || Infinity);
+      const q = (document.getElementById('q').value || '').toLowerCase();
+
+      const filtered = rows.filter(r =>
+        (!s || r.tarih >= s) &&
+        (!e || r.tarih <= e) &&
+        (!hat || r.hat === hat) &&
+        (!kaynak || r.kaynak === kaynak) &&
+        (!tip || r.tip === tip) &&
+        (!neden || r.neden === neden) &&
+        (!planlilik || r.planli === planlilik) &&
+        (!vardiya || r.vardiya === vardiya) &&
+        (r.sure >= min && r.sure <= max) &&
+        (q === '' || Object.values(r).join(' ').toLowerCase().includes(q))
+      );
+
+      renderTable(groupByDateHat(filtered));
+      updateKpis(filtered);
+    }
+
+    function clearFilters() {
+      document.querySelectorAll('.filter-group input, .filter-group select').forEach(el => el.value = '');
+      document.getElementById('durusNedeni').innerHTML = '<option value="">Hepsi</option>';
+      applyFilters();
+    }
+
+    function groupByDateHat(arr) {
+      const key = r => `${r.tarih}__${r.hat}`;
+      const map = new Map();
+      arr.forEach(r => {
+        const k = key(r);
+        if(!map.has(k)) map.set(k, []);
+        map.get(k).push(r);
+      });
+      return [...map.entries()].map(([k, list]) => ({
+        k,
+        list,
+        sum: list.reduce((a, b) => a + b.sure, 0)
+      }));
+    }
+
+    function renderTable(groups) {
+      const tb = document.getElementById('tbody');
+      tb.innerHTML = '';
+      let grand = 0;
+
+      groups.sort((a, b) => a.k.localeCompare(b.k)).forEach(g => {
+        grand += g.sum;
+        const [tarih, hat] = g.k.split('__');
+        const trg = document.createElement('tr');
+        trg.className = 'group-row';
+        trg.innerHTML = `<td colspan="14">${tarih} • ${hat} — Toplam: <strong>${g.sum} dk</strong></td>`;
+        tb.appendChild(trg);
+
+        g.list.forEach(r => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>${r.tarih}</td>
+            <td>${r.vardiya}</td>
+            <td>${r.hat}</td>
+            <td>${r.kaynak}</td>
+            <td>${r.tip}</td>
+            <td>${r.neden}</td>
+            <td class="nowrap">${r.bas}</td>
+            <td class="nowrap">${r.bit}</td>
+            <td class="nowrap">${r.sure}</td>
+            <td>${r.planli === 'PL' ? '<span class="pill planned">Planlı</span>' : '<span class="pill unplanned">Plansız</span>'}</td>
+            <td>${r.oee}</td>
+            <td>${r.op}</td>
+            <td class="nowrap">${r.id}</td>
+            <td>${r.acik || ''}</td>`;
+          tb.appendChild(tr);
+        });
+      });
+
+      document.getElementById('footTotal').textContent = grand;
+    }
+
+    function updateKpis(list) {
+      const total = list.reduce((a, b) => a + b.sure, 0);
+      const unp = list.filter(r => r.planli === 'PS').reduce((a, b) => a + b.sure, 0);
+      
+      const topReason = (() => {
+        const c = new Map();
+        list.forEach(r => c.set(r.neden, (c.get(r.neden) || 0) + 1));
+        let top = '-';
+        let max = 0;
+        c.forEach((v, k) => {
+          if(v > max) {
+            max = v;
+            top = k;
+          }
+        });
+        return top;
+      })();
+
+      const maxRec = list.reduce((m, r) => r.sure > m ? r.sure : m, 0);
+
+      document.getElementById('kpiTotal').textContent = total;
+      document.getElementById('kpiUnplanned').textContent = total ? Math.round(unp * 100 / total) + "%" : '0%';
+      document.getElementById('kpiTopReason').textContent = topReason;
+      document.getElementById('kpiMax').textContent = maxRec + " dk";
+    }
+
+    function toCsv(arr) {
+      const headers = ["Tarih","Vardiya","Hat / Bölge","Kaynak","Duruş Tipi","Duruş Nedeni","Başlangıç","Bitiş","Süre (dk)","Planlılık","OEE Etkisi","Operatör","Kayıt No","Açıklama"];
+      const rows = arr.map(r => [r.tarih, r.vardiya, r.hat, r.kaynak, r.tip, r.neden, r.bas, r.bit, r.sure, (r.planli === 'PL' ? 'Planlı' : 'Plansız'), r.oee, r.op, r.id, (r.acik || '')]);
+      const all = [headers, ...rows].map(r => r.map(x => `"${String(x).replaceAll('"', '""')}"`).join(',')).join('\n');
+      const blob = new Blob([all], {type: 'text/csv;charset=utf-8;'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'durus-raporu.csv';
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    function printTable() {
+      window.print();
+    }
+
+    function currentFiltered() {
+      const s = document.getElementById('startDate').value || '';
+      const e = document.getElementById('endDate').value || '';
+      const hat = document.getElementById('hat').value;
+      const kaynak = document.getElementById('kaynak').value;
+      const tip = document.getElementById('durusTipi').value;
+      const neden = document.getElementById('durusNedeni').value;
+      const planlilik = document.getElementById('planlilik').value;
+      const vardiya = document.getElementById('vardiya').value;
+      const min = +(document.getElementById('minSure').value || 0);
+      const max = +(document.getElementById('maxSure').value || Infinity);
+      const q = (document.getElementById('q').value || '').toLowerCase();
+      
+      return rows.filter(r =>
+        (!s || r.tarih >= s) &&
+        (!e || r.tarih <= e) &&
+        (!hat || r.hat === hat) &&
+        (!kaynak || r.kaynak === kaynak) &&
+        (!tip || r.tip === tip) &&
+        (!neden || r.neden === neden) &&
+        (!planlilik || r.planli === planlilik) &&
+        (!vardiya || r.vardiya === vardiya) &&
+        (r.sure >= min && r.sure <= max) &&
+        (q === '' || Object.values(r).join(' ').toLowerCase().includes(q))
+      );
+    }
+
+    document.getElementById('applyBtn').addEventListener('click', applyFilters);
+    document.getElementById('clearBtn').addEventListener('click', clearFilters);
+    document.getElementById('csvBtn').addEventListener('click', () => toCsv(currentFiltered()));
+    document.getElementById('printBtn').addEventListener('click', printTable);
+
+    renderTable(groupByDateHat(rows));
+    updateKpis(rows);
+  </script>
+</body>
+</html>

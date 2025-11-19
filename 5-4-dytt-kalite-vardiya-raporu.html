@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demiryolu Tekeri Vardiya Raporu</title>
+    <link href="sidebar.css" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #506386 0%, #5e7ca5 100%);
+            color: white;
+            padding: 32px 40px;
+            text-align: center;
+            position: relative;
+            border-bottom: 4px solid #dc2626;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        /* Ana Menü Stilleri */
+        .menu-container {
+            padding: 60px 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 500px;
+            gap: 40px;
+        }
+
+        .menu-card {
+            flex: 1;
+            max-width: 450px;
+            background: white;
+            border-radius: 16px;
+            padding: 50px 40px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: 3px solid transparent;
+            text-align: center;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+        }
+
+        .menu-card.ham-teker {
+            border-color: #506386;
+        }
+
+        .menu-card.ham-teker:hover {
+            border-color: #5e7ca5;
+            background: linear-gradient(135deg, #f8f9fb 0%, #ffffff 100%);
+        }
+
+        .menu-card.nihai-teker {
+            border-color: #003d82;
+        }
+
+        .menu-card.nihai-teker:hover {
+            border-color: #0055b8;
+            background: linear-gradient(135deg, #f0f7ff 0%, #ffffff 100%);
+        }
+
+        .menu-icon {
+            font-size: 72px;
+            margin-bottom: 24px;
+            display: block;
+        }
+
+        .menu-title {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #1f2937;
+        }
+
+        .menu-card.ham-teker .menu-title {
+            color: #506386;
+        }
+
+        .menu-card.nihai-teker .menu-title {
+            color: #003d82;
+        }
+
+        .menu-description {
+            font-size: 15px;
+            color: #6b7280;
+            line-height: 1.6;
+        }
+
+        /* Rapor Sayfası Stilleri */
+        .report-page {
+            display: none;
+        }
+
+        .back-button-container {
+            padding: 20px 40px;
+            background: #f9fafb;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .btn-back {
+            background: #6b7280;
+            color: white;
+            padding: 10px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-back:hover {
+            background: #4b5563;
+            transform: translateX(-2px);
+        }
+
+        .filters-section {
+            background: white;
+            padding: 28px 40px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .filters-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .filters-title::before {
+            content: "⚙️";
+            font-size: 20px;
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 18px;
+            margin-bottom: 20px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .filter-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .filter-input,
+        .filter-select {
+            padding: 10px 14px;
+            border: 1.5px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            background: white;
+            color: #111827;
+        }
+
+        .filter-input:focus,
+        .filter-select:focus {
+            outline: none;
+            border-color: #0055b8;
+            box-shadow: 0 0 0 3px rgba(0, 85, 184, 0.1);
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #003d82 0%, #0055b8 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #002f66 0%, #003d82 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 85, 184, 0.3);
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+            transform: translateY(-1px);
+        }
+
+        .btn-excel {
+            background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+            color: white;
+        }
+
+        .btn-excel:hover {
+            background: linear-gradient(135deg, #065f46 0%, #064e3b 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(4, 120, 87, 0.3);
+        }
+
+        .content {
+            padding: 28px 40px;
+            background: white;
+        }
+
+        .action-buttons-top {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+            margin-bottom: 24px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            font-size: 11px;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #455b73 0%, #54729b 100%);
+            color: white;
+        }
+
+        th {
+            padding: 14px 12px;
+            text-align: center;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 10px;
+            letter-spacing: 0.5px;
+            border: 1px solid rgba(255,255,255,0.15);
+            white-space: nowrap;
+        }
+
+        .section-header {
+            background: linear-gradient(135deg, #5c6f8c 0%, #7189b1 100%);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .sub-section-header {
+            background: linear-gradient(135deg, #455b73 0%, #54729b 100%);
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 12px 10px;
+            border: 1px solid #e5e7eb;
+            text-align: center;
+            font-size: 11px;
+            color: #1f2937;
+        }
+
+        tbody tr:nth-child(even) {
+            background: #f9fafb;
+        }
+
+        tbody tr:hover {
+            background: #e0f2fe;
+            transition: background 0.2s ease;
+        }
+
+        .note-section {
+            position: relative;
+            margin-top: 24px;
+            padding: 20px;
+            background: #fef2f2;
+            border-left: 4px solid #dc2626;
+            border-radius: 8px;
+            border: 1px solid #fecaca;
+        }
+
+        .note-label {
+            font-weight: 600;
+            color: #991b1b;
+            margin-bottom: 10px;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .noteArea {
+            width: 100%;
+            min-height: 100px;
+            border: 1.5px solid #fca5a5;
+            border-radius: 8px;
+            padding: 12px;
+            font-family: inherit;
+            font-size: 13px;
+            resize: vertical;
+            transition: all 0.2s ease;
+            background: white;
+            color: #111827;
+        }
+
+        .noteArea:focus {
+            outline: none;
+            border-color: #dc2626;
+            box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+        }
+
+        .save-button-wrapper {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            padding: 12px 32px;
+            font-size: 14px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+        }
+
+        .btn-save:hover {
+            background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(220, 38, 38, 0.35);
+        }
+
+        .btn-save:active {
+            transform: translateY(0px);
+        }
+
+        .save-icon {
+            font-size: 16px;
+        }
+
+        /* Modern Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .container {
+                box-shadow: none;
+            }
+            .filters-section,
+            .action-buttons-top,
+            .save-button-wrapper,
+            .back-button-container {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .header {
+                padding: 24px 20px;
+            }
+
+            .header h1 {
+                font-size: 18px;
+            }
+
+            .menu-container {
+                flex-direction: column;
+                padding: 30px 20px;
+            }
+
+            .filters-section,
+            .content {
+                padding: 20px;
+            }
+
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+
+            table {
+                font-size: 9px;
+            }
+
+            th, td {
+                padding: 8px 5px;
+            }
+
+            .action-buttons-top,
+            .filter-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+  <aside id="sidebar" >
+    <div id="sidebar-container"></div>
+    <script>
+      fetch("sidebar.html")
+        .then(r=>r.text())
+        .then(html=>{document.getElementById("sidebar-container").innerHTML=html});
+    </script>
+  </aside>
+<div class="container" style="margin-left: 250px;">
+    <!-- Header -->
+    <div class="header">
+        <h1 id="mainTitle">DEMİRYOLU TEKERİ ÜRETİM TESİSİ VARDİYA RAPORU</h1>
+    </div>
+
+    <!-- Ana Menü -->
+    <div id="mainMenu" class="menu-container">
+        <div class="menu-card ham-teker" onclick="showReport('hamTeker')">
+            <span class="menu-icon">🔧</span>
+            <h2 class="menu-title">Ham Teker Vardiya Raporu</h2>
+            <p class="menu-description">Ham teker üretim sürecine ait hammadde bilgileri, malzeme kontrol özeti ve vardiya raporları</p>
+        </div>
+
+        <div class="menu-card nihai-teker" onclick="showReport('nihaiTeker')">
+            <span class="menu-icon">✅</span>
+            <h2 class="menu-title">Nihai Teker Vardiya Raporu</h2>
+            <p class="menu-description">Nihai teker üretim sürecine ait CNC işlem bilgileri, kontrol özeti ve vardiya raporları</p>
+        </div>
+    </div>
+
+    <!-- Ham Teker Raporu -->
+    <div id="hamTekerReport" class="report-page">
+        <div class="back-button-container">
+            <button class="btn-back" onclick="showMenu()">
+                <span>←</span> Ana Menüye Dön
+            </button>
+        </div>
+
+        <div class="filters-section">
+            <div class="filters-title">Filtreleme Seçenekleri</div>
+
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label class="filter-label">Başlangıç Tarihi</label>
+                    <input type="date" class="filter-input" id="hamStartDate" value="2025-11-11">
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Bitiş Tarihi</label>
+                    <input type="date" class="filter-input" id="hamEndDate" value="2025-11-11">
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Vardiya</label>
+                    <select class="filter-select" id="hamShiftFilter">
+                        <option value="">Tüm Vardiyalar</option>
+                        <option value="00-08" selected>00-08 (Gece)</option>
+                        <option value="08-16">08-16 (Gündüz)</option>
+                        <option value="16-00">16-00 (Akşam)</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Malzeme Kodu</label>
+                    <select class="filter-select" id="hamMalzemeKodu">
+                        <option value="">Tüm Malzemeler</option>
+                        <option value="MAL001">MAL001</option>
+                        <option value="MAL002">MAL002</option>
+                        <option value="MAL003">MAL003</option>
+                        <option value="MAL004">MAL004</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Döküm Numarası</label>
+                    <select class="filter-select" id="hamDokumNo">
+                        <option value="">Tüm Döküm Numaraları</option>
+                        <option value="2524265">2524265</option>
+                        <option value="2524266">2524266</option>
+                        <option value="2524267">2524267</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Mamul Kalitesi</label>
+                    <select class="filter-select" id="hamProductQuality">
+                        <option value="">Tüm Kaliteler</option>
+                        <option value="ER7">ER7</option>
+                        <option value="ER8">ER8</option>
+                        <option value="ER9">ER9</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Teker Tipi</label>
+                    <select class="filter-select" id="hamTekerTipi">
+                        <option value="">Tüm Tipler</option>
+                        <option value="20 TONLUK">20 TONLUK</option>
+                        <option value="25 TONLUK">25 TONLUK</option>
+                        <option value="LOKOMOTİF">LOKOMOTİF</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="filter-buttons">
+                <button class="btn btn-secondary" onclick="clearFilters('ham')">
+                    <span>🔄</span> Temizle
+                </button>
+                <button class="btn btn-primary" onclick="applyFilters('ham')">
+                    <span>🔍</span> Filtrele
+                </button>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="action-buttons-top">
+                <button class="btn btn-excel" onclick="exportToExcel('ham')">
+                    <span>📊</span> Excel'e Aktar
+                </button>
+            </div>
+
+            <div class="table-wrapper">
+                <table id="hamReportTable">
+                    <thead>
+                    <tr>
+                        <th rowspan="2">TARİH</th>
+                        <th rowspan="2">VARDİYA</th>
+                        <th colspan="8" class="section-header">HAMMADDE BİLGİLERİ</th>
+                        <th colspan="2" class="section-header">MAMUL BİLGİLERİ</th>
+                        <th colspan="6" class="section-header">MALZEME KONTROL ÖZETİ</th>
+                    </tr>
+                    <tr>
+                        <!-- HAMMADDE BİLGİLERİ -->
+                        <th>Parti No</th>
+                        <th>Malzeme Kodu</th>
+                        <th>Döküm No</th>
+                        <th>DYT Döküm No</th>
+                        <th>Şarj Adet</th>
+                        <th>İade Adet</th>
+                        <th>Hadde Bozuk Adet</th>
+                        <th>MFT Numune Adet</th>
+
+                        <!-- MAMUL BİLGİLERİ -->
+                        <th>Mamul Kalitesi</th>
+                        <th>Teker Tipi</th>
+
+                        <!-- MALZEME KONTROL ÖZETİ -->
+                        <th>Kontrole Verilen Adet</th>
+                        <th>1. Kalite Adet</th>
+                        <th>Mamul Hurdası - Adet</th>
+                        <th>Mamul Hurdası - Sebebi</th>
+                        <th>Karar Bekleyen (Hold) - Adet</th>
+                        <th>Karar Bekleyen (Hold) - Sebebi</th>
+                    </tr>
+                    </thead>
+                    <tbody id="hamDataTable">
+                    <tr>
+                        <td>11.11.2025</td>
+                        <td>00-08</td>
+                        <td>1102</td>
+                        <td>MAL001</td>
+                        <td>2524265</td>
+                        <td>524265</td>
+                        <td>209</td>
+                        <td></td>
+                        <td></td>
+                        <td>1</td>
+                        <td>ER7</td>
+                        <td>20 TONLUK</td>
+                        <td>209</td>
+                        <td>206</td>
+                        <td></td>
+                        <td></td>
+                        <td>206</td>
+                        <td>MFT SONUÇ BEKLİYOR</td>
+                    </tr>
+                    <tr>
+                        <td>11.11.2025</td>
+                        <td>00-08</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>2</td>
+                        <td>YENİDEN İŞLEM</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>***</td>
+                        <td></td>
+                        <td>***</td>
+                        <td>***</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>***</td>
+                        <td>***</td>
+                        <td>***</td>
+                        <td></td>
+                        <td>***</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>209</td>
+                        <td></td>
+                        <td>0</td>
+                        <td>1</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>209</td>
+                        <td>206</td>
+                        <td>0</td>
+                        <td></td>
+                        <td>208</td>
+                        <td></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="note-section">
+                <div class="note-label">
+                    <span>📝</span>
+                    <span>Notlar</span>
+                </div>
+                <textarea id="hamNoteArea" class="noteArea" placeholder="Vardiya notlarınızı buraya girebilirsiniz..."></textarea>
+            </div>
+
+            <div class="save-button-wrapper">
+                <button class="btn-save" onclick="saveData('ham')">
+                    <span class="save-icon">💾</span>
+                    <span>Kaydet</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Nihai Teker Raporu -->
+    <div id="nihaiTekerReport" class="report-page">
+        <div class="back-button-container">
+            <button class="btn-back" onclick="showMenu()">
+                <span>←</span> Ana Menüye Dön
+            </button>
+        </div>
+
+        <div class="filters-section">
+            <div class="filters-title">Filtreleme Seçenekleri</div>
+
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label class="filter-label">Başlangıç Tarihi</label>
+                    <input type="date" class="filter-input" id="nihaiStartDate" value="2025-11-19">
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Bitiş Tarihi</label>
+                    <input type="date" class="filter-input" id="nihaiEndDate" value="2025-11-19">
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Vardiya</label>
+                    <select class="filter-select" id="nihaiShiftFilter">
+                        <option value="">Tüm Vardiyalar</option>
+                        <option value="08-16" selected>08-16 (Gündüz)</option>
+                        <option value="16-00">16-00 (Akşam)</option>
+                        <option value="00-08">00-08 (Gece)</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Malzeme Kodu</label>
+                    <select class="filter-select" id="nihaiMalzemeKodu">
+                        <option value="">Tüm Malzemeler</option>
+                        <option value="MAL001">MAL001</option>
+                        <option value="MAL002">MAL002</option>
+                        <option value="MAL003">MAL003</option>
+                        <option value="MAL004">MAL004</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Döküm Numarası</label>
+                    <select class="filter-select" id="nihaiDokumNo">
+                        <option value="">Tüm Döküm Numaraları</option>
+                        <option value="525710">525710</option>
+                        <option value="525711">525711</option>
+                        <option value="525712">525712</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Mamul Kalitesi</label>
+                    <select class="filter-select" id="nihaiProductQuality">
+                        <option value="">Tüm Kaliteler</option>
+                        <option value="ER7">ER7</option>
+                        <option value="ER8">ER8</option>
+                        <option value="ER9">ER9</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label class="filter-label">Teker Tipi</label>
+                    <select class="filter-select" id="nihaiTekerTipi">
+                        <option value="">Tüm Tipler</option>
+                        <option value="1250 LOKOMOTİF">1250 LOKOMOTİF</option>
+                        <option value="920 VAGON">920 VAGON</option>
+                        <option value="1000 VAGON">1000 VAGON</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="filter-buttons">
+                <button class="btn btn-secondary" onclick="clearFilters('nihai')">
+                    <span>🔄</span> Temizle
+                </button>
+                <button class="btn btn-primary" onclick="applyFilters('nihai')">
+                    <span>🔍</span> Filtrele
+                </button>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="action-buttons-top">
+                <button class="btn btn-excel" onclick="exportToExcel('nihai')">
+                    <span>📊</span> Excel'e Aktar
+                </button>
+            </div>
+
+            <div class="table-wrapper">
+                <table id="nihaiReportTable">
+                    <thead>
+                    <tr>
+                        <th rowspan="3">TARİH</th>
+                        <th rowspan="3">VARDİYA</th>
+                        <th colspan="5" class="section-header">HAMMADDE BİLGİLERİ</th>
+                        <th colspan="2" class="section-header">MAMUL BİLGİLERİ</th>
+                        <th colspan="6" class="section-header">KONTROL ÖZETİ</th>
+                    </tr>
+                    <tr>
+                        <!-- HAMMADDE BİLGİLERİ -->
+                        <th rowspan="2">Malzeme Kodu</th>
+                        <th rowspan="2">Döküm No</th>
+                        <th rowspan="2">DYT Döküm No</th>
+                        <th rowspan="2">CNC'de İşlenen Adet</th>
+                        <th rowspan="2">CNC Hurdası Adet</th>
+
+                        <!-- MAMUL BİLGİLERİ -->
+                        <th rowspan="2">Mamul Kalitesi</th>
+                        <th rowspan="2">Tipi</th>
+
+                        <!-- KONTROL ÖZETİ -->
+                        <th rowspan="2" class="sub-section-header">Kontrole Verilen Adet</th>
+                        <th rowspan="2" class="sub-section-header">1. Kalite Adet</th>
+                        <th colspan="2" class="sub-section-header">Mamül Hurdası</th>
+                        <th colspan="2" class="sub-section-header">Karar Bekleyen (Hold)</th>
+                    </tr>
+                    <tr>
+                        <!-- Mamül Hurdası -->
+                        <th>Adet</th>
+                        <th>Sebebi</th>
+                        <!-- Karar Bekleyen -->
+                        <th>Adet</th>
+                        <th>Sebebi</th>
+                    </tr>
+                    </thead>
+                    <tbody id="nihaiDataTable">
+                    <tr>
+                        <td>19.11.2025</td>
+                        <td>08:55</td>
+                        <td>MAL003</td>
+                        <td>525710</td>
+                        <td>DYT001</td>
+                        <td>14</td>
+                        <td>0</td>
+                        <td>ER9</td>
+                        <td>1250 LOKOMOTİF</td>
+                        <td>14</td>
+                        <td>10</td>
+                        <td>4</td>
+                        <td>UT RİM</td>
+                        <td>0</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>****</td>
+                        <td>***</td>
+                        <td></td>
+                        <td>****</td>
+                        <td></td>
+                        <td>****</td>
+                        <td>****</td>
+                        <td></td>
+                        <td>****</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>14</td>
+                        <td>0</td>
+                        <td></td>
+                        <td></td>
+                        <td>14</td>
+                        <td>10</td>
+                        <td>4</td>
+                        <td></td>
+                        <td>0</td>
+                        <td></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="note-section">
+                <div class="note-label">
+                    <span>📝</span>
+                    <span>Notlar</span>
+                </div>
+                <textarea id="nihaiNoteArea" class="noteArea" placeholder="Vardiya notlarınızı buraya girebilirsiniz..."></textarea>
+            </div>
+
+            <div class="save-button-wrapper">
+                <button class="btn-save" onclick="saveData('nihai')">
+                    <span class="save-icon">💾</span>
+                    <span>Kaydet</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+    // Sayfa geçiş fonksiyonları
+    function showReport(type) {
+        document.getElementById('mainMenu').style.display = 'none';
+        const titleElement = document.getElementById('mainTitle');
+
+        if (type === 'hamTeker') {
+            document.getElementById('hamTekerReport').style.display = 'block';
+            document.getElementById('nihaiTekerReport').style.display = 'none';
+            titleElement.textContent = 'DEMİRYOLU TEKERİ ÜRETİM TESİSİ HAM TEKER VARDİYA RAPORU';
+        } else {
+            document.getElementById('nihaiTekerReport').style.display = 'block';
+            document.getElementById('hamTekerReport').style.display = 'none';
+            titleElement.textContent = 'DEMİRYOLU TEKERİ ÜRETİM TESİSİ NİHAİ TEKER VARDİYA RAPORU';
+        }
+    }
+
+    function showMenu() {
+        document.getElementById('mainMenu').style.display = 'flex';
+        document.getElementById('hamTekerReport').style.display = 'none';
+        document.getElementById('nihaiTekerReport').style.display = 'none';
+        document.getElementById('mainTitle').textContent = 'DEMİRYOLU TEKERİ ÜRETİM TESİSİ VARDİYA RAPORU';
+    }
+
+    // Filtre fonksiyonları
+    function applyFilters(type) {
+        const prefix = type === 'ham' ? 'ham' : 'nihai';
+        const startDate = document.getElementById(prefix + 'StartDate').value;
+        const endDate = document.getElementById(prefix + 'EndDate').value;
+        const shift = document.getElementById(prefix + 'ShiftFilter').value;
+        const malzemeKodu = document.getElementById(prefix + 'MalzemeKodu').value;
+        const dokumNo = document.getElementById(prefix + 'DokumNo').value;
+        const productQuality = document.getElementById(prefix + 'ProductQuality').value;
+        const tekerTipi = document.getElementById(prefix + 'TekerTipi').value;
+
+        let filterInfo = '🔍 Filtreler Uygulandı\n\n';
+        if (startDate) filterInfo += `📅 Başlangıç: ${new Date(startDate).toLocaleDateString('tr-TR')}\n`;
+        if (endDate) filterInfo += `📅 Bitiş: ${new Date(endDate).toLocaleDateString('tr-TR')}\n`;
+        if (shift) filterInfo += `⏰ Vardiya: ${shift}\n`;
+        if (malzemeKodu) filterInfo += `🔧 Malzeme Kodu: ${malzemeKodu}\n`;
+        if (dokumNo) filterInfo += `🔢 Döküm No: ${dokumNo}\n`;
+        if (productQuality) filterInfo += `✓ Mamul Kalitesi: ${productQuality}\n`;
+        if (tekerTipi) filterInfo += `⚙️ Teker Tipi: ${tekerTipi}\n`;
+
+        alert(filterInfo || 'Lütfen en az bir filtre seçiniz.');
+    }
+
+    function clearFilters(type) {
+        const prefix = type === 'ham' ? 'ham' : 'nihai';
+        document.getElementById(prefix + 'StartDate').value = '';
+        document.getElementById(prefix + 'EndDate').value = '';
+        document.getElementById(prefix + 'ShiftFilter').value = '';
+        document.getElementById(prefix + 'MalzemeKodu').value = '';
+        document.getElementById(prefix + 'DokumNo').value = '';
+        document.getElementById(prefix + 'ProductQuality').value = '';
+        document.getElementById(prefix + 'TekerTipi').value = '';
+        alert('🔄 Tüm filtreler temizlendi.');
+    }
+
+    // Kayıt fonksiyonu
+    function saveData(type) {
+        const prefix = type === 'ham' ? 'ham' : 'nihai';
+        const tableData = [];
+        const table = document.getElementById(prefix + 'ReportTable');
+        const rows = table.querySelectorAll('tbody tr');
+
+        rows.forEach(row => {
+            const cells = row.querySelectorAll('td');
+            const rowData = [];
+            cells.forEach(cell => {
+                rowData.push(cell.textContent);
+            });
+            if (rowData.some(cell => cell.trim() !== '')) {
+                tableData.push(rowData);
+            }
+        });
+
+        const note = document.getElementById(prefix + 'NoteArea').value;
+
+        const data = {
+            saveDate: new Date().toISOString(),
+            displayDate: new Date().toLocaleString('tr-TR'),
+            tableData: tableData,
+            note: note
+        };
+
+        const storageKey = type === 'ham' ? 'hamTekerRaporu' : 'nihaiTekerRaporu';
+        localStorage.setItem(storageKey, JSON.stringify(data));
+
+        // Başarı mesajı
+        const btn = event.target.closest('.btn-save');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<span>✅</span><span>Kaydedildi</span>';
+        btn.style.background = 'linear-gradient(135deg, #047857 0%, #065f46 100%)';
+
+        setTimeout(() => {
+            btn.innerHTML = originalText;
+            btn.style.background = 'linear-gradient(135deg, #dc2626 0%, #b91c1c 100%)';
+        }, 2000);
+    }
+
+    // Excel export fonksiyonu
+    function exportToExcel(type) {
+        const prefix = type === 'ham' ? 'ham' : 'nihai';
+        const table = document.getElementById(prefix + 'ReportTable');
+        const sheetName = type === 'ham' ? 'Ham Teker Raporu' : 'Nihai Teker Raporu';
+        const wb = XLSX.utils.table_to_book(table, {sheet: sheetName});
+
+        const note = document.getElementById(prefix + 'NoteArea').value;
+        if (note) {
+            XLSX.utils.sheet_add_aoa(wb.Sheets[sheetName], [[""], ["NOT:", note]], {origin: -1});
+        }
+
+        const fileName = (type === 'ham' ? 'Ham_Teker_Vardiya_Raporu_' : 'Nihai_Teker_Vardiya_Raporu_') + new Date().toISOString().slice(0,10) + '.xlsx';
+        XLSX.writeFile(wb, fileName);
+
+        alert('✅ Excel dosyası başarıyla indirildi!\n\n📄 Dosya adı: ' + fileName);
+    }
+
+    // Sayfa yüklendiğinde kaydedilmiş veriyi kontrol et
+    window.addEventListener('load', () => {
+        const hamSaved = localStorage.getItem('hamTekerRaporu');
+        if (hamSaved) {
+            const data = JSON.parse(hamSaved);
+            console.log('Ham Teker Son kayıt:', data.displayDate);
+        }
+
+        const nihaiSaved = localStorage.getItem('nihaiTekerRaporu');
+        if (nihaiSaved) {
+            const data = JSON.parse(nihaiSaved);
+            console.log('Nihai Teker Son kayıt:', data.displayDate);
+        }
+    });
+</script>
+</body>
+</html>

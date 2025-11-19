@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>ÇKH - Paket İzleme Ekranı</title>
+  <link href="style.css" rel="stylesheet" />
+  <style>
+    :root{
+      --k-blue:#1976d2; --k-green:#2e7d32; --k-red:#dc3545; --k-soft:#f5f6f7;
+      --k-border:#e3e6ea; --row-alt:#f9fbfd; --text:#2c3e50;
+    }
+    body{margin:0;background:var(--k-soft);font-family:Arial,Helvetica,sans-serif;color:var(--text)}
+    .content-wrapper{margin-left:250px;padding:20px}
+    .breadcrumbs{color:#5b6b7b;font-size:14px;margin-bottom:14px}
+    .breadcrumbs a{color:var(--k-blue);text-decoration:none;font-weight:600}
+    .breadcrumbs span{margin:0 6px}
+    .topbar{background:#fff;border:1px solid var(--k-border);border-radius:12px;
+      padding:14px 16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+      box-shadow:0 2px 8px rgba(0,0,0,.05);margin-bottom:20px}
+    .title{font-size:18px;font-weight:700;color:var(--text);margin-right:auto;display:flex;align-items:center;gap:8px}
+    .dot{width:10px;height:10px;border-radius:50%;background:var(--k-blue)}
+    .toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .iinput{min-width:220px;padding:8px 10px;border:1px solid var(--k-border);border-radius:8px;background:#fff;font-size:14px}
+    .btn{border:0;border-radius:8px;padding:6px 12px;font-size:13px;cursor:pointer;transition:.2s}
+    .btn-green{background:#1ba94c;color:#fff}
+    .btn:hover{opacity:.92}
+    .table-card{background:#fff;border:1px solid var(--k-border);border-radius:12px;
+      padding:12px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+    table{width:100%;border-collapse:collapse}
+    th,td{border-bottom:1px solid var(--k-border);padding:12px 10px;text-align:center;white-space:nowrap}
+    thead th{background:#f8f9fb;text-transform:uppercase;font-size:12px;letter-spacing:.02em;font-weight:700}
+    tbody tr:nth-child(even){background:var(--row-alt)}
+    tbody tr:hover{background:#eef5ff}
+    .link{color:var(--k-blue);text-decoration:none;font-weight:600}
+    .muted{color:#6c7580}
+  </style>
+</head>
+
+<body>
+  <!-- Sidebar -->
+  <aside id="sidebar">
+    <div id="sidebar-container"></div>
+    <script>
+      fetch("sidebar.html")
+        .then(r=>r.text())
+        .then(html=>document.getElementById("sidebar-container").innerHTML=html);
+    </script>
+  </aside>
+
+  <div class="content-wrapper">
+    <header class="header">
+      <div class="breadcrumbs">
+        <a href="izleme-ekrani.html">Ana Sayfa</a> <span>&gt;</span>
+        <span>ÇKH Paket & Etiket İzleme</span>
+      </div>
+    </header>
+
+    <div class="topbar">
+      <div class="title"><span class="dot"></span> ÇKH Paket & Etiket İzleme</div>
+      <div class="toolbar">
+        <input class="iinput" id="searchCast" placeholder="Döküm numarası giriniz" />
+        <input class="iinput" id="searchPkgId" placeholder="Paket ID giriniz" />
+        <button class="btn btn-green" onclick="applyFilters()">Filtrele</button>
+        <button class="btn" onclick="resetFilters()">Temizle</button>
+        <div class="pill">📅 <span id="shiftText">01 Eki 2025 - 02 Öğle Vardiyası</span></div>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-wrap">
+        <table id="pkgTable">
+          <thead>
+            <tr>
+              <th>Etiket ID</th>
+              <th>Döküm No</th>
+              <th>İş Emri No</th>
+              <th>Paket Tipi</th>
+              <th>Kayıt Tarihi</th>
+              <th>Paket Ağırlığı (kg)</th>
+              <th>Teyit Saati</th>
+              <th>Paket ID</th>
+              <th>Çap (mm)</th>
+              <th>Ürün Kalitesi</th>
+              <th>Boy (m)</th>
+              <th>Ekleyen Kullanıcı</th>
+            </tr>
+          </thead>
+          <tbody id="pkgBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Veri
+    const data = [
+      {etiketId:'ETK-0001', cast:'2511234', order:'40000001802', type:'Kalın Kangal', date:'01.10.2025', weight:1750, confirm:'07:45', pid:'CKH0001', dia:52.5, grade:'S275JR_02', length:52.5, user:'CKH_USER'},
+      {etiketId:'ETK-0002', cast:'2511235', order:'40000001803', type:'Kalın Kangal', date:'01.10.2025', weight:1780, confirm:'08:10', pid:'CKH0002', dia:52.5, grade:'S235JR_00', length:52.5, user:'CKH_USER'},
+      {etiketId:'ETK-0003', cast:'2511236', order:'40000001804', type:'Kalın Kangal', date:'01.10.2025', weight:1720, confirm:'09:15', pid:'CKH0003', dia:52.5, grade:'S355JR_03', length:52.5, user:'CKH_USER'},
+      {etiketId:'ETK-0004', cast:'2511237', order:'40000001805', type:'Kalın Kangal', date:'01.10.2025', weight:1710, confirm:'09:42', pid:'CKH0004', dia:52.5, grade:'11SMn30_01', length:52.5, user:'CKH_USER'},
+      {etiketId:'ETK-0005', cast:'2511238', order:'40000001806', type:'Kangal', date:'01.10.2025', weight:1850, confirm:'10:05', pid:'CKH0005', dia:9, grade:'1008_00', length:12, user:'CKH_USER'}
+    ];
+
+    const pkgBody = document.getElementById('pkgBody');
+
+    function render(rows){
+      pkgBody.innerHTML = rows.map(r => `
+        <tr>
+          <td>${r.etiketId}</td>
+          <td><a class="link" href="#">${r.cast}</a></td>
+          <td>${r.order}</td>
+          <td>${r.type}</td>
+          <td>${r.date}</td>
+          <td>${r.weight.toLocaleString('tr-TR')}</td>
+          <td>${r.confirm}</td>
+          <td>${r.pid}</td>
+          <td>${r.dia}</td>
+          <td>${r.grade}</td>
+          <td>${r.length}</td>
+          <td class="muted">${r.user}</td>
+        </tr>
+      `).join('');
+    }
+
+    function applyFilters(){
+      const cast = document.getElementById('searchCast').value.trim();
+      const pkg = document.getElementById('searchPkgId').value.trim();
+      let filtered = data;
+
+      if(cast) filtered = filtered.filter(r => r.cast.includes(cast));
+      if(pkg)  filtered = filtered.filter(r => r.pid.toLowerCase().includes(pkg.toLowerCase()));
+
+      render(filtered);
+    }
+
+    function resetFilters(){
+      document.getElementById('searchCast').value = '';
+      document.getElementById('searchPkgId').value = '';
+      render(data);
+    }
+
+    render(data);
+  </script>
+</body>
+</html>

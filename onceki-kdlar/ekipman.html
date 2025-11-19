@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KARDEMİR - Döküm Bazında Ekipman Takip</title>
+<style>
+  :root {
+    --blue:#00205B; --dark:#001540; --red:#ED1C24;
+    --gray:#f8f9fb; --border:#dcdde1;
+  }
+  body{font-family:'Segoe UI',sans-serif;margin:0;background:white;}
+  header{
+    background:linear-gradient(135deg,var(--blue),var(--dark));
+    color:white;padding:1.3rem 3rem;display:flex;
+    justify-content:space-between;align-items:center;
+    box-shadow:0 4px 12px rgba(0,0,0,0.15);
+  }
+  header h1{margin:0;font-size:1.3rem;}
+  header img{height:45px;}
+  .container{padding:30px 40px;max-width:1700px;margin:auto;}
+  .filters{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:25px;background:var(--gray);
+    padding:15px 20px;border-radius:10px;border:1px solid var(--border);}
+  label{font-weight:600;color:#333;font-size:.9rem;}
+  select,input{padding:8px 10px;border:1px solid var(--border);border-radius:6px;width:200px;}
+
+  .section{
+    border:1px solid var(--border);border-radius:10px;background:white;
+    box-shadow:0 2px 6px rgba(0,0,0,0.05);margin-bottom:30px;padding:15px 20px;
+  }
+  .section h2{font-size:1rem;color:var(--blue);border-bottom:1px solid var(--border);
+    padding-bottom:8px;}
+  table{border-collapse:collapse;width:100%;font-size:.9rem;margin-top:10px;}
+  th,td{border:1px solid var(--border);padding:10px;text-align:center;vertical-align:middle;}
+  th{background:#eef1f6;color:#2c3e50;}
+
+  .marka-cell{
+    position:relative;
+    padding:14px 40px;
+    text-align:center;
+    font-weight:500;
+    color:#001540;
+  }
+  .edit-icon{
+    position:absolute;
+    right:8px;
+    top:50%;
+    transform:translateY(-50%);
+    font-size:1.1rem;
+    color:var(--blue);
+    cursor:pointer;
+    transition:color .2s ease;
+  }
+  .edit-icon:hover{color:var(--red);}
+
+  button.filterBtn, button.clearBtn{
+    border:none;padding:10px 20px;border-radius:6px;cursor:pointer;
+    font-weight:600;letter-spacing:.3px;margin-top:15px;
+  }
+  .filterBtn{background:var(--blue);color:white;margin-left:10px;}
+  .filterBtn:hover{background:#001b6a;}
+  .clearBtn{background:#888;color:white;margin-left:5px;}
+  .clearBtn:hover{background:#666;}
+
+  /* 🔹 Modal Stili */
+  .modal{
+    display:none;position:fixed;z-index:999;left:0;top:0;width:100%;height:100%;
+    background:rgba(0,0,0,0.5);justify-content:center;align-items:center;
+  }
+  .modal-content{
+    background:white;padding:25px 35px;border-radius:10px;min-width:350px;
+    box-shadow:0 4px 20px rgba(0,0,0,0.3);
+    animation:fadeIn .25s ease;
+  }
+  .modal-content h3{margin-top:0;color:var(--blue);}
+  .modal-content label{display:block;margin-top:10px;font-weight:600;}
+  .modal-content input, .modal-content textarea{
+    width:100%;padding:8px;border:1px solid var(--border);border-radius:6px;margin-top:4px;
+  }
+  .modal-buttons{display:flex;justify-content:flex-end;margin-top:15px;gap:10px;}
+  .modal-buttons button{
+    padding:8px 16px;border:none;border-radius:6px;cursor:pointer;font-weight:600;
+  }
+  .btn-cancel{background:#888;color:white;}
+  .btn-cancel:hover{background:#666;}
+  .btn-ok{background:var(--red);color:white;}
+  .btn-ok:hover{background:#b3121b;}
+  @keyframes fadeIn {from{opacity:0;transform:scale(.95);} to{opacity:1;transform:scale(1);}}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Döküm Bazında Ekipman Takip</h1>
+  <img src="resimler/kardemir_logo.png" alt="Kardemir">
+</header>
+
+<div class="container">
+  <!-- ÜST FİLTRE ALANI -->
+  <div class="filters">
+    <div>
+      <label>SDM Seçimi</label><br>
+      <select id="sdm">
+        <option>SDM 1</option>
+        <option>SDM 2</option>
+        <option>SDM 3</option>
+        <option selected>SDM 4</option>
+      </select>
+    </div>
+    <div>
+      <label>Tarih</label><br>
+      <input type="date" id="tarih">
+    </div>
+  </div>
+
+  <!-- EKİPMAN TABLOSU -->
+  <div class="section">
+    <h2>Ekipman Bilgileri</h2>
+    <table id="ekipmanTable">
+      <tr><th>Ekipman</th><th>Marka</th></tr>
+    </table>
+  </div>
+
+  <!-- RAPOR TABLOSU -->
+  <div class="section">
+    <h2>Döküm Ekipman Raporu</h2>
+
+    <div class="filters" style="margin-bottom:10px;">
+      <div>
+        <label>Başlangıç Tarihi</label><br>
+        <input type="date" id="baslangicTarih">
+      </div>
+      <div>
+        <label>Bitiş Tarihi</label><br>
+        <input type="date" id="bitisTarih">
+      </div>
+      <div>
+        <label>Döküm No</label><br>
+        <input type="text" id="filterDokumNo" placeholder="ör: 2510038">
+      </div>
+      <div style="display:flex;align-items:end;">
+        <button class="filterBtn" onclick="filtrele()">Filtrele</button>
+        <button class="clearBtn" onclick="filtreTemizle()">Temizle</button>
+      </div>
+    </div>
+
+    <table id="raporTable">
+      <tr>
+        <th>Tarih</th><th>SDM</th><th>Döküm No</th>
+        <th>Ara Tüp</th><th>Ara Tüp Nedeni</th><th>Ara Tüp Döküm Sayısı</th>
+        <th>Bakır Tüp</th><th>Bakır Tüp Nedeni</th><th>Bakır Tüp Döküm Sayısı</th>
+        <th>Stoper</th><th>Stoper Nedeni</th><th>Stoper Döküm Sayısı</th>
+        <th>Nozul</th><th>Nozul Nedeni</th><th>Nozul Döküm Sayısı</th>
+        <th>Ses Nozulu</th><th>Ses Nozulu Nedeni</th><th>Ses Nozulu Döküm Sayısı</th>
+        <th>Daldırma Nozulu</th><th>Daldırma Nozulu Nedeni</th><th>Daldırma Nozulu Döküm Sayısı</th>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<!-- 🔹 Popup Modal -->
+<div class="modal" id="editModal">
+  <div class="modal-content">
+    <h3>Ekipman Bilgisi Güncelle</h3>
+    <input type="hidden" id="modalEkipman">
+    <label>Döküm Numarası</label>
+    <input type="text" id="modalDokumNo" placeholder="ör: 2510038">
+    <label>Yeni Marka</label>
+    <input type="text" id="modalMarka">
+    <label>Değişim Nedeni</label>
+    <textarea id="modalNeden" rows="3" placeholder="Değişim nedenini giriniz..."></textarea>
+
+    <div class="modal-buttons">
+      <button class="btn-cancel" onclick="modalKapat()">İptal</button>
+      <button class="btn-ok" onclick="modalKaydet()">Kaydet</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const ekipmanListesi = ["Ara Tüp","Bakır Tüp","Stoper","Nozul","Ses Nozulu","Daldırma Nozulu"];
+let aktifMarkalar = JSON.parse(localStorage.getItem("aktifMarkalar")) || {
+  "Ara Tüp":"NUMTEK","Bakır Tüp":"Vesuvius","Stoper":"Allied",
+  "Nozul":"Allied","Ses Nozulu":"Ülker","Daldırma Nozulu":"Vesuvius"
+};
+let ekipmanSayac = JSON.parse(localStorage.getItem("ekipmanSayac")) || {
+  "Ara Tüp":0,"Bakır Tüp":0,"Stoper":0,"Nozul":0,"Ses Nozulu":0,"Daldırma Nozulu":0
+};
+let sonGuncelleme = JSON.parse(localStorage.getItem("sonGuncelleme")) || {};
+let degisimNedenleri = JSON.parse(localStorage.getItem("degisimNedenleri")) || {};
+
+const tablo = document.getElementById("ekipmanTable");
+ekipmanListesi.forEach(eq=>{
+  const row = tablo.insertRow();
+  row.innerHTML = `
+    <td>${eq}</td>
+    <td class="marka-cell">
+      <div class="marka-ad">${aktifMarkalar[eq]}</div>
+      <span class="edit-icon" onclick="duzenle('${eq}')">✏️</span>
+    </td>
+  `;
+});
+
+// 🔹 Modal açma
+function duzenle(ekipman){
+  document.getElementById("modalEkipman").value = ekipman;
+  document.getElementById("modalMarka").value = aktifMarkalar[ekipman];
+  document.getElementById("modalDokumNo").value = "";
+  document.getElementById("modalNeden").value = "";
+  document.getElementById("editModal").style.display = "flex";
+}
+
+function modalKapat(){
+  document.getElementById("editModal").style.display = "none";
+}
+
+function modalKaydet(){
+  const ekipman = document.getElementById("modalEkipman").value;
+  const dokumNo = document.getElementById("modalDokumNo").value.trim();
+  const yeniMarka = document.getElementById("modalMarka").value.trim();
+  const neden = document.getElementById("modalNeden").value.trim();
+
+  if(!dokumNo || !yeniMarka){ alert("Lütfen döküm numarası ve yeni markayı giriniz."); return; }
+
+  if (yeniMarka === aktifMarkalar[ekipman]) {
+    alert("Aynı marka tekrar girildi, değişim yapılmadı.");
+    return;
+  }
+
+  aktifMarkalar[ekipman] = yeniMarka;
+  degisimNedenleri[ekipman] = neden || "-";
+  ekipmanSayac[ekipman] = 0;
+  sonGuncelleme[ekipman] = `Güncellendi: ${new Date().toLocaleDateString('tr-TR')} (${dokumNo})`;
+
+  localStorage.setItem("aktifMarkalar", JSON.stringify(aktifMarkalar));
+  localStorage.setItem("ekipmanSayac", JSON.stringify(ekipmanSayac));
+  localStorage.setItem("sonGuncelleme", JSON.stringify(sonGuncelleme));
+  localStorage.setItem("degisimNedenleri", JSON.stringify(degisimNedenleri));
+
+  const cell = Array.from(document.querySelectorAll("#ekipmanTable tr")).find(r => r.cells[0]?.innerText === ekipman);
+  if(cell) cell.querySelector(".marka-ad").innerText = yeniMarka;
+
+  alert(`${ekipman} markası '${yeniMarka}' olarak güncellendi.`);
+  modalKapat();
+}
+
+// 🔍 Filtreleme
+function filtrele(){
+  const baslangic = document.getElementById("baslangicTarih").value;
+  const bitis = document.getElementById("bitisTarih").value;
+  const dokumFilter = document.getElementById("filterDokumNo").value.trim().toLowerCase();
+  const rows = document.querySelectorAll("#raporTable tr:not(:first-child)");
+
+  const start = baslangic ? new Date(baslangic) : null;
+  const end = bitis ? new Date(bitis) : null;
+
+  rows.forEach(row=>{
+    const tarihText = row.cells[0]?.innerText;
+    const dokumText = row.cells[2]?.innerText.toLowerCase();
+    if(!tarihText) return;
+
+    const [gun,ay,yil] = tarihText.split(".");
+    const rowDate = new Date(`${yil}-${ay}-${gun}`);
+
+    let match = true;
+    if(start && rowDate < start) match = false;
+    if(end && rowDate > end) match = false;
+    if(dokumFilter && !dokumText.includes(dokumFilter)) match = false;
+
+    row.style.display = match ? "" : "none";
+  });
+}
+
+function filtreTemizle(){
+  document.getElementById("baslangicTarih").value = "";
+  document.getElementById("bitisTarih").value = "";
+  document.getElementById("filterDokumNo").value = "";
+  document.querySelectorAll("#raporTable tr").forEach((r,i)=>{
+    if(i>0) r.style.display = "";
+  });
+}
+</script>
+</body>
+</html>

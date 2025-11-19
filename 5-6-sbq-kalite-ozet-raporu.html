@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>SBQ Ürün Kalite İzleme Raporu</title>
+    <link href="style.css" rel="stylesheet" />
+    <style>
+        :root {
+            --bg: #f5f7fa;
+            --card: #fff;
+            --text: #2c3e50;
+            --muted: #6b7a8c;
+            --border: #e2e8f0;
+            --primary: #2c5f7e;
+            --primary-light: #4a8bb3;
+            /* Filtreleme için yeni renkler */
+            --filter-bg-light: #f7f9fb;
+            --filter-border-focus: #4a8bb3;
+            /* Görseldeki mavi tonuna daha yakın */
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: Inter, "Segoe UI", Arial, Helvetica, sans-serif;
+            font-size: 13px;
+            overflow-x: hidden;
+        }
+
+        #sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 250px;
+            height: 100vh;
+            background: #14233a;
+            z-index: 10;
+        }
+
+        .container {
+            margin-left: 250px;
+            background: #fff;
+            position: relative;
+            z-index: 1;
+            border-radius: 16px;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4);
+            width: calc(100% - 250px);
+        }
+
+        .content-wrapper {
+            margin-left: 250px;
+            min-height: 100vh;
+            padding: 24px;
+        }
+
+        .header-card {
+            background: linear-gradient(135deg, #6887a5 0%, #e1e4e5 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 18px 28px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 6px rgba(44, 95, 126, 0.12);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .header-card svg {
+            width: 32px;
+            height: 32px;
+            opacity: 0.95;
+        }
+
+        .header-card h1 {
+            font-size: 20px;
+            font-weight: 500;
+            margin: 0;
+            letter-spacing: 0.3px;
+        }
+
+        /* *** FİLTRE KARTI VE ELEMANLARI DÜZENLEMELERİ BAŞLANGICI ***
+        */
+        .filter-card {
+            background: white;
+            border: none;
+            /* border-radius:0; GEREKİRSE 6PX YAPILABİLİR */
+            padding: 24px 32px;
+            margin-bottom: 0;
+            box-shadow: none;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(200px, 1fr)) auto;
+            /* Sütun genişliğini artırıyoruz */
+            gap: 24px;
+            /* Boşlukları artırıyoruz */
+            align-items: end;
+        }
+
+        .filter-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            /* Etiket ve input arasındaki boşluğu azaltıyoruz */
+        }
+
+        .filter-item label {
+            font-weight: 500;
+            /* Daha belirgin etiket */
+            color: var(--text);
+            /* Daha koyu etiket rengi */
+            font-size: 14px;
+            /* Etiket fontu biraz büyütüldü */
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .filter-item input,
+        .filter-item select {
+            padding: 12px 16px;
+            /* Padding artırılarak boyut büyütüldü */
+            border: 1px solid #cbd5e0;
+            border-radius: 4px;
+            /* Hafifçe yuvarlatılmış köşeler */
+            font-size: 15px;
+            /* Yazı fontu büyütüldü */
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background: var(--filter-bg-light);
+            /* Hafif arka plan rengi */
+            color: var(--text);
+            height: 45px;
+            /* Yükseklik sabitlendi */
+            box-sizing: border-box;
+            /* Padding'in toplam boyuta dahil olması */
+            width: 330%;
+            appearance: none;
+            /* Select için varsayılan görünümü kaldırma */
+        }
+
+        .filter-item select {
+            /* Select kutusuna ok ikonu eklemek için */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%236b7a8c'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd' /%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 1em;
+            padding-right: 30px;
+            /* Ok için sağa boşluk */
+        }
+
+        .filter-item input[type="date"]::-webkit-calendar-picker-indicator {
+            padding: 0;
+            margin: 0;
+            width: 1.2em;
+            /* Tarih ikonunun boyutunu ayarlama */
+            height: 1.2em;
+            cursor: pointer;
+            filter: invert(0.3);
+            /* İkon rengini koyu yapmak */
+        }
+
+        .filter-item input:focus,
+        .filter-item select:focus {
+            outline: none;
+            border-color: var(--filter-border-focus);
+            /* Odaklanınca daha belirgin mavi çerçeve */
+            box-shadow: 0 0 0 3px rgba(74, 139, 179, 0.2);
+            /* Mavi tonunda odak gölgesi */
+            background: white;
+        }
+
+        .btn-filter {
+            background: #3d7193;
+            /* Görseldeki başlık rengiyle uyumlu */
+            color: white;
+            padding: 12px 36px;
+            /* Buton padding'i artırıldı */
+            border: none;
+            border-radius: 4px;
+            font-size: 15px;
+            font-weight: 600;
+            /* Daha kalın yazı */
+            cursor: pointer;
+            transition: all 0.2s;
+            height: 45px;
+            /* Input'larla aynı yükseklik */
+            white-space: nowrap;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-filter:hover {
+            background: #2c5f7e;
+            /* Daha koyu bir hover rengi */
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(44, 95, 126, 0.3);
+        }
+
+        /* *** FİLTRE KARTI VE ELEMANLARI DÜZENLEMELERİ SONU ***
+        */
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            padding: 20px 32px;
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .btn-action {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            height: 42px;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-chart {
+            background: #38a169;
+            color: white;
+        }
+
+        .btn-chart:hover {
+            background: #2f855a;
+        }
+
+        .btn-excel {
+            background: #2c5f7e;
+            /* EXCEL butonu rengi değiştirildi */
+            color: white;
+        }
+
+        .btn-excel:hover {
+            background: #1a3a52;
+        }
+
+        .btn-email {
+            background: #ed8936;
+            color: white;
+        }
+
+        .btn-email:hover {
+            background: #dd6b20;
+        }
+
+        @media (max-width: 1200px) {
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                flex-wrap: wrap;
+            }
+        }
+
+        .table-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+        }
+
+        .section-title {
+            background: #f7fafc;
+            color: #2d3748;
+            padding: 12px 18px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            font-size: 15px;
+            font-weight: 600;
+            border-left: 4px solid var(--primary);
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 8px;
+            max-height: 700px;
+            overflow-y: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            font-size: 12px;
+            min-width: 5000px;
+        }
+
+        th {
+            background: #2c5f7e;
+            color: white;
+            padding: 11px 9px;
+            text-align: center;
+            font-weight: 500;
+            border: 1px solid #1a3a52;
+            white-space: nowrap;
+            font-size: 11px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        th[rowspan="2"] {
+            background: #3d7193;
+        }
+
+        th[colspan="6"] {
+            background: #4a8bb3;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        th[colspan="50"] {
+            background: #5a9fc4;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        th[colspan="43"] {
+            background: #6ba8c9;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        td {
+            padding: 9px;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+            color: #4a5568;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f7fafc;
+        }
+
+        tr:hover {
+            background-color: #edf2f7;
+        }
+
+        .highlight-code {
+            background: #f7fafc;
+            font-weight: 600;
+        }
+
+        .highlight-green {
+            background: #e6f7f1;
+            font-weight: 600;
+        }
+
+        .highlight-blue {
+            background: #e8f4f8;
+            font-weight: 600;
+        }
+
+        .footer-card {
+            background: var(--primary);
+            color: white;
+            padding: 16px;
+            text-align: center;
+            font-size: 12px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        @media print {
+            body {
+                background: white;
+            }
+
+            .content-wrapper {
+                margin-left: 0;
+                padding: 0;
+            }
+
+            .filter-card,
+            .button-group {
+                display: none;
+            }
+
+            #sidebar {
+                display: none;
+            }
+        }
+
+        @media (max-width: 1024px) {
+            .content-wrapper {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <aside id="sidebar">
+        <div id="sidebar-container"></div>
+        <script>
+            fetch("sidebar.html")
+                .then((r) => r.text())
+                .then((html) => {
+                    document.getElementById("sidebar-container").innerHTML = html;
+                });
+        </script>
+    </aside>
+
+    <div class="content-wrapper">
+        <div class="header-card">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" fill="currentColor"
+                    opacity="0.9" />
+            </svg>
+            <h1>SBQ KALİTE ÖZET RAPORU</h1>
+        </div>
+
+        <div class="filter-card">
+            <div class="filter-grid">
+                <div class="filter-item">
+                    <label>Başlangıç Tarihi</label>
+                    <input type="date" id="startDate" value="2025-09-16" />
+                </div>
+                <div class="filter-item">
+                    <label>Bitiş Tarihi</label>
+                    <input type="date" id="endDate" value="2025-09-22" />
+                </div>
+                <div class="filter-item">
+                    <label>Rapor Tipi</label>
+                    <select id="reportType">
+                        <option value="haftalik">SBQ Haftalık Kalite Özeti</option>
+                        <option value="aylik">SBQ Aylık Kalite Özeti</option>
+                        <option value="yillik">SBQ Yıllık Kalite Özeti</option>
+                        <option value="yonetici">SBQ Yönetici Özeti</option>
+                    </select>
+                </div>
+                <button class="btn-filter" onclick="filterData()">FİLTRELE</button>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn-action btn-chart" onclick="showChart()">
+                📊 GRAFİK GÖSTER
+            </button>
+            <button class="btn-action btn-excel" onclick="exportToExcel()">
+                📑 EXCEL'E AKTAR
+            </button>
+            <button class="btn-action btn-email" onclick="sendEmail()">
+                📧 E-MAİL GÖNDER
+            </button>
+        </div>
+
+        <div class="table-card">
+            <div class="section-title">
+                📊 Detaylı Üretim ve Kalite İzleme Tablosu
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th rowspan="2" style="min-width: 100px">MALZEME KODU</th>
+                            <th rowspan="2" style="min-width: 120px">Kalite</th>
+                            <th rowspan="2">Çap</th>
+                            <th rowspan="2">Şarj (ton)</th>
+                            <th rowspan="2">Kont.Verilen (ton)</th>
+
+                            <th colspan="6">Haddehane Proses Kaybı</th>
+
+                            <th rowspan="2">1. Kalite (ton)</th>
+                            <th rowspan="2">2. Kalite (ton)</th>
+                            <th rowspan="2">2. Kalite (%)</th>
+                            <th rowspan="2">Muhtellif Boy</th>
+                            <th rowspan="2">Muhtellif Boy (2.Kalite) ton</th>
+                            <th rowspan="2">Mamul Hurda (ton)</th>
+                            <th rowspan="2">Mamul Hurda (%)</th>
+
+                            <th rowspan="2">Hold (ton)</th>
+                            <th rowspan="2">Hold Nedeni</th>
+
+                            <th colspan="50">2. Kalite Dağılımı</th>
+                            <th colspan="43">Hurda Dağılımı</th>
+
+                            <th rowspan="2">Kalite Oranı (1.Kalite/Kont.Verilen)%</th>
+                            <th rowspan="2">Malzeme Oranı (1.Kalite/Şarja)%</th>
+                            <th rowspan="2">Satılabilir Ürün (Ton)</th>
+                            <th rowspan="2">Kont.Verilene Göre Satılabilir Ürün%</th>
+                            <th rowspan="2">Sarja Göre Satılabilir Ürün%</th>
+                        </tr>
+                        <tr style="background: #4a8bb3; color: white">
+                            <th>Uç Baş Tufal<br />Ton</th>
+                            <th>Uç Baş Tufal<br />%</th>
+                            <th>Hadde Bozuğu<br />Ton</th>
+                            <th>Hadde Bozuğu<br />%</th>
+                            <th>Haddehane Proses Kaybı<br />Ton</th>
+                            <th>Haddehane Proses Kaybı<br />%</th>
+
+                            <th>Ovalite</th>
+                            <th>Parçalı Paket</th>
+                            <th>Ölçü-Tolerans Harici</th>
+                            <th>Çizik (Hadde)</th>
+                            <th>Çatlak (Hadde)</th>
+                            <th>Çatlak (Çelikhane)</th>
+                            <th>Bozuk Sarım</th>
+                            <th>Katlama</th>
+                            <th>Kangal Ağırlığı Düşük</th>
+                            <th>Kangal Ağırlığı Yüksek</th>
+                            <th>Birim Ağırlığı Düşük</th>
+                            <th>Birim Ağırlığı Yüksek</th>
+                            <th>Boy Kısa</th>
+                            <th>Boy Uzun</th>
+                            <th>Kasa Kaçığı</th>
+                            <th>Çapak (Hadde)</th>
+                            <th>Y.M.K Çapak</th>
+                            <th>Fitil</th>
+                            <th>Mukavemet Düşük</th>
+                            <th>Mukavemet Yüksek</th>
+                            <th>Ring Kırığı</th>
+                            <th>Ring Kaçığı</th>
+                            <th>Inkluzyon</th>
+                            <th>Yağlı</th>
+                            <th>Sıcak Haddelenmiş</th>
+                            <th>Soğuk Haddelenmiş</th>
+                            <th>Atmosferik Korozyon</th>
+                            <th>Hadde Korozyonu</th>
+                            <th>Vinç Hasarı</th>
+                            <th>Forklift Hasarı</th>
+                            <th>Hasarlı</th>
+                            <th>Makara İzi</th>
+                            <th>Şalomo Yarası</th>
+                            <th>Pinch Roll Yarası</th>
+                            <th>Sertleştirilebilirliği Uygun Olmayan</th>
+                            <th>Eğri</th>
+                            <th>Stok Zemini Hasarı</th>
+                            <th>Mikro Çatlak</th>
+                            <th>Ezmede Çatlak (ÇH KAYNAKLI)</th>
+                            <th>Ezmede Çatlak (ÇKH KAYNAKLI)</th>
+                            <th>Makro Çatlak</th>
+                            <th>Proses Uygunsuzluğu</th>
+                            <th>Segregasyon</th>
+                            <th>Bağlama Hasarı</th>
+                            <th>Bağ Teli Uygunsuz</th>
+                            <th>Paket Uygunsuz</th>
+                            <th>Etiket Uygunsuz</th>
+                            <th>Paslı</th>
+                            <th>2. Yüzey Kusuru</th>
+                            <th>Verev Kesim</th>
+
+                            <th>Ölçü-Tolerans Harici</th>
+                            <th>Katlama</th>
+                            <th>Fitil</th>
+                            <th>Çapak (Hadde)</th>
+                            <th>YMK Çapak</th>
+                            <th>Ovalite</th>
+                            <th>Mukavemet Düşük</th>
+                            <th>Mukavemet Yüksek</th>
+                            <th>YMK Çatlak</th>
+                            <th>HH Çizik</th>
+                            <th>Ring Kırığı</th>
+                            <th>Makara Kırığı</th>
+                            <th>Pinch Roll Yarası</th>
+                            <th>Ring Kaçığı</th>
+                            <th>Kasa Kaçığı</th>
+                            <th>Sıcak Haddelenmiş</th>
+                            <th>Soğuk Haddelenmiş</th>
+                            <th>Atmosferik Korozyon</th>
+                            <th>Hadde Korozyonu</th>
+                            <th>Vinç Hasarı</th>
+                            <th>Bağ Teli Kopması</th>
+                            <th>Stok Zemini Hasarı</th>
+                            <th>Ondüle</th>
+                            <th>Mikro Çatlak</th>
+                            <th>Ezmede Çatlak (ÇH KAYNAKLI)</th>
+                            <th>Ezmede Çatlak (ÇKH KAYNAKLI)</th>
+                            <th>HH Çatlak</th>
+                            <th>Makro Çatlak</th>
+                            <th>Proses Uygunsuzluğu</th>
+                            <th>Yağlı</th>
+                            <th>Bağ Teli Uygunsuz</th>
+                            <th>Paket Uygunsuz</th>
+                            <th>Etiket Uygunsuz</th>
+                            <th>Ölçü Dalgalanması</th>
+                            <th>Bağlama Hasarı</th>
+                            <th>Kangal Ağırlığı Yüksek</th>
+                            <th>Kangal Ağırlığı Düşük</th>
+                            <th>Birim Ağırlığı Yüksek</th>
+                            <th>Birim Ağırlığı Düşük</th>
+                            <th>Yüzey Kusuru</th>
+                            <th>Boy Kısa</th>
+                            <th>Boy Uzun</th>
+                            <th>Vinçten Düşen</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="highlight-code">80004162</td>
+                            <td class="highlight-code">E335_01</td>
+                            <td>52</td>
+                            <td>216,14</td>
+                            <td>202,26</td>
+
+                            <td>13,9</td>
+                            <td>6,4</td>
+                            <td></td>
+                            <td></td>
+                            <td>13,9</td>
+                            <td>6,4</td>
+
+                            <td class="highlight-green">195,56</td>
+                            <td>6,69</td>
+                            <td>0,03</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+
+                            <td></td>
+                            <td></td>
+
+                            <td></td>
+                            <td>2,3</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>4,4</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+
+                            <td class="highlight-blue">0,97</td>
+                            <td class="highlight-blue">0,90</td>
+                            <td class="highlight-blue">202,26</td>
+                            <td class="highlight-blue">1,00</td>
+                            <td class="highlight-blue">0,94</td>
+                        </tr>
+                        <tr>
+                            <td class="highlight-code">80004160</td>
+                            <td class="highlight-code">41CR4_00</td>
+                            <td>52</td>
+                            <td>36,97</td>
+                            <td>34,45</td>
+
+                            <td>2,5</td>
+                            <td>6,8</td>
+                            <td></td>
+                            <td></td>
+                            <td>2,5</td>
+                            <td>6,8</td>
+
+                            <td class="highlight-green">34,45</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+
+                            <td></td>
+                            <td></td>
+
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+
+                            <td class="highlight-blue">1,00</td>
+                            <td class="highlight-blue">0,93</td>
+                            <td class="highlight-blue">34,45</td>
+                            <td class="highlight-blue">1,00</td>
+                            <td class="highlight-blue">0,93</td>
+                        </tr>
+                        <tr>
+                            <td class="highlight-code">80004161</td>
+                            <td class="highlight-code">42CRMO4_00(4140)</td>
+                            <td>52</td>
+                            <td>35,41</td>
+                            <td>33,78</td>
+
+                            <td>1,6</td>
+                            <td>4,6</td>
+                            <td></td>
+                            <td></td>
+                            <td>1,6</td>
+                            <td>4,6</td>
+
+                            <td class="highlight-green">33,78</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+
+                            <td></td>
+                            <td></td>
+
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+
+                            <td class="highlight-blue">1,00</td>
+                            <td class="highlight-blue">0,95</td>
+                            <td class="highlight-blue">33,78</td>
+                            <td class="highlight-blue">1,00</td>
+                            <td class="highlight-blue">0,95</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="table-card" style="margin-top: 20px">
+            <div class="section-title">📈 Genel Tablo ve Dağılım Özeti</div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px">
+                <div style="overflow-x: auto">
+                    <table style="min-width: auto; font-size: 13px">
+                        <thead>
+                            <tr>
+                                <th colspan="3" style="background: #1e7e34">Genel Tablo</th>
+                            </tr>
+                            <tr>
+                                <th>Kategori</th>
+                                <th>Miktar, ton</th>
+                                <th>%</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="text-align: left">Şarj</td>
+                                <td>5.052,8</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left">Kont.Verilen</td>
+                                <td>4.635,3</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left">Haddehane Proses Kayıp</td>
+                                <td>417,5</td>
+                                <td>8,26%</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left">Haddehane Kaynaklı 2. Kalite</td>
+                                <td>31,9</td>
+                                <td>0,69%</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left">Çelikhane Kaynaklı 2. Kalite</td>
+                                <td>29,9</td>
+                                <td>0,65%</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left">HOLD</td>
+                                <td>216,1</td>
+                                <td>4,66%</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left">1.kalite</td>
+                                <td>4.355,3</td>
+                                <td>93,96%</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left">2.kalite[Muh, Boy Dahil]</td>
+                                <td>61,9</td>
+                                <td>1,33%</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left">Muhtelif Boy</td>
+                                <td>2,1</td>
+                                <td>0,04%</td>
+                            </tr>
+                            <tr style="background: #ffe6cc">
+                                <td style="text-align: left">
+                                    <strong>Satılabilir Ürün</strong>
+                                </td>
+                                <td><strong>4.419,2</strong></td>
+                                <td><strong>97,46%</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="overflow-x: auto">
+                    <table style="min-width: auto; font-size: 13px">
+                        <thead>
+                            <tr>
+                                <th colspan="4" style="background: #217346">
+                                    2.Kalite Dağılımı
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>Kategori</th>
+                                <th>Miktar, ton</th>
+                                <th>2. Kalite %</th>
+                                <th>K.V Göre %</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="text-align: left">Çatlak (Çelikhane)</td>
+                                <td>29,00</td>
+                                <td>46,86%</td>
+                                <td>0,63%</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left">Eğri</td>
+                                <td>15,39</td>
+                                <td>24,87%</td>
+                                <td>0,33%</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left">Çizik (Hadde)</td>
+                                <td>7,47</td>
+                                <td>12,08%</td>
+                                <td>0,16%</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left">Fitil</td>
+                                <td>4,29</td>
+                                <td>6,94%</td>
+                                <td>0,09%</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left">Çapak (Hadde)</td>
+                                <td>2,49</td>
+                                <td>4,02%</td>
+                                <td>0,05%</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left">Parçalı Paket</td>
+                                <td>2,30</td>
+                                <td>3,71%</td>
+                                <td>0,05%</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left">Y.M.K Çapak</td>
+                                <td>0,94</td>
+                                <td>1,51%</td>
+                                <td>0,02%</td>
+                            </tr>
+                            <tr style="background: #d5f4e6">
+                                <td style="text-align: left"><strong>TOPLAM</strong></td>
+                                <td><strong>61,88</strong></td>
+                                <td><strong>100,00%</strong></td>
+                                <td><strong>1,33%</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- <div class="footer-card">
+            <p>
+                © 2025 Kardemir Kalite Kontrol Sistemi | Rapor Oluşturma Tarihi:
+                <span id="currentDate"></span>
+            </p>
+        </div> -->
+    </div>
+
+    <script>
+        document.getElementById("currentDate").textContent =
+            new Date().toLocaleDateString("tr-TR", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+            });
+
+        function filterData() {
+            const startDate = document.getElementById("startDate").value;
+            const endDate = document.getElementById("endDate").value;
+            const reportType = document.getElementById("reportType").value;
+            alert(
+                `Filtreleme yapılıyor...\nBaşlangıç: ${startDate}\nBitiş: ${endDate}\nRapor Tipi: ${reportType}`
+            );
+        }
+
+        function showChart() {
+            alert("Grafik görünümü açılıyor...");
+        }
+
+        function exportToExcel() {
+            alert("Excel dosyası hazırlanıyor...");
+        }
+
+        function sendEmail() {
+            alert("E-mail gönderme formu açılıyor...");
+        }
+    </script>
+</body>
+
+</html>

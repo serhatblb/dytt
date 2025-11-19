@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Kardemir - Çubuk Kangal Haddehanesi</title>
+  <link href="style.css" rel="stylesheet" />
+  <style>
+    .filters {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 12px;
+      margin-bottom: 15px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    .field { display: flex; flex-direction: column; gap: 4px; font-size: 12px; }
+    .field label { font-weight: bold; color: #444; }
+    .field input, .field select {
+      padding: 6px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px;
+    }
+    .btn {
+      background: #1976d2; color: #fff; border: none;
+      padding: 8px 14px; border-radius: 4px; cursor: pointer;
+      font-size: 13px; font-weight: 600;
+    }
+    .btn:hover { background: #125a9c; }
+
+    .data-table {
+      width: 100%; border-collapse: collapse; margin-top: 20px;
+      font-size: 13px; background: #fff; border-radius: 6px;
+      overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+    .data-table th, .data-table td {
+      padding: 8px 10px; text-align: center; border-bottom: 1px solid #e3e6ea;
+    }
+    .data-table thead th {
+      background: #f8f9fb; font-weight: 700; text-transform: uppercase;
+      font-size: 12px; color: #2c3e50;
+    }
+    .data-table tbody tr:nth-child(even) { background: #f8fbff; }
+    .data-table tbody tr:hover { background: #eef5ff; }
+
+    .bottom-buttons { display: flex; gap: 10px; margin-top: 15px; }
+    .btn-secondary {
+      background: #666; color: #fff; border: none;
+      padding: 8px 14px; border-radius: 4px; cursor: pointer;
+    }
+    .btn-secondary:hover { background: #444; }
+  </style>
+</head>
+<body>
+  <aside id="sidebar">
+    <div id="sidebar-container"></div>
+    <script>
+      fetch("sidebar.html")
+        .then(res => res.text())
+        .then(data => document.getElementById("sidebar-container").innerHTML = data);
+    </script>
+  </aside>
+
+  <div class="content-wrapper">
+    <header class="header">
+      <div class="breadcrumbs">
+        <a href="siparisler_ilk.html">Sipariş Sayfası</a> <span>&gt;</span>
+        <span>Çubuk Kangal Haddehanesi</span>
+      </div>
+    </header>
+
+    <h2 class="report-title">Çubuk Kangal Haddehanesi - Yarı Mamul Listesi</h2>
+
+    <!-- Filtre Alanı -->
+    <div class="filters">
+      <div class="field">
+        <label>Başlangıç Tarihi</label>
+        <input type="date" id="startDate">
+      </div>
+      <div class="field">
+        <label>Bitiş Tarihi</label>
+        <input type="date" id="endDate">
+      </div>
+      <div class="field">
+        <label>Ürün Tipi</label>
+        <select id="urunTipi">
+          <option value="KALINKANGAL">KALIN KANGAL</option>
+          <option value="KANGAL">KANGAL</option>
+        </select>
+      </div>
+      <button class="btn" onclick="applyFilters()">Liste Getir</button>
+      <button class="btn">Excel Rapor</button>
+    </div>
+
+    <!-- Tablo -->
+    <div style="overflow-x:auto;">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>İş Emri No</th>
+            <th>Döküm No</th>
+            <th>Malzeme No</th>
+            <th>Malzeme Tanımı</th>
+            <th>Kalite</th>
+            <th>Ürün Tipi</th>
+            <th>Çap (mm)</th>
+            <th>Boy (m)</th>
+            <th>Tonaj (t)</th>
+            <th>Adet</th>
+            <th>Tüketim Başlangıç</th>
+            <th>Detay</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><a href="#">4XXXX662</a></td>
+            <td>2511234</td>
+            <td>80003909</td>
+            <td>Kalın Kangal</td>
+            <td>S275JR_02</td>
+            <td>KALINKANGAL</td>
+            <td>52.5</td>
+            <td>52.5</td>
+            <td>175</td>
+            <td>70</td>
+            <td>01.10.2025</td>
+            <td><button class="btn" onclick="window.location.href = `kutuk-proses-rapor.html?id=${id}`;">Rapor</button></td>
+          </tr>
+          <tr>
+            <td><a href="#">4XXXX803</a></td>
+            <td>2511238</td>
+            <td>80000666</td>
+            <td>Kangal</td>
+            <td>1008_00</td>
+            <td>KANGAL</td>
+            <td>9</td>
+            <td>12</td>
+            <td>120</td>
+            <td>60</td>
+            <td>01.10.2025</td>
+            <td><button class="btn" onclick="window.location.href = `kutuk-proses-rapor.html?id=${id}`;">Rapor</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="bottom-buttons">
+      <button class="btn-secondary" onclick="window.location.href='siparisler_ilk.html'">← Siparişlere Geri Dön</button>
+    </div>
+  </div>
+
+  <script>
+    function applyFilters(){
+      alert("Filtreleme işlemi (örnek): seçilen ürün tipi = " + document.getElementById("urunTipi").value);
+    }
+  </script>
+</body>
+</html>

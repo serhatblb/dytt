@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏭 Modern Üretim Programı Yönetimi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="sidebar.css">
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+            /* Mavi (Hafifletildi) */
+            --primary-dark: #2563eb;
+            --secondary-color: #10b981;
+            /* Yeşil */
+            --secondary-dark: #059669;
+            --danger-color: #ef4444;
+            /* Kırmızı */
+            --danger-dark: #dc2626;
+            --bg-color: #f8fafc;
+            /* Açık Gri/Beyaz */
+            --card-color: #ffffff;
+            --border-color: #e5e7eb;
+            --text-color: #1f2937;
+            --warning-color: #facc15;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-color);
+            padding: 20px;
+            min-height: 100vh;
+            color: var(--text-color);
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            background: var(--card-color);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .header {
+            background: var(--primary-color);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 4px solid var(--primary-dark);
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .header-buttons {
+    display: flex;
+    gap: 10px;
+    margin-left: auto;   /* sağa yaslar */
+}
+
+
+        .btn {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background: var(--primary-dark);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-color);
+        }
+
+        .btn-success {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: var(--secondary-dark);
+        }
+
+        .table-container {
+            padding: 30px;
+            overflow-x: auto;
+        }
+
+        .export-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        /* Tablo Stilleri */
+        table {
+            width: 100%;
+            border-collapse: separate;
+            /* Gölgelendirme için */
+            border-spacing: 0;
+            background: var(--card-color);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        thead {
+            background: var(--primary-color);
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        th {
+            padding: 14px 10px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+            border-bottom: 2px solid var(--primary-dark);
+        }
+
+        th:last-child {
+            border-right: none;
+        }
+
+        td {
+            padding: 12px 10px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            border-right: 1px solid var(--border-color);
+            font-size: 13px;
+            vertical-align: middle;
+        }
+
+        td:last-child {
+            border-right: none;
+        }
+
+        tbody tr {
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+
+        tbody tr:hover {
+            background: #f1f5f9;
+            /* Hafif gölgelendirme */
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .negative-value {
+            background: #fee2e2 !important;
+            color: var(--danger-dark);
+            font-weight: 700;
+        }
+
+        .planned-stop {
+            background: var(--warning-color) !important;
+            color: var(--text-color) !important;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .planned-stop td {
+            border-right: none;
+            border-left: none;
+        }
+
+        .action-buttons-clean {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: nowrap;
+        }
+
+        .arrow-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .btn-arrow {
+            width: 25px;
+            height: 25px;
+            border: 1px solid var(--primary-color);
+            background: #eff6ff;
+            /* Çok açık mavi */
+            color: var(--primary-dark);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 10px;
+            line-height: 1;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-arrow:hover:not(:disabled) {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-arrow:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            background: #e5e7eb;
+            color: #9ca3af;
+        }
+
+        .btn-action {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+            color: white;
+            transition: all 0.3s;
+            white-space: nowrap;
+            letter-spacing: 0.2px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-action-edit {
+            background: var(--secondary-color);
+        }
+
+        .btn-action-edit:hover {
+            background: var(--secondary-dark);
+        }
+
+        .btn-action-add {
+            background: #34d399;
+        }
+
+        /* Hafif yeşil */
+
+        .btn-action-add:hover {
+            background: #059669;
+        }
+
+        .btn-action-delete {
+            background: var(--danger-color);
+        }
+
+        .btn-action-delete:hover {
+            background: var(--danger-dark);
+        }
+
+        .status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .status-active {
+            background: var(--primary-color);
+            box-shadow: 0 0 10px var(--primary-color);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+            }
+
+            50% {
+                box-shadow: 0 0 0 8px rgba(59, 130, 246, 0);
+            }
+        }
+
+        /* Modal Stilleri */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: var(--card-color);
+            padding: 0;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 700px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+            animation: fadeIn 0.3s ease-out;
+            transform: scale(0.95);
+        }
+
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+
+        .modal-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 12px 12px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .close {
+            color: white;
+            font-size: 30px;
+            font-weight: 300;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .close:hover {
+            color: #d1d5db;
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: var(--text-color);
+            font-size: 13px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.3s;
+            background: #f9fafb;
+            color: var(--text-color);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            background: var(--card-color);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .modal-footer {
+            padding: 20px 30px;
+            background: #f9fafb;
+            border-top: 1px solid var(--border-color);
+            border-radius: 0 0 12px 12px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .save-btn {
+            background: var(--secondary-color);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .save-btn:hover {
+            background: var(--secondary-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--primary-color);
+            /* Checkbox rengi */
+        }
+
+        /* Numara inputlarındaki okları kaldırma */
+        input[type="number"] {
+            -moz-appearance: textfield;
+        }
+
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .btn-action-publish {
+            background-color: #2563eb;
+            /* yeşil */
+            color: #ffffff;
+            border: none;
+        }
+
+        .btn-action-publish:hover {
+            background-color: #1b5e20;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <aside id="sidebar">
+        <div id="sidebar-container"></div>
+        <script>
+            fetch("sidebar.html")
+                .then(res => res.text())
+                .then(html => document.getElementById("sidebar-container").innerHTML = html);
+        </script>
+    </aside>
+    <div class="container" style="margin-left: 240px;">
+        <div class="header">
+            <h1>ÜRETİM PROGRAMI OLUŞTURMA 🏭</h1>
+            
+        </div>
+
+        <div class="table-container">
+            <div class="export-buttons">
+                <button class="btn btn-success" onclick="openAddModal()">
+                    <i class="fas fa-plus-circle"></i> YENİ PROGRAM EKLE
+                </button>
+                <button class="btn btn-primary" onclick="exportToExcel()">
+                    <i class="fas fa-file-excel"></i> EXCEL'E AKTAR
+                </button>
+                <button class="btn btn-success" onclick="saveProgram()">
+                    <i class="fas fa-save"></i> PROGRAMI KAYDET
+                </button>
+                <div class="header-buttons">
+                <button class="btn btn-primary" onclick="showInfo()">
+                    <i class="fas fa-warehouse"></i>HAT ÖNÜ STOK BİLGİLERİ
+                </button>
+                <button class="btn btn-primary" onclick="showProcessParams()">
+                    <i class="fas fa-cogs"></i> PROSES PARAMETRELERİ
+                </button>
+            </div>
+            </div>
+
+            <table id="productionTable">
+                <thead>
+                    <tr>
+                        <th>İş Emri No</th>
+                        <th>Malzeme Kodu</th>
+                        <th>Kesit</th>
+                        <th>Kalite</th>
+                        <th>Toplam Kampanya Planlanan Üretim Miktarı</th>
+                        <th>Toplam Kampanya Planlanan Tüketim Miktarı</th>
+                        <th>YM Stok Tonajı</th>
+                        <th>Toplam YM İhtiyaç Miktarı</th>
+                        <th>Planlanan Üretim Tarihi</th>
+                        <th>Planlanan Üretim Miktarı</th>
+                        <th>Planlanan YM Tüketim Miktarı</th>
+                        <th>Açıklama</th>
+                        <th>Planlı Duruşlara Ekle</th>
+                        <th>İşlemler</th>
+                        <th>Durum</th>
+                        <th>Program Yayınla</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="editModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Yeni Program Ekle</h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>İş Emri No</label>
+                        <input type="text" id="isEmriNo" placeholder="İş Emri No">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Malzeme Kodu</label>
+                        <input type="text" id="malzemeKodu" placeholder="Malzeme Kodu">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Kesit</label>
+                        <input type="number" id="kesit" placeholder="Kesit">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Kalite</label>
+                        <input type="text" id="kalite" placeholder="Kalite">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Toplam Kampanya Planlanan Üretim Miktarı</label>
+                        <input type="number" id="toplamUretim" placeholder="Toplam Kampanya Planlanan Üretim">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Toplam Kampanya Planlanan Tüketim Miktarı</label>
+                        <input type="number" id="toplamTuketim" placeholder="Toplam Kampanya Planlanan Tüketim">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>YM Stok Tonajı</label>
+                        <input type="number" id="ymStok" placeholder="YM Stok Tonajı">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Toplam YM İhtiyaç Miktarı</label>
+                        <input type="number" id="ymIhtiyac" placeholder="Toplam YM İhtiyaç Miktarı">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Planlanan Üretim Tarihi</label>
+                        <input type="date" id="uretimTarihi">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Planlanan Üretim Miktarı</label>
+                        <input type="number" id="planlananUretim" placeholder="Planlanan Üretim Miktarı">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Planlanan YM Tüketim Miktarı</label>
+                        <input type="number" id="planlananTuketim" placeholder="Planlanan YM Tüketim Miktarı">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Açıklama</label>
+                        <input type="text" id="aciklama" placeholder="Açıklama">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Durum</label>
+                        <select id="durum">
+                            <option value="Aktif">Aktif</option>
+                            <option value="Pasif">Pasif</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Planlı Duruşlara Ekle</label>
+                        <input type="checkbox" id="plannedStop" style="width:20px; height:20px;">
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button class="save-btn" onclick="saveRow()">
+                    <i class="fas fa-check"></i> Kaydet
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        let productionData = [
+            {
+                id: 1,
+                isEmriNo: "400000016581",
+                malzemeKodu: "80000025",
+                kesit: 140,
+                kalite: "B420C_00",
+                toplamUretim: 1200,
+                toplamTuketim: 1320,
+                ymStok: 1200,
+                ymIhtiyac: -120,
+                uretimTarihi: "2025-10-25",
+                planlananUretim: 1200,
+                planlananTuketim: 1320,
+                aciklama: "İlk kampanya",
+                plannedStop: false
+            },
+            {
+                id: 2,
+                isEmriNo: "400000016582",
+                malzemeKodu: "80000025",
+                kesit: 150,
+                kalite: "B420C_00",
+                toplamUretim: 1600,
+                toplamTuketim: 1760,
+                ymStok: 1600,
+                ymIhtiyac: 0,
+                uretimTarihi: "2025-10-25",
+                planlananUretim: 1600,
+                planlananTuketim: 1760,
+                aciklama: "",
+                plannedStop: false
+            },
+            {
+                id: 3,
+                isEmriNo: "400000016583",
+                malzemeKodu: "80000025",
+                kesit: 170,
+                kalite: "B420C_01",
+                toplamUretim: 1400,
+                toplamTuketim: 1540,
+                ymStok: 1600,
+                ymIhtiyac: 60,
+                uretimTarihi: "2025-10-25",
+                planlananUretim: 1400,
+                planlananTuketim: 1540,
+                aciklama: "Kalite değişimi",
+                plannedStop: false
+            },
+            {
+                id: 4,
+                isEmriNo: "400000016584",
+                malzemeKodu: "80000025",
+                kesit: 170,
+                kalite: "B420C_02",
+                toplamUretim: 2500,
+                toplamTuketim: 2750,
+                ymStok: 2500,
+                ymIhtiyac: -200,
+                uretimTarihi: "2025-10-26",
+                planlananUretim: 1300,
+                planlananTuketim: 1430,
+                aciklama: "",
+                plannedStop: false
+            },
+            {
+                id: 5,
+                isEmriNo: "",
+                malzemeKodu: "",
+                kesit: "",
+                kalite: "",
+                toplamUretim: "",
+                toplamTuketim: "",
+                ymStok: "",
+                ymIhtiyac: "",
+                uretimTarihi: "2025-10-26",
+                planlananUretim: 0,
+                planlananTuketim: 0,
+                aciklama: "Merdane Değişikliği",
+                plannedStop: true
+            },
+            {
+                id: 6,
+                isEmriNo: "400000016585",
+                malzemeKodu: "80000025",
+                kesit: 190,
+                kalite: "B420C_05",
+                toplamUretim: 1600,
+                toplamTuketim: 1760,
+                ymStok: 1600,
+                ymIhtiyac: 100,
+                uretimTarihi: "2025-10-27",
+                planlananUretim: 1600,
+                planlananTuketim: 1760,
+                aciklama: "Yeni kesit",
+                plannedStop: false
+            }
+        ];
+
+        let editingId = null;
+        let nextId = 7;
+
+        function renderTable() {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+
+            productionData.forEach((row, index) => {
+                const tr = document.createElement('tr');
+                if (row.plannedStop) {
+                    tr.classList.add('planned-stop');
+                }
+
+                const ymIhtiyacClass = row.ymIhtiyac !== null && row.ymIhtiyac < 0 ? 'negative-value' : '';
+                const ymIhtiyacDisplay = row.ymIhtiyac !== null ? row.ymIhtiyac : '-';
+                const uretimTarihiDisplay = row.uretimTarihi ? formatDate(row.uretimTarihi) : '';
+
+                if (row.plannedStop) {
+                    // Planlı duruş satırı
+                    tr.innerHTML = `
+                        <td colspan="8" style="text-align: center; font-size: 14px; letter-spacing: 2px; font-style: italic;">PLANLI DURUŞ</td>
+                        <td>${uretimTarihiDisplay}</td>
+                        <td>${row.planlananUretim || '-'}</td>
+                        <td>${row.planlananTuketim || '-'}</td>
+                        <td style="text-align: left;">${row.aciklama || 'Belirtilmemiş'}</td>
+                        <td><div class="arrow-group">
+                                    <button class="btn-arrow btn-arrow-up" onclick="moveRow(${index}, 'up')" ${index === 0 ? 'disabled' : ''}><i class="fas fa-caret-up"></i></button>
+                                    <button class="btn-arrow btn-arrow-down" onclick="moveRow(${index}, 'down')" ${index === productionData.length - 1 ? 'disabled' : ''}><i class="fas fa-caret-down"></i></button>
+                                </div></td>
+                        <td>
+                            <div class="action-buttons-clean">
+                                <button class="btn-action btn-action-edit" onclick="editRow(${row.id})"><i class="fas fa-edit"></i> Düzenle</button>
+                                <button class="btn-action btn-action-add" onclick="duplicateRow(${row.id})"><i class="fas fa-copy"></i> Ekle</button>
+                                <button class="btn-action btn-action-delete" onclick="deleteRow(${row.id})"><i class="fas fa-trash-alt"></i> Çıkar</button>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="status-indicator status-active" title="Planlı"></div>
+                        </td>
+                        <td>
+                            <div class="action-buttons-clean">
+                                <button class="btn-action btn-action-publish" onclick="editRow(${row.id})">
+                                    <i class="fas fa-paper-plane"></i> Programı Yayınla
+                                </button>
+                            </div>
+                        </td>
+
+                    `;
+                } else {
+                    // Normal satır
+                    tr.innerHTML = `
+                        <td>${row.isEmriNo}</td>
+                        <td>${row.malzemeKodu}</td>
+                        <td>${row.kesit}</td>
+                        <td>${row.kalite}</td>
+                        <td>${row.toplamUretim}</td>
+                        <td>${row.toplamTuketim}</td>
+                        <td>${row.ymStok}</td>
+                        <td class="${ymIhtiyacClass}">${ymIhtiyacDisplay}</td>
+                        <td>${uretimTarihiDisplay}</td>
+                        <td>${row.planlananUretim}</td>
+                        <td>${row.planlananTuketim}</td>
+                        <td style="text-align: left;">${row.aciklama}</td>
+                        <td> <div class="arrow-group">
+                                    <button class="btn-arrow btn-arrow-up" onclick="moveRow(${index}, 'up')" ${index === 0 ? 'disabled' : ''}><i class="fas fa-caret-up"></i></button>
+                                    <button class="btn-arrow btn-arrow-down" onclick="moveRow(${index}, 'down')" ${index === productionData.length - 1 ? 'disabled' : ''}><i class="fas fa-caret-down"></i></button>
+                                </div>
+                                </td>
+                        <td>
+                            <div class="action-buttons-clean">
+                                <button class="btn-action btn-action-edit" onclick="editRow(${row.id})"><i class="fas fa-edit"></i> Düzenle</button>
+                                <button class="btn-action btn-action-add" onclick="duplicateRow(${row.id})"><i class="fas fa-copy"></i> Ekle</button>
+                                <button class="btn-action btn-action-delete" onclick="deleteRow(${row.id})"><i class="fas fa-trash-alt"></i> Çıkar</button>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="status-indicator status-active" title="Aktif Program"></div>
+                        </td>
+                        <td>
+                            <div class="action-buttons-clean">
+                                <button class="btn-action btn-action-publish" onclick="editRow(${row.id})">
+                                    <i class="fas fa-paper-plane"></i> Programı Yayınla
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                }
+                tbody.appendChild(tr);
+            });
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            // Tarihi TR formatında (GG.AA.YYYY) döndür
+            return date.toLocaleDateString('tr-TR', { year: 'numeric', month: '2-digit', day: '2-digit' });
+        }
+
+        function openAddModal() {
+            editingId = null;
+            document.getElementById('modalTitle').textContent = 'Yeni Program Ekle';
+            clearForm();
+            const modal = document.getElementById('editModal');
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('active'), 10);
+        }
+
+        function editRow(id) {
+            editingId = id;
+            const row = productionData.find(r => r.id === id);
+            if (!row) return;
+
+            document.getElementById('modalTitle').textContent = 'Program Düzenle';
+            document.getElementById('isEmriNo').value = row.isEmriNo;
+            document.getElementById('malzemeKodu').value = row.malzemeKodu;
+            document.getElementById('kesit').value = row.kesit;
+            document.getElementById('kalite').value = row.kalite;
+            document.getElementById('toplamUretim').value = row.toplamUretim;
+            document.getElementById('toplamTuketim').value = row.toplamTuketim;
+            document.getElementById('ymStok').value = row.ymStok;
+            document.getElementById('ymIhtiyac').value = row.ymIhtiyac === null ? '' : row.ymIhtiyac;
+            document.getElementById('uretimTarihi').value = row.uretimTarihi;
+            document.getElementById('planlananUretim').value = row.planlananUretim;
+            document.getElementById('planlananTuketim').value = row.planlananTuketim;
+            document.getElementById('aciklama').value = row.aciklama;
+            document.getElementById('plannedStop').checked = row.plannedStop;
+
+            const modal = document.getElementById('editModal');
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('active'), 10);
+        }
+
+        function duplicateRow(id) {
+            const row = productionData.find(r => r.id === id);
+            if (!row) return;
+
+            const newRow = { ...row, id: nextId++ };
+            const index = productionData.findIndex(r => r.id === id);
+            productionData.splice(index + 1, 0, newRow);
+            renderTable();
+        }
+
+        function deleteRow(id) {
+            if (confirm('Bu programı silmek istediğinize emin misiniz?')) {
+                productionData = productionData.filter(r => r.id !== id);
+                renderTable();
+            }
+        }
+
+        function moveRow(index, direction) {
+            if (direction === 'up' && index > 0) {
+                [productionData[index], productionData[index - 1]] = [productionData[index - 1], productionData[index]];
+            } else if (direction === 'down' && index < productionData.length - 1) {
+                [productionData[index], productionData[index + 1]] = [productionData[index + 1], productionData[index]];
+            }
+            renderTable();
+        }
+
+        function saveRow() {
+            const rowData = {
+                isEmriNo: document.getElementById('isEmriNo').value,
+                malzemeKodu: document.getElementById('malzemeKodu').value,
+                kesit: document.getElementById('kesit').value,
+                kalite: document.getElementById('kalite').value,
+                toplamUretim: document.getElementById('toplamUretim').value,
+                toplamTuketim: document.getElementById('toplamTuketim').value,
+                ymStok: document.getElementById('ymStok').value,
+                // Boş bırakılırsa null olarak kaydet
+                ymIhtiyac: document.getElementById('ymIhtiyac').value === '' ? null : parseFloat(document.getElementById('ymIhtiyac').value),
+                uretimTarihi: document.getElementById('uretimTarihi').value,
+                planlananUretim: document.getElementById('planlananUretim').value,
+                planlananTuketim: document.getElementById('planlananTuketim').value,
+                aciklama: document.getElementById('aciklama').value,
+                plannedStop: document.getElementById('plannedStop').checked
+            };
+
+            if (editingId) {
+                const index = productionData.findIndex(r => r.id === editingId);
+                // Yeni veriyi mevcut verinin üzerine yaz
+                productionData[index] = { ...productionData[index], ...rowData, id: editingId };
+            } else {
+                // Yeni satırın son id'den büyük olmasını sağla
+                const maxId = productionData.length > 0 ? Math.max(...productionData.map(r => r.id)) : 0;
+                nextId = maxId >= nextId ? maxId + 1 : nextId;
+                productionData.push({ id: nextId++, ...rowData });
+            }
+
+            closeModal();
+            renderTable();
+        }
+
+        function clearForm() {
+            document.getElementById('isEmriNo').value = '';
+            document.getElementById('malzemeKodu').value = '';
+            document.getElementById('kesit').value = '';
+            document.getElementById('kalite').value = '';
+            document.getElementById('toplamUretim').value = '';
+            document.getElementById('toplamTuketim').value = '';
+            document.getElementById('ymStok').value = '';
+            document.getElementById('ymIhtiyac').value = '';
+            document.getElementById('uretimTarihi').value = '';
+            document.getElementById('planlananUretim').value = '';
+            document.getElementById('planlananTuketim').value = '';
+            document.getElementById('aciklama').value = '';
+            document.getElementById('plannedStop').checked = false;
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('editModal');
+            modal.classList.remove('active');
+            // Animasyon bitince kapat
+            setTimeout(() => modal.style.display = 'none', 300);
+        }
+
+        function showInfo() {
+            alert('🏭 HAT ONU STOK BİLGİLERİ: Bu kısımda hattın önündeki mevcut stoklar ve detaylar gösterilecektir.');
+        }
+
+        function showProcessParams() {
+            alert('⚙️ PROSES PARAMETRELERİ: Bu kısımda üretim hattına ait güncel proses ayarları ve limitler gösterilecektir.');
+        }
+
+        // Excel Export Fonksiyonu (Daha temiz tablo yapısıyla güncellendi)
+        function exportToExcel() {
+            let html = '<table>';
+
+            // Başlık satırı
+            const headers = ['İş Emri No', 'Malzeme Kodu', 'Kesit', 'Kalite', 'Toplam Üretim (Ton)', 'Toplam Tüketim (Ton)', 'YM Stok (Ton)', 'YM İhtiyaç (Ton)', 'Üretim Tarihi', 'Planlanan Üretim (Ton)', 'Planlanan YM Tüketim (Ton)', 'Açıklama'];
+            html += '<thead><tr>' + headers.map(h => `<th>${h}</th>`).join('') + '</tr></thead>';
+
+            // Veri satırları
+            html += '<tbody>';
+            productionData.forEach(row => {
+                html += '<tr>';
+                if (row.plannedStop) {
+                    html += `<td colspan="12" style="background-color: #facc15; font-weight: bold;">PLANLI DURUŞ: ${row.aciklama} - ${row.uretimTarihi ? formatDate(row.uretimTarihi) : ''}</td>`;
+                } else {
+                    html += `<td>${row.isEmriNo}</td>`;
+                    html += `<td>${row.malzemeKodu}</td>`;
+                    html += `<td>${row.kesit}</td>`;
+                    html += `<td>${row.kalite}</td>`;
+                    html += `<td>${row.toplamUretim}</td>`;
+                    html += `<td>${row.toplamTuketim}</td>`;
+                    html += `<td>${row.ymStok}</td>`;
+                    html += `<td style="color: ${row.ymIhtiyac < 0 ? 'red' : 'inherit'};">${row.ymIhtiyac !== null ? row.ymIhtiyac : '-'}</td>`;
+                    html += `<td>${row.uretimTarihi ? formatDate(row.uretimTarihi) : ''}</td>`;
+                    html += `<td>${row.planlananUretim}</td>`;
+                    html += `<td>${row.planlananTuketim}</td>`;
+                    html += `<td>${row.aciklama}</td>`;
+                }
+                html += '</tr>';
+            });
+            html += '</tbody></table>';
+
+            const blob = new Blob(['\ufeff' + html], {
+                type: 'application/vnd.ms-excel;charset=utf-8' // Excel için özel tip
+            });
+
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'uretim_programi_' + new Date().toISOString().slice(0, 10) + '.xls';
+            link.click();
+
+            alert('Excel dosyası indirildi! 💾');
+        }
+
+        function saveProgram() {
+            const dataStr = JSON.stringify(productionData, null, 2);
+            const blob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'uretim_programi_' + new Date().toISOString().slice(0, 10) + '.json';
+            link.click();
+
+            alert('Program başarıyla kaydedildi! ✅');
+        }
+
+        // Modal dışına tıklandığında kapama
+        window.onclick = function (event) {
+            const modal = document.getElementById('editModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+
+        // Sayfa yüklendiğinde tabloyu render et
+        renderTable();
+    </script>
+</body>
+
+</html>
