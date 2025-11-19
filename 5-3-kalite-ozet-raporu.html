@@ -1,1151 +1,1198 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kalite Özet Raporu</title>
-    <link href="sidebar.css" rel="stylesheet" />
+    <link rel="stylesheet" href="sidebar.css">
     <style>
-        :root{
-            --bg:#f5f7fa;
-            --card:#fff;
-            --text:#2c3e50;
-            --muted:#6b7a8c;
-            --border:#e2e8f0;
-            --primary:#2c5f7e;
-            --primary-light:#4a8bb3;
-            --filter-bg-light: #f7f9fb;
-            --filter-border-focus: #4a8bb3;
-            --tag-bg: #4a8bb3;
-        }
-        body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,'Segoe UI',Arial,Helvetica,sans-serif;font-size:13px}
-
-        .content-wrapper{
-            margin-left:260px;
-            min-height:100vh;
-            padding:24px;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        .header-card{
-            background:linear-gradient(135deg, #6887a5 0%, #e1e4e5 100%);
-            color:white;
-            border-radius:12px;
-            padding:18px 28px;
-            margin-bottom:20px;
-            box-shadow:0 2px 6px rgba(44,95,126,0.12);
-            display:flex;
-            align-items:center;
-            gap:14px;
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: wheat;
+            min-height: 100vh;
+            padding: 20px;
         }
 
-        .header-card svg{
-            width:32px;
-            height:32px;
-            opacity:0.95;
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
         }
 
-        .header-card h1{
-            font-size:20px;
-            font-weight:500;
-            margin:0;
-            letter-spacing:0.3px;
+        .header {
+            background: linear-gradient(135deg, #5a7a9f 0%, #4a6a8f 100%);
+            color: white;
+            padding: 25px 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
-        /* FİLTRE KARTI */
-        .filter-card{
-            background:white;
-            border:none;
-            padding:32px 40px;
-            margin-bottom:0;
-            box-shadow:none;
-            border-bottom:1px solid #e2e8f0;
+        .header-icon {
+            width: 30px;
+            height: 30px;
+            background: white;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .filter-row{
-            display:grid;
-            grid-template-columns:repeat(3, 2fr);
-            gap:0px;
-            margin-bottom:24px;
+        .header-icon::before {
+            content: "≡";
+            color: #5a7a9f;
+            font-size: 20px;
+            font-weight: bold;
         }
 
-        .filter-row-last{
-            display:grid;
-            grid-template-columns:1fr 1fr 1fr 200px;
-            gap:32px;
-            align-items:end;
+        .header h1 {
+            font-size: 20px;
+            font-weight: 500;
+            letter-spacing: 1px;
         }
 
-        .filter-item{
-            display:flex;
-            flex-direction:column;
-            gap:10px;
-            width: 80px;
+        .filters-section {
+            padding: 30px;
+            background: #f8f9fa;
         }
 
-        .filter-item label{
-            font-weight:500;
-            color:var(--text);
-            font-size:15px;
-            display:block;
-            margin-bottom:2px;
-            white-space: nowrap;
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
         }
 
-        .filter-item input,
-        .filter-item select{
-            padding:14px 18px;
-            border:1px solid #cbd5e0;
-            border-radius:6px;
-            font-size:15px;
-            transition:all 0.2s;
-            background:white;
-            color:var(--text);
-            height:50px;
-            box-sizing:border-box;
-            width:400%;
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
         }
 
-        .filter-item select{
-            cursor:pointer;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%236b7a8c'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd' /%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 14px center;
-            background-size: 20px;
-            padding-right: 42px;
-            appearance: none;
+        .filter-group label {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
         }
 
-        /* Çoklu Seçim Dropdown Stilleri */
-        .multiselect-container{
-            position:relative;
-            width:400%;
-        }
-
-        .multiselect-display{
-            padding:14px 18px;
-            border:1px solid #cbd5e0;
-            border-radius:6px;
-            font-size:15px;
-            background:white;
-            color:var(--text);
-            min-height:50px;
-            box-sizing:border-box;
-            cursor:pointer;
-            display:flex;
-            align-items:center;
-            justify-content:space-between;
-            gap:10px;
-            transition:all 0.2s;
-        }
-
-        .multiselect-display:hover{
-            border-color:#a0aec0;
-        }
-
-        .multiselect-display.active{
-            border-color:var(--filter-border-focus);
-            box-shadow:0 0 0 3px rgba(74,139,179,0.15);
-        }
-
-        .multiselect-display-text{
-            flex:1;
-            color:var(--text);
-            font-size:15px;
-        }
-
-        .multiselect-display-arrow{
-            color:var(--muted);
-            font-size:18px;
-            transition:transform 0.2s;
-        }
-
-        .multiselect-display.active .multiselect-display-arrow{
-            transform:rotate(180deg);
-        }
-
-        .multiselect-dropdown{
-            position:absolute;
-            top:calc(100% + 4px);
-            left:0;
-            right:0;
-            background:white;
-            border:1px solid #cbd5e0;
-            border-radius:6px;
-            max-height:240px;
-            overflow-y:auto;
-            z-index:1000;
-            display:none;
-            box-shadow:0 4px 12px rgba(0,0,0,0.12);
-        }
-
-        .multiselect-dropdown.active{
-            display:block;
-        }
-
-        .multiselect-option{
-            padding:12px 18px;
-            cursor:pointer;
-            display:flex;
-            align-items:center;
-            gap:12px;
-            transition:background 0.15s;
-            user-select:none;
-        }
-
-        .multiselect-option:hover{
-            background:#f7fafc;
-        }
-
-        .multiselect-option input[type="checkbox"]{
-            cursor:pointer;
-            width:18px;
-            height:18px;
-            margin:0;
-        }
-
-        .multiselect-option label{
-            cursor:pointer;
-            margin:0;
-            flex:1;
-            font-weight:400;
-            font-size:15px;
-        }
-
-        .multiselect-tags{
-            display:flex;
-            flex-wrap:wrap;
-            gap:8px;
-            margin-top:10px;
-            min-height:28px;
-        }
-
-        .multiselect-tag{
-            background:var(--tag-bg);
-            color:white;
-            padding:6px 12px;
-            border-radius:5px;
-            font-size:13px;
-            display:inline-flex;
-            align-items:center;
-            gap:8px;
-            white-space:nowrap;
-        }
-
-        .multiselect-tag-remove{
-            cursor:pointer;
-            font-weight:bold;
-            font-size:18px;
-            line-height:1;
-            opacity:0.8;
-            transition:opacity 0.2s;
-        }
-
-        .multiselect-tag-remove:hover{
-            opacity:1;
-        }
-
-        .filter-item input[type="date"]{
-            cursor:pointer;
-        }
-
-        .filter-item input[type="date"]::-webkit-calendar-picker-indicator {
+        .filter-group select,
+        .filter-group input {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            background: white;
             cursor: pointer;
-            opacity:0.6;
-            transition:opacity 0.2s;
-            width:20px;
-            height:20px;
+            transition: all 0.3s;
         }
 
-        .filter-item input[type="date"]::-webkit-calendar-picker-indicator:hover {
-            opacity:1;
+        .filter-group select:hover,
+        .filter-group input:hover {
+            border-color: #5a7a9f;
         }
 
-        .filter-item input:focus,
-        .filter-item select:focus{
-            outline:none;
-            border-color:var(--filter-border-focus);
-            box-shadow:0 0 0 3px rgba(74,139,179,0.15);
+        .filter-group select:focus,
+        .filter-group input:focus {
+            outline: none;
+            border-color: #5a7a9f;
+            box-shadow: 0 0 0 3px rgba(90, 122, 159, 0.1);
         }
 
-        .btn-filter{
-            background:#3d7193;
-            color:white;
-            padding:0 40px;
-            border:none;
-            border-radius:6px;
-            font-size:15px;
-            font-weight:600;
-            cursor:pointer;
-            transition:all 0.2s;
-            height:50px;
-            white-space:nowrap;
+        .buttons-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .filter-button {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #4a6a8f 0%, #5a7a9f 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
             letter-spacing: 0.5px;
         }
 
-        .btn-filter:hover{
-            background:#2c5f7e;
-            transform:translateY(-1px);
-            box-shadow:0 4px 12px rgba(44,95,126,0.25);
+        .filter-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(90, 122, 159, 0.3);
         }
 
-        .btn-filter:active{
-            transform:translateY(0);
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
-        /* BUTONLAR */
-        .action-buttons{
-            display:flex;
-            gap:16px;
-            justify-content:center;
-            padding:24px 40px;
-            background:white;
-            border-bottom:1px solid #e2e8f0;
+        .action-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .btn-action{
-            padding:12px 28px;
-            border:none;
-            border-radius:6px;
-            font-size:15px;
-            font-weight:600;
-            cursor:pointer;
-            transition:all 0.2s;
-            display:inline-flex;
-            align-items:center;
-            gap:10px;
-            height:48px;
-            letter-spacing:0.3px;
+        .btn-chart {
+            background: #2196F3;
+            color: white;
         }
 
-        .btn-action:hover{
-            transform:translateY(-1px);
-            box-shadow:0 4px 12px rgba(0,0,0,0.2);
+        .btn-excel {
+            background: #4CAF50;
+            color: white;
         }
 
-        .btn-action:active{
-            transform:translateY(0);
+        .btn-email {
+            background: #f44336;
+            color: white;
         }
 
-        .btn-chart{
-            background:#2563eb;
-            color:white;
-        }
-        .btn-chart:hover{
-            background:#1d4ed8;
-        }
-        .btn-excel{
-            background:#16a34a;
-            color:white;
-        }
-        .btn-excel:hover{
-            background:#15803d;
-        }
-        .btn-email{
-            background:#dc2626;
-            color:white;
-        }
-        .btn-email:hover{
-            background:#b91c1c;
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
 
-        /* TABLO KARTLARI */
-        .table-card{
-            background:white;
-            border:1px solid var(--border);
-            border-radius:10px;
-            padding:20px;
-            box-shadow:0 1px 3px rgba(0,0,0,0.06);
-            margin-bottom:24px;
+        .content-section {
+            padding: 30px;
         }
 
-        .section-title{
-            background:#f7fafc;
-            color:#2d3748;
-            padding:12px 18px;
-            border-radius:6px;
-            margin-bottom:16px;
-            font-size:15px;
-            font-weight:600;
-            border-left:4px solid var(--primary);
+        .product-type-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #e0e0e0;
         }
 
-        .table-wrapper{
-            overflow-x:auto;
-            border-radius:8px;
-            max-height:700px;
-            overflow-y:auto;
+        .tab {
+            padding: 12px 30px;
+            background: transparent;
+            border: none;
+            font-size: 15px;
+            font-weight: 500;
+            color: #666;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s;
         }
 
-        table{
-            width:100%;
-            border-collapse:collapse;
-            background:white;
-            font-size:12px;
-            min-width:5000px;
+        .tab:hover {
+            color: #5a7a9f;
         }
 
-        th{
-            background:#2c5f7e;
-            color:white;
-            padding:11px 9px;
-            text-align:center;
-            font-weight:500;
-            border:1px solid #1a3a52;
-            white-space:nowrap;
-            font-size:11px;
-            position:sticky;
-            top:0;
-            z-index:10;
+        .tab.active {
+            color: #5a7a9f;
         }
 
-        th[rowspan="2"]{background:#3d7193}
-        th[colspan="6"]{background:#4a8bb3;border-bottom:2px solid #e2e8f0}
-        th[colspan="50"]{background:#5a9fc4;border-bottom:2px solid #e2e8f0}
-        th[colspan="43"]{background:#6ba8c9;border-bottom:2px solid #e2e8f0}
-
-        td{
-            padding:9px;
-            text-align:center;
-            border:1px solid #e2e8f0;
-            color:#4a5568;
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(135deg, #5a7a9f 0%, #4a6a8f 100%);
+            border-radius: 3px 3px 0 0;
         }
 
-        tr:nth-child(even){background-color:#f7fafc}
-        tr:hover{background-color:#edf2f7}
-
-        .highlight-code{background:#f7fafc;font-weight:600}
-        .highlight-green{background:#e6f7f1;font-weight:600}
-        .highlight-blue{background:#e8f4f8;font-weight:600}
-
-        /* Özet tablolar için stiller */
-        .tables-container{
-            display:grid;
-            grid-template-columns:1fr 1fr;
-            gap:24px;
+        .tab-content {
+            display: none;
         }
 
-        table.summary-table{
-            font-size:13px;
-            min-width:auto;
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s;
         }
 
-        .summary-table th.green-header{
-            background:#1e7e34;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .summary-table th.light-green-header{
-            background:#217346;
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
-        .summary-table td.left{
-            text-align:left;
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
         }
 
-        .summary-table td.right{
-            text-align:right;
+        th {
+            background: linear-gradient(135deg, #5a7a9f 0%, #4a6a8f 100%);
+            color: white;
+            padding: 14px 12px;
+            text-align: center;
+            font-weight: 500;
+            font-size: 12px;
+            border: 1px solid #4a6a8f;
+            white-space: nowrap;
         }
 
-        .summary-table td.center{
-            text-align:center;
+        td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+            font-size: 12px;
+            color: #333;
         }
 
-        tr.highlight{
-            background:#ffe6cc !important;
-            font-weight:600;
+        tr:nth-child(even) {
+            background: #f8f9fa;
         }
 
-        tr.highlight-green{
-            background:#d5f4e6 !important;
-            font-weight:600;
+        tr:hover {
+            background: #e8f4f8;
+            transition: background 0.3s;
         }
 
-        .red-header{
-            background: #217346 !important;
-            color: #fcfcfc !important;
-            font-weight:600;
+        .summary-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
         }
 
-        .hurda-header{
-            background: #217346 !important;
-            color: #f6f7f8 !important;
-            font-weight:600;
+        .summary-table {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
         }
 
-        .footer-card{
-            background:var(--primary);
-            color:white;
-            padding:16px;
-            text-align:center;
-            font-size:12px;
-            border-radius:10px;
-            margin-top:20px;
+        .summary-table h3 {
+            background: linear-gradient(135deg, #5a7a9f 0%, #4a6a8f 100%);
+            color: white;
+            padding: 15px;
+            font-size: 14px;
+            font-weight: 500;
         }
 
-        @media print{
-            body{background:white}
-            .content-wrapper{margin-left:0;padding:0}
-            .filter-card,.action-buttons{display:none}
-            #sidebar{display:none}
+        .summary-table table {
+            box-shadow: none;
         }
 
-        @media(max-width:1400px){
-            .filter-row{
-                grid-template-columns:repeat(2, 1fr);
-            }
-            .filter-row-last{
-                grid-template-columns:1fr 1fr;
-            }
-            .btn-filter{
-                grid-column:1/-1;
+        .percentage-column {
+            font-weight: 600;
+            color: #4CAF50;
+        }
+
+        .highlight-row {
+            background: #e3f2fd !important;
+            font-weight: 600;
+        }
+
+        @media (max-width: 1200px) {
+            .summary-section {
+                grid-template-columns: 1fr;
             }
         }
 
-        @media(max-width:1024px){
-            .content-wrapper{margin-left:0}
-            .filter-row{
-                grid-template-columns:1fr;
+        @media (max-width: 768px) {
+            .filters-grid {
+                grid-template-columns: 1fr;
             }
-            .filter-row-last{
-                grid-template-columns:1fr;
+
+            .buttons-row {
+                flex-direction: column;
+                align-items: stretch;
             }
-            .tables-container{
-                grid-template-columns:1fr;
+
+            .action-buttons {
+                width: 100%;
+                justify-content: center;
             }
-            .action-buttons{
-                flex-wrap:wrap;
+
+            .header h1 {
+                font-size: 18px;
+            }
+
+            .tab {
+                padding: 10px 20px;
+                font-size: 14px;
             }
         }
-        .menuye-don-btn {
-    display: flex;
-    align-items: center;
-    margin-left: auto;
-    margin-right: 20px;
-    gap: 8px;
-    background: linear-gradient(135deg, #004080, #0078d7);
-    color: #fff;
-    text-decoration: none;
-    padding: 8px 16px;
-    border-radius: 8px;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-}
-
-.menuye-don-btn:hover {
-    background: linear-gradient(135deg, #0078d7, #00b894);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.25);
-}
-
-.arrow-icon {
-    font-size: 18px;
-}
     </style>
 </head>
 <body>
-<aside id="sidebar">
+    <!-- Sidebar -->
+  <aside id="sidebar" >
     <div id="sidebar-container"></div>
     <script>
-        fetch("sidebar.html")
-            .then(r=>r.text())
-            .then(html=>{document.getElementById("sidebar-container").innerHTML=html});
+      fetch("sidebar.html")
+        .then(r=>r.text())
+        .then(html=>{document.getElementById("sidebar-container").innerHTML=html});
     </script>
-</aside>
+  </aside>
+    <div class="container" style="margin-left: 250px;">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-icon"></div>
+            <h1>KALİTE ÖZET RAPORU</h1>
+        </div>
 
-<div class="content-wrapper">
-    <div class="header-card">
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" fill="currentColor" opacity="0.9"/>
-        </svg>
-        <h1>KALİTE ÖZET RAPORU</h1>
-        <a href="5-0-kalite-kontrol-ana-ekran.html" class="menuye-don-btn">
-        <span class="arrow-icon">⬅</span> Menüye Dön
-    </a>
-    </div>
+        <!-- Filters Section -->
+        <div class="filters-section">
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label>Ürün Tipi</label>
+                    <select id="urunTipi">
+                        <option value="">Ürün Tipi Seçiniz</option>
+                        <option value="ham">Ham Teker</option>
+                        <option value="nihai">Nihai Teker</option>
+                    </select>
+                </div>
 
-    <div class="filter-card">
-        <!-- İlk Satır: Ürün Tipi, Rapor Tipi, Çelik Sınıfı -->
-        <div class="filter-row">
-            <!-- Ürün Tipi - Çoklu Seçim -->
-            <div class="filter-item">
-                <label>Ürün Tipi</label>
-                <div class="multiselect-container">
-                    <div class="multiselect-display" id="productTypeDisplay" onclick="toggleDropdown('productType')">
-                        <span class="multiselect-display-text" id="productTypeText">Ürün Tipi Seçiniz</span>
-                        <span class="multiselect-display-arrow">▼</span>
-                    </div>
-                    <div class="multiselect-dropdown" id="productTypeDropdown">
-                        <label class="multiselect-option">
-                            <input type="checkbox" value="SBQ" id="product_sbq" onchange="updateMultiselect('productType')">
-                            <label for="product_sbq">SBQ</label>
-                        </label>
-                        <label class="multiselect-option">
-                            <input type="checkbox" value="Filmaşin" id="product_filmasin" onchange="updateMultiselect('productType')">
-                            <label for="product_filmasin">Filmaşin</label>
-                        </label>
-                        <label class="multiselect-option">
-                            <input type="checkbox" value="Garret" id="product_garret" onchange="updateMultiselect('productType')">
-                            <label for="product_garret">Garret</label>
-                        </label>
-                        <label class="multiselect-option">
-                            <input type="checkbox" value="İnşaat Demiri" id="product_insaat" onchange="updateMultiselect('productType')">
-                            <label for="product_insaat">İnşaat Demiri</label>
-                        </label>
+                <div class="filter-group">
+                    <label>Rapor Tipi</label>
+                    <select id="raporTipi">
+                        <option value="">Rapor Tipi Seçiniz</option>
+                        <option value="haftalik">Haftalık Kalite Özeti</option>
+                        <option value="aylik">Aylık Kalite Özeti</option>
+                        <option value="yillik">Yıllık Kalite Özeti</option>
+                        <option value="yonetici">Yönetici Özeti</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Çelik Sınıfı</label>
+                    <select id="celikSinifi">
+                        <option value="">Tümü</option>
+                        <option value="s235">S235</option>
+                        <option value="s275">S275</option>
+                        <option value="s355">S355</option>
+                        <option value="b500">B500</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label>Müşteri</label>
+                    <select id="musteri">
+                        <option value="">Tümü</option>
+                        <option value="musteri1">Müşteri 1</option>
+                        <option value="musteri2">Müşteri 2</option>
+                        <option value="musteri3">Müşteri 3</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Başlangıç Tarihi</label>
+                    <input type="date" id="baslangicTarihi" value="2025-09-16">
+                </div>
+
+                <div class="filter-group">
+                    <label>Bitiş Tarihi</label>
+                    <input type="date" id="bitisTarihi" value="2025-09-22">
+                </div>
+            </div>
+
+            <div class="buttons-row">
+                <div style="flex: 1;"></div>
+                <div style="display: flex; flex-direction: column; gap: 10px; align-items: flex-end;">
+                    <button class="filter-button" onclick="filterData()">FİLTRELE</button>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="action-btn btn-chart" onclick="showChart()">
+                            📊 GRAFİK GÖSTER
+                        </button>
+                        <button class="action-btn btn-excel" onclick="exportExcel()">
+                            📗 EXCEL'E AKTAR
+                        </button>
+                        <button class="action-btn btn-email" onclick="sendEmail()">
+                            📧 E-MAİL GÖNDER
+                        </button>
                     </div>
                 </div>
-                <div class="multiselect-tags" id="productTypeTags"></div>
-            </div>
-
-            <!-- Rapor Tipi -->
-            <div class="filter-item">
-                <label>Rapor Tipi</label>
-                <select id="reportType">
-                    <option value="">Rapor Tipi Seçiniz</option>
-                    <option value="haftalik">Haftalık Kalite Özeti</option>
-                    <option value="aylik">Aylık Kalite Özeti</option>
-                    <option value="yillik">Yıllık Kalite Özeti</option>
-                    <option value="yonetici">Yönetici Özeti</option>
-                </select>
-            </div>
-
-            <!-- Çelik Sınıfı -->
-            <div class="filter-item">
-                <label>Çelik Sınıfı</label>
-                <select id="steelClass">
-                    <option value="">Tümü</option>
-                    <option value="E335_01">E335_01</option>
-                    <option value="41CR4_00">41CR4_00</option>
-                    <option value="42CRMO4_00">42CRMO4_00 (4140)</option>
-                    <option value="S355J2">S355J2</option>
-                    <option value="C45">C45</option>
-                </select>
             </div>
         </div>
 
-        <!-- İkinci Satır: Müşteri, Tarihler, Filtrele -->
-        <div class="filter-row-last">
-            <!-- Müşteri -->
-            <div class="filter-item">
-                <label>Müşteri</label>
-                <select id="customer">
-                    <option value="">Tümü</option>
-                    <option value="musteri1">Müşteri 1</option>
-                    <option value="musteri2">Müşteri 2</option>
-                    <option value="musteri3">Müşteri 3</option>
-                    <option value="musteri4">Müşteri 4</option>
-                </select>
+        <!-- Content Section with Tabs -->
+        <div class="content-section">
+            <div class="product-type-tabs">
+                <button class="tab active" onclick="showTab('ham')">HAM TEKER</button>
+                <button class="tab" onclick="showTab('nihai')">NİHAİ TEKER</button>
             </div>
 
-            <!-- Başlangıç Tarihi -->
-            <div class="filter-item">
-                <label>Başlangıç Tarihi</label>
-                <input type="date" id="startDate" value="2025-09-16">
-            </div>
-
-            <!-- Bitiş Tarihi -->
-            <div class="filter-item">
-                <label>Bitiş Tarihi</label>
-                <input type="date" id="endDate" value="2025-09-22">
-            </div>
-
-            <!-- Filtrele Butonu -->
-            <button class="btn-filter" onclick="filterData()">FİLTRELE</button>
-        </div>
-    </div>
-
-    <div class="action-buttons">
-        <button class="btn-action btn-chart" onclick="showChart()">
-            📊 GRAFİK GÖSTER
-        </button>
-        <button class="btn-action btn-excel" onclick="exportToExcel()">
-            📑 EXCEL'E AKTAR
-        </button>
-        <button class="btn-action btn-email" onclick="sendEmail()">
-            📧 E-MAİL GÖNDER
-        </button>
-    </div>
-
-    <!-- DETAYLI TABLO KISMI -->
-    <div class="table-card">
-        <div class="section-title">📊 Detaylı Üretim ve Kalite İzleme Tablosu</div>
-
-        <div class="table-wrapper">
-            <table>
-                <thead>
-                <tr>
-                    <th rowspan="2" style="min-width:100px">SİPARİŞ NO</th>
-                    <th rowspan="2" style="min-width:100px">MALZEME KODU</th>
-                    <th rowspan="2" style="min-width:120px">Kalite</th>
-                    <th rowspan="2">Çap</th>
-                    <th rowspan="2">Şarj (ton)</th>
-                    <th rowspan="2">Kont.Verilen (ton)</th>
-
-                    <th colspan="6">Haddehane Proses Kaybı</th>
-
-                    <th rowspan="2">1. Kalite (ton)</th>
-                    <th rowspan="2">2. Kalite (ton)</th>
-                    <th rowspan="2">2. Kalite (%)</th>
-                    <th rowspan="2">Muhtellif Boy</th>
-                    <th rowspan="2">Muhtellif Boy (2.Kalite) ton</th>
-                    <th rowspan="2">Mamul Hurda (ton)</th>
-                    <th rowspan="2">Mamul Hurda (%)</th>
-
-                    <th rowspan="2">Hold (ton)</th>
-                    <th rowspan="2">Hold Nedeni</th>
-
-                    <th colspan="50">2. Kalite Dağılımı</th>
-                    <th colspan="43">Hurda Dağılımı</th>
-
-                    <th rowspan="2">Kalite Oranı (1.Kalite/Kont.Verilen)%</th>
-                    <th rowspan="2">Malzeme Oranı (1.Kalite/Şarja)%</th>
-                    <th rowspan="2">Satılabilir Ürün (Ton)</th>
-                    <th rowspan="2">Kont.Verilene Göre Satılabilir Ürün%</th>
-                    <th rowspan="2">Sarja Göre Satılabilir Ürün%</th>
-                </tr>
-                <tr style="background:#4a8bb3;color:white">
-                    <th>Uç Baş Tufal<br>Ton</th>
-                    <th>Uç Baş Tufal<br>%</th>
-                    <th>Hadde Bozuğu<br>Ton</th>
-                    <th>Hadde Bozuğu<br>%</th>
-                    <th>Haddehane Proses Kaybı<br>Ton</th>
-                    <th>Haddehane Proses Kaybı<br>%</th>
-
-                    <th>Ovalite</th><th>Parçalı Paket</th><th>Ölçü-Tolerans Harici</th><th>Çizik (Hadde)</th><th>Çatlak (Hadde)</th>
-                    <th>Çatlak (Çelikhane)</th><th>Bozuk Sarım</th><th>Katlama</th><th>Kangal Ağırlığı Düşük</th><th>Kangal Ağırlığı Yüksek</th>
-                    <th>Birim Ağırlığı Düşük</th><th>Birim Ağırlığı Yüksek</th><th>Boy Kısa</th><th>Boy Uzun</th><th>Kasa Kaçığı</th>
-                    <th>Çapak (Hadde)</th><th>Y.M.K Çapak</th><th>Fitil</th><th>Mukavemet Düşük</th><th>Mukavemet Yüksek</th>
-                    <th>Ring Kırığı</th><th>Ring Kaçığı</th><th>Inkluzyon</th><th>Yağlı</th><th>Sıcak Haddelenmiş</th>
-                    <th>Soğuk Haddelenmiş</th><th>Atmosferik Korozyon</th><th>Hadde Korozyonu</th><th>Vinç Hasarı</th><th>Forklift Hasarı</th>
-                    <th>Hasarlı</th><th>Makara İzi</th><th>Şalomo Yarası</th><th>Pinch Roll Yarası</th><th>Sertleştirilebilirliği Uygun Olmayan</th>
-                    <th>Eğri</th><th>Stok Zemini Hasarı</th><th>Mikro Çatlak</th><th>Ezmede Çatlak (ÇH KAYNAKLI)</th><th>Ezmede Çatlak (ÇKH KAYNAKLI)</th>
-                    <th>Makro Çatlak</th><th>Proses Uygunsuzluğu</th><th>Segregasyon</th><th>Bağlama Hasarı</th><th>Bağ Teli Uygunsuz</th>
-                    <th>Paket Uygunsuz</th><th>Etiket Uygunsuz</th><th>Paslı</th><th>2. Yüzey Kusuru</th><th>Verev Kesim</th>
-
-                    <th>Ölçü-Tolerans Harici</th><th>Katlama</th><th>Fitil</th><th>Çapak (Hadde)</th><th>YMK Çapak</th>
-                    <th>Ovalite</th><th>Mukavemet Düşük</th><th>Mukavemet Yüksek</th><th>YMK Çatlak</th><th>HH Çizik</th>
-                    <th>Ring Kırığı</th><th>Makara Kırığı</th><th>Pinch Roll Yarası</th><th>Ring Kaçığı</th><th>Kasa Kaçığı</th>
-                    <th>Sıcak Haddelenmiş</th><th>Soğuk Haddelenmiş</th><th>Atmosferik Korozyon</th><th>Hadde Korozyonu</th><th>Vinç Hasarı</th>
-                    <th>Bağ Teli Kopması</th><th>Stok Zemini Hasarı</th><th>Ondüle</th><th>Mikro Çatlak</th><th>Ezmede Çatlak (ÇH KAYNAKLI)</th>
-                    <th>Ezmede Çatlak (ÇKH KAYNAKLI)</th><th>HH Çatlak</th><th>Makro Çatlak</th><th>Proses Uygunsuzluğu</th><th>Yağlı</th>
-                    <th>Bağ Teli Uygunsuz</th><th>Paket Uygunsuz</th><th>Etiket Uygunsuz</th><th>Ölçü Dalgalanması</th><th>Bağlama Hasarı</th>
-                    <th>Kangal Ağırlığı Yüksek</th><th>Kangal Ağırlığı Düşük</th><th>Birim Ağırlığı Yüksek</th><th>Birim Ağırlığı Düşük</th><th>Yüzey Kusuru</th>
-                    <th>Boy Kısa</th><th>Boy Uzun</th><th>Vinçten Düşen</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td class="highlight-code">SIP-2025-001</td>
-                    <td class="highlight-code">80004162</td>
-                    <td class="highlight-code">E335_01</td>
-                    <td>52</td>
-                    <td>216,14</td>
-                    <td>202,26</td>
-
-                    <td>13,9</td><td>6,4</td><td></td><td></td><td>13,9</td><td>6,4</td>
-
-                    <td class="highlight-green">195,56</td>
-                    <td>6,69</td><td>0,03</td><td></td><td></td><td></td><td></td>
-
-                    <td></td><td></td>
-
-                    <td></td><td>2,3</td><td></td><td></td><td></td><td>4,4</td><td></td><td></td><td></td><td></td>
-                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-
-                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-                    <td></td><td></td><td></td>
-
-                    <td class="highlight-blue">0,97</td>
-                    <td class="highlight-blue">0,90</td>
-                    <td class="highlight-blue">202,26</td>
-                    <td class="highlight-blue">1,00</td>
-                    <td class="highlight-blue">0,94</td>
-                </tr>
-                <tr>
-                    <td class="highlight-code">SIP-2025-002</td>
-                    <td class="highlight-code">80004160</td>
-                    <td class="highlight-code">41CR4_00</td>
-                    <td>52</td>
-                    <td>36,97</td>
-                    <td>34,45</td>
-
-                    <td>2,5</td><td>6,8</td><td></td><td></td><td>2,5</td><td>6,8</td>
-
-                    <td class="highlight-green">34,45</td>
-                    <td></td><td></td><td></td><td></td><td></td><td></td>
-
-                    <td></td><td></td>
-
-                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-
-                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-                    <td></td><td></td><td></td>
-
-                    <td class="highlight-blue">1,00</td>
-                    <td class="highlight-blue">0,93</td>
-                    <td class="highlight-blue">34,45</td>
-                    <td class="highlight-blue">1,00</td>
-                    <td class="highlight-blue">0,93</td>
-                </tr>
-                <tr>
-                    <td class="highlight-code">SIP-2025-003</td>
-                    <td class="highlight-code">80004161</td>
-                    <td class="highlight-code">42CRMO4_00(4140)</td>
-                    <td>52</td>
-                    <td>35,41</td>
-                    <td>33,78</td>
-
-                    <td>1,6</td><td>4,6</td><td></td><td></td><td>1,6</td><td>4,6</td>
-
-                    <td class="highlight-green">33,78</td>
-                    <td></td><td></td><td></td><td></td><td></td><td></td>
-
-                    <td></td><td></td>
-
-                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-
-                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-                    <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
-                    <td></td><td></td><td></td>
-
-                    <td class="highlight-blue">1,00</td>
-                    <td class="highlight-blue">0,95</td>
-                    <td class="highlight-blue">33,78</td>
-                    <td class="highlight-blue">1,00</td>
-                    <td class="highlight-blue">0,95</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- ÖZET TABLOLAR -->
-    <div class="tables-container">
-        <!-- SOL TABLO: GENEL TABLO -->
-        <div class="table-card">
-            <div class="section-title">📊 Genel Tablo</div>
-            <div class="table-wrapper">
-                <table class="summary-table">
-                    <thead>
-                    <tr>
-                        <th class="green-header">Genel Tablo</th>
-                        <th class="green-header">Miktar, ton</th>
-                        <th class="green-header">%</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td class="left">Şarj</td>
-                        <td class="right">5.852,64</td>
-                        <td class="center"></td>
-                    </tr>
-                    <tr>
-                        <td class="left">Kont.Verilen</td>
-                        <td class="right">3.728,04</td>
-                        <td class="center"></td>
-                    </tr>
-                    <tr>
-                        <td class="left">Haddehane Proses Kaybı</td>
-                        <td class="right">124,60</td>
-                        <td class="center">3,23</td>
-                    </tr>
-                    <tr>
-                        <td class="left">Haddehane Kaynaklı 2. Kalite</td>
-                        <td class="right">33,05</td>
-                        <td class="center">0,89</td>
-                    </tr>
-                    <tr>
-                        <td class="left">Çelikhane Kaynaklı 2. Kalite</td>
-                        <td class="right">146,46</td>
-                        <td class="center">3,93</td>
-                    </tr>
-                    <tr>
-                        <td class="left">HOLD</td>
-                        <td class="right"></td>
-                        <td class="center"></td>
-                    </tr>
-                    <tr>
-                        <td class="left">1.kalite</td>
-                        <td class="right">3.548,53</td>
-                        <td class="center">95,18</td>
-                    </tr>
-                    <tr>
-                        <td class="left">2.kalite</td>
-                        <td class="right">179,51</td>
-                        <td class="center">4,82</td>
-                    </tr>
-                    <tr>
-                        <td class="left">Farklı Kaliteye Uyarlanan</td>
-                        <td class="right"></td>
-                        <td class="center"></td>
-                    </tr>
-                    <tr>
-                        <td class="left">Mamul Hurdası</td>
-                        <td class="right"></td>
-                        <td class="center"></td>
-                    </tr>
-                    <tr>
-                        <td class="left">Haddehane Kaynaklı Hurda</td>
-                        <td class="right"></td>
-                        <td class="center"></td>
-                    </tr>
-                    <tr>
-                        <td class="left">Çelikhane Kaynaklı Hurda</td>
-                        <td class="right"></td>
-                        <td class="center"></td>
-                    </tr>
-                    <tr class="highlight">
-                        <td class="left"><strong>Satılabilir Ürün</strong></td>
-                        <td class="right"><strong>3.728,04</strong></td>
-                        <td class="center"><strong>96,77</strong></td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- SAĞ TABLOLAR: 2.KALİTE VE HURDA DAĞILIMI -->
-        <div>
-            <!-- 2.KALİTE DAĞILIMI TABLOSU -->
-            <div class="table-card" style="margin-bottom:24px">
-                <div class="section-title">📈 2.Kalite Dağılımı</div>
-                <div class="table-wrapper">
-                    <table class="summary-table">
+            <!-- Ham Teker Tab -->
+            <div id="hamTab" class="tab-content active">
+                <div class="table-container">
+                    <table>
                         <thead>
-                        <tr>
-                            <th class="light-green-header">2.Kalite Dağılımı</th>
-                            <th class="light-green-header">Miktar, ton</th>
-                            <th class="red-header">2.KALİTE<br>%</th>
-                            <th class="red-header">KV<br>%</th>
-                        </tr>
+                            <tr>
+                                <th rowspan="3">TEKER TİPİ</th>
+                                <th rowspan="3">Şarj (ADET)</th>
+                                <th rowspan="3">Şarj (ton)</th>
+                                <th rowspan="3">Kont. Verilen (ADET)</th>
+                                <th rowspan="3">Kont. Verilen (ton)</th>
+                                <th colspan="11">Haddehane Proses Kaybı</th>
+                                <th rowspan="3">1. Kalite (adet)</th>
+                                <th rowspan="3">1. Kalite (ton)</th>
+                                <th rowspan="3">Hurda (adet)</th>
+                                <th rowspan="3">Hurda (ton)</th>
+                                <th rowspan="3">Hold (adet)</th>
+                                <th rowspan="3">Hold (ton)</th>
+                                <th rowspan="3">Hold Nedeni</th>
+                                <th colspan="7">HURDA DAĞILIMI</th>
+                                <th rowspan="3">Kalite Oranı<br>(1. Kalite / Kontrole Verilen) %</th>
+                                <th rowspan="3">Malzeme Oranı<br>(1. Kalite / Şarj Verilen) %</th>
+                                <th rowspan="3">Satılabilir Ürün (Ton)</th>
+                                <th rowspan="3">Kontrole Verilene Göre<br>Satılabilir Ürün %</th>
+                                <th rowspan="3">Sarja Göre<br>Satılabilir Ürün %</th>
+                            </tr>
+                            <tr>
+                                <th rowspan="2">Delik/Tufal<br>-Ton</th>
+                                <th rowspan="2">Delik/Tufal<br>-%</th>
+                                <th rowspan="2">Hadde Bozuk<br>– Adet</th>
+                                <th rowspan="2">Hadde Bozuk<br>– Ton</th>
+                                <th rowspan="2">Hadde Bozuk<br>– %</th>
+                                <th rowspan="2">MFT Numune<br>– Adet</th>
+                                <th rowspan="2">MFT Numune<br>– Ton</th>
+                                <th rowspan="2">MFT Numune<br>– %</th>
+                                <th rowspan="2">Haddehane<br>Proses Kaybı<br>-Ton</th>
+                                <th rowspan="2">Haddehane<br>Proses Kaybı<br>-%</th>
+                                <th rowspan="2">MFT SONUÇ<br>(Adet)</th>
+                                <th rowspan="2">MFT SONUÇ<br>(Ton)</th>
+                                <th rowspan="2">SERTLİK<br>(Adet)</th>
+                                <th rowspan="2">SERTLİK<br>(Ton)</th>
+                                <th rowspan="2">KIRILMA TOKLUĞU<br>(Adet)</th>
+                                <th rowspan="2">KIRILMA TOKLUĞU<br>(Ton)</th>
+                                <th rowspan="2">KALINTI GERİLİM<br>(Adet)</th>
+                                <th rowspan="2">KALINTI GERİLİM<br>(Ton)</th>
+                            </tr>
+                            <tr>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td class="left">Ezmede Çatlak (ÇH KAYNAKLI)</td>
-                            <td class="right">141,71</td>
-                            <td class="center">78,94%</td>
-                            <td class="center">3,80%</td>
-                        </tr>
-                        <tr>
-                            <td class="left">Çapak (Hadde)</td>
-                            <td class="right">30,90</td>
-                            <td class="center">17,21%</td>
-                            <td class="center">0,83%</td>
-                        </tr>
-                        <tr>
-                            <td class="left">Çatlak (Çelikhane)</td>
-                            <td class="right">4,75</td>
-                            <td class="center">2,65%</td>
-                            <td class="center">0,13%</td>
-                        </tr>
-                        <tr>
-                            <td class="left">Bozuk Sarım</td>
-                            <td class="right">2,15</td>
-                            <td class="center">1,20%</td>
-                            <td class="center">0,06%</td>
-                        </tr>
-                        <tr class="highlight-green">
-                            <td class="left"><strong>TOPLAM</strong></td>
-                            <td class="right"><strong>179,51</strong></td>
-                            <td class="center"><strong>100,00%</strong></td>
-                            <td class="center"><strong>4,82%</strong></td>
-                        </tr>
+                            <tr>
+                                <td>20 TONLUK</td>
+                                <td>1209</td>
+                                <td>616,59</td>
+                                <td>1.205</td>
+                                <td>594,07</td>
+                                <td>20,49</td>
+                                <td>3,32</td>
+                                <td>4</td>
+                                <td>2,04</td>
+                                <td>0,33</td>
+                                <td>8</td>
+                                <td>3,94</td>
+                                <td>0,64</td>
+                                <td>22,53</td>
+                                <td>3,65</td>
+                                <td>1.193</td>
+                                <td>588,15</td>
+                                <td></td>
+                                <td></td>
+                                <td>4</td>
+                                <td>1,97</td>
+                                <td>4 YENİDEN ISIL İŞLEM</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td class="percentage-column">99,34</td>
+                                <td class="percentage-column">95,71%</td>
+                                <td>590,12</td>
+                                <td class="percentage-column">99,34%</td>
+                                <td class="percentage-column">95,71%</td>
+                            </tr>
+                            <tr>
+                                <td>BA314</td>
+                                <td>31</td>
+                                <td>14,42</td>
+                                <td>29</td>
+                                <td>12,70</td>
+                                <td>0,78</td>
+                                <td>5,43</td>
+                                <td>2</td>
+                                <td>0,93</td>
+                                <td>6,45</td>
+                                <td>1</td>
+                                <td>0,44</td>
+                                <td>3,04</td>
+                                <td>1,71</td>
+                                <td>11,88</td>
+                                <td>28</td>
+                                <td>12,26</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td class="percentage-column">96,55</td>
+                                <td class="percentage-column">85,08%</td>
+                                <td>12,26</td>
+                                <td class="percentage-column">96,55%</td>
+                                <td class="percentage-column">85,08%</td>
+                            </tr>
+                            <tr class="highlight-row">
+                                <td>TOPLAM</td>
+                                <td>1240</td>
+                                <td>631,01</td>
+                                <td>1.234</td>
+                                <td>606,77</td>
+                                <td>21,27</td>
+                                <td>3,37</td>
+                                <td>6</td>
+                                <td>2,97</td>
+                                <td>0,47</td>
+                                <td>9</td>
+                                <td>4,38</td>
+                                <td>0,69</td>
+                                <td>24,24</td>
+                                <td>3,84</td>
+                                <td>1.221</td>
+                                <td>600,41</td>
+                                <td></td>
+                                <td></td>
+                                <td>4</td>
+                                <td>1,97</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td class="percentage-column">99,28</td>
+                                <td class="percentage-column">95,46%</td>
+                                <td>602,39</td>
+                                <td class="percentage-column">99,28%</td>
+                                <td class="percentage-column">95,46%</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
+
+                <!-- Summary Tables for Ham Teker -->
+                <div class="summary-section">
+                    <div class="summary-table">
+                        <h3>Genel Tablo</h3>
+                        <table>
+                            <tr>
+                                <th>Parametre</th>
+                                <th>Miktar</th>
+                                <th>%</th>
+                            </tr>
+                            <tr>
+                                <td>Şarj, Adet</td>
+                                <td>1.240</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Şarj, Ton</td>
+                                <td>631,01</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Kont.Verilen, Adet</td>
+                                <td>1.234</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Kont.Verilen, Ton</td>
+                                <td>606,77</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Haddehane Proses Kayıpı (Ton)</td>
+                                <td>24,24</td>
+                                <td class="percentage-column">3,84</td>
+                            </tr>
+                            <tr>
+                                <td>MFT Numune, Adet</td>
+                                <td>9</td>
+                                <td rowspan="2" class="percentage-column">0,69</td>
+                            </tr>
+                            <tr>
+                                <td>MFT Numune, Ton</td>
+                                <td>4,38</td>
+                            </tr>
+                            <tr>
+                                <td>Hadde Bozuğu, Adet</td>
+                                <td>6</td>
+                                <td rowspan="2" class="percentage-column">0,47</td>
+                            </tr>
+                            <tr>
+                                <td>Hadde Bozuğu, Ton</td>
+                                <td>2,97</td>
+                            </tr>
+                            <tr>
+                                <td>HOLD, Adet</td>
+                                <td>4</td>
+                                <td rowspan="2" class="percentage-column">0,33</td>
+                            </tr>
+                            <tr>
+                                <td>HOLD,Ton</td>
+                                <td>1,97</td>
+                            </tr>
+                            <tr>
+                                <td>1.Kalite, Adet</td>
+                                <td>1.221</td>
+                                <td rowspan="2" class="percentage-column">98,95</td>
+                            </tr>
+                            <tr>
+                                <td>1.Kalite, Ton</td>
+                                <td>600,41</td>
+                            </tr>
+                            <tr>
+                                <td>Manuel Hurdası, Adet</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Manuel Hurdası, Ton</td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Satılabilir Ürün, Adet</td>
+                                <td>1.225</td>
+                                <td rowspan="2" class="percentage-column">95,46</td>
+                            </tr>
+                            <tr>
+                                <td>Satılabilir Ürün, Ton</td>
+                                <td>602,39</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="summary-table">
+                        <h3>HURDA DAĞILIMI</h3>
+                        <table>
+                            <tr>
+                                <th rowspan="2">Hurda Dağılımı</th>
+                                <th colspan="2">Miktar</th>
+                                <th>HURDA</th>
+                                <th>KV</th>
+                            </tr>
+                            <tr>
+                                <th>adet</th>
+                                <th>ton</th>
+                                <th>%</th>
+                                <th>%</th>
+                            </tr>
+                            <tr>
+                                <td>MFT SONUÇ</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>SERTLİK</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>KIRILMA TOKLUĞU</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>KALINTI GERİLİM</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr class="highlight-row">
+                                <td>TOPLAM</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
             </div>
 
-            <!-- HURDA NEDEN DAĞILIMI TABLOSU -->
-            <div class="table-card">
-                <div class="section-title">🔧 Hurda Neden Dağılımı</div>
-                <div class="table-wrapper">
-                    <table class="summary-table">
+            <!-- Nihai Teker Tab -->
+            <div id="nihaiTab" class="tab-content">
+                <div class="table-container">
+                    <table>
                         <thead>
-                        <tr>
-                            <th class="light-green-header">Hurda Neden Dağılımı</th>
-                            <th class="light-green-header">Miktar, ton</th>
-                            <th class="hurda-header">HURDA<br>%</th>
-                            <th class="hurda-header">KV<br>%</th>
-                        </tr>
+                            <tr>
+                                <th rowspan="3">Teker Tipi</th>
+                                <th colspan="2">CNC de İşlenen</th>
+                                <th rowspan="3">Kont.Verilen<br>(Adet)</th>
+                                <th rowspan="3">Kont.Verilen<br>(ton)</th>
+                                <th colspan="10">Haddehane Proses Kaybı</th>
+                                <th rowspan="3">1. Kalite<br>(adet)</th>
+                                <th rowspan="3">1. Kalite<br>(ton)</th>
+                                <th rowspan="3">Hurda<br>(adet)</th>
+                                <th rowspan="3">Hurda<br>(ton)</th>
+                                <th rowspan="3">Hold<br>(adet)</th>
+                                <th rowspan="3">Hold<br>(ton)</th>
+                                <th rowspan="3">Hold<br>Nedeni</th>
+                            </tr>
+                            <tr>
+                                <th rowspan="2">(Adet)</th>
+                                <th rowspan="2">(ton)</th>
+                                <th colspan="2">Talaş</th>
+                                <th colspan="2">CNC Hurdası</th>
+                                <th colspan="2">MFT Numune</th>
+                                <th colspan="2">Haddehane Proses Kaybı</th>
+                            </tr>
+                            <tr>
+                                <th>Ton</th>
+                                <th>%</th>
+                                <th>Adet</th>
+                                <th>Ton</th>
+                                <th>%</th>
+                                <th>Adet</th>
+                                <th>Ton</th>
+                                <th>%</th>
+                                <th>Ton</th>
+                                <th>%</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            <td class="left"></td>
-                            <td class="right"></td>
-                            <td class="center"></td>
-                            <td class="center"></td>
-                        </tr>
-                        <tr>
-                            <td class="left"></td>
-                            <td class="right"></td>
-                            <td class="center"></td>
-                            <td class="center"></td>
-                        </tr>
-                        <tr>
-                            <td class="left"></td>
-                            <td class="right"></td>
-                            <td class="center"></td>
-                            <td class="center"></td>
-                        </tr>
-                        <tr>
-                            <td class="left"></td>
-                            <td class="right"></td>
-                            <td class="center"></td>
-                            <td class="center"></td>
-                        </tr>
-                        <tr class="highlight-green">
-                            <td class="left"><strong>TOPLAM</strong></td>
-                            <td class="right"><strong></strong></td>
-                            <td class="center"><strong>#SAYI/0!</strong></td>
-                            <td class="center"></td>
-                        </tr>
+                            <tr>
+                                <td>1250mm Lokomotif</td>
+                                <td>87</td>
+                                <td>71,78</td>
+                                <td>87</td>
+                                <td>55,68</td>
+                                <td>16,10</td>
+                                <td>22,42</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>16,10</td>
+                                <td>22,42</td>
+                                <td>63</td>
+                                <td>40,32</td>
+                                <td>23</td>
+                                <td>14,72</td>
+                                <td>1</td>
+                                <td>0,64</td>
+                                <td>VT</td>
+                            </tr>
+                            <tr class="highlight-row">
+                                <td>TOPLAM</td>
+                                <td>87</td>
+                                <td>71,78</td>
+                                <td>87</td>
+                                <td>55,68</td>
+                                <td>16,10</td>
+                                <td>22,42</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>16,10</td>
+                                <td>22,42</td>
+                                <td>63</td>
+                                <td>40,32</td>
+                                <td>23</td>
+                                <td>14,72</td>
+                                <td>1</td>
+                                <td>0,64</td>
+                                <td></td>
+                            </tr>
                         </tbody>
                     </table>
+                </div>
+                
+                <div class="table-container" style="margin-top: 30px;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th rowspan="2">Lazer (Adet)</th>
+                                <th rowspan="2">Lazer (ton)</th>
+                                <th rowspan="2">UT (Adet)</th>
+                                <th rowspan="2">UT (ton)</th>
+                                <th rowspan="2">MT (Adet)</th>
+                                <th rowspan="2">MT (ton)</th>
+                                <th colspan="2">VT HİRE<br>(Adet)</th>
+                                <th colspan="2">VT İÇİN<br>(Adet)</th>
+                                <th colspan="2">YÜZEY<br>PATLAĞI<br>(Adet)</th>
+                                <th rowspan="2">PAKU (Adet)</th>
+                                <th rowspan="2">PAKU (ton)</th>
+                                <th colspan="2">MAHALLEARA<br>PARÇA (Adet)</th>
+                                <th colspan="2">HÜMARA (Adet)</th>
+                                <th colspan="2">Öko Tolerans<br>Nedeni (Adet)</th>
+                                <th colspan="2">Öko Tolerans<br>Nedeni (ton)</th>
+                                <th colspan="2">MAHMUMAT<br>MAHZURİ BOYUT<br>(Adet)</th>
+                                <th colspan="2">MAHMURİAT<br>MAHZURİ BOYUT<br>(ton)</th>
+                                <th rowspan="2">Kalite Oranı<br>(1. Kalite/Kontrol Verilen) %</th>
+                                <th rowspan="2">Malzeme Oranı<br>(1. Kalite/Sarja Verilen) %</th>
+                                <th rowspan="2">Satılabilir Ürün (Ton)</th>
+                                <th rowspan="2">Kontrole Verilene Göre<br>Satılabilir Ürün %</th>
+                                <th rowspan="2">Sarja Göre Satılabilir<br>Ürün %</th>
+                            </tr>
+                            <tr>
+                                <th>(Adet)</th>
+                                <th>(ton)</th>
+                                <th>(Adet)</th>
+                                <th>(ton)</th>
+                                <th>(Adet)</th>
+                                <th>(ton)</th>
+                                <th>(ton)</th>
+                                <th>(ton)</th>
+                                <th>(Adet)</th>
+                                <th>(ton)</th>
+                                <th>(Adet)</th>
+                                <th>(ton)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>0,64</td>
+                                <td>21</td>
+                                <td>13,44</td>
+                                <td></td>
+                                <td></td>
+                                <td>1</td>
+                                <td>0,64</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td class="percentage-column">71,56%</td>
+                                <td>AYIKLAN</td>
+                                <td>40,96</td>
+                                <td class="percentage-column">71,56%</td>
+                                <td class="percentage-column">57,07%</td>
+                            </tr>
+                            <tr class="highlight-row">
+                                <td>1</td>
+                                <td>0,64</td>
+                                <td>21</td>
+                                <td>13,44</td>
+                                <td></td>
+                                <td></td>
+                                <td>1</td>
+                                <td>0,64</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td class="percentage-column">71,56%</td>
+                                <td>57,07%</td>
+                                <td>40,96</td>
+                                <td class="percentage-column">71,56%</td>
+                                <td class="percentage-column">57,07%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Summary Tables for Nihai Teker -->
+                <div class="summary-section">
+                    <div class="summary-table">
+                        <h3>Genel Tablo</h3>
+                        <table>
+                            <tr>
+                                <th>Genel Tablo</th>
+                                <th>Miktar</th>
+                                <th>%</th>
+                            </tr>
+                            <tr>
+                                <td>Sarj, Adet</td>
+                                <td>87</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Sarj, Ton</td>
+                                <td>71,78</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Kont.Verilen, Adet</td>
+                                <td>87</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Kont.Verilen, Ton</td>
+                                <td>55,68</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Haddehane Proses Kaybı</td>
+                                <td>16,10</td>
+                                <td class="percentage-column">22,42</td>
+                            </tr>
+                            <tr>
+                                <td>MFT Numune, Adet</td>
+                                <td></td>
+                                <td rowspan="2"></td>
+                            </tr>
+                            <tr>
+                                <td>MFT Numune, Ton</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>CNC Hurdası, Adet</td>
+                                <td></td>
+                                <td rowspan="2"></td>
+                            </tr>
+                            <tr>
+                                <td>CNC Hurdası, Ton</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>HOLD, Adet</td>
+                                <td>1</td>
+                                <td rowspan="2" class="percentage-column">1,15</td>
+                            </tr>
+                            <tr>
+                                <td>HOLD,Ton</td>
+                                <td>0,64</td>
+                            </tr>
+                            <tr>
+                                <td>1.kalite, Adet</td>
+                                <td>63</td>
+                                <td rowspan="2" class="percentage-column">72,41</td>
+                            </tr>
+                            <tr>
+                                <td>1.kalite, Ton</td>
+                                <td>40,32</td>
+                            </tr>
+                            <tr>
+                                <td>Mamul Hurdası, Adet</td>
+                                <td>23</td>
+                                <td rowspan="2" class="percentage-column">26,44</td>
+                            </tr>
+                            <tr>
+                                <td>Mamul Hurdası, Ton</td>
+                                <td>14,72</td>
+                            </tr>
+                            <tr>
+                                <td>Satılabilir Ürün, Adet</td>
+                                <td>64</td>
+                                <td rowspan="2" class="percentage-column">57,07</td>
+                            </tr>
+                            <tr>
+                                <td>Satılabilir Ürün, Ton</td>
+                                <td>40,96</td>
+                            </tr>
+                            <tr>
+                                <td>Celikhane Kaynaklı Hurda</td>
+                                <td>13,44</td>
+                                <td class="percentage-column">24,14%</td>
+                            </tr>
+                            <tr>
+                                <td>Haddehane Kaynaklı Hurda</td>
+                                <td>1,28</td>
+                                <td class="percentage-column">2,30%</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="summary-table">
+                        <h3>HURDA DAĞILIMI</h3>
+                        <table>
+                            <tr>
+                                <th rowspan="2">Hurda Dağılımı</th>
+                                <th colspan="2">Miktar</th>
+                                <th>HURDA</th>
+                                <th>KV</th>
+                            </tr>
+                            <tr>
+                                <th>Adet</th>
+                                <th>ton</th>
+                                <th>%</th>
+                                <th>%</th>
+                            </tr>
+                            <tr>
+                                <td>UT</td>
+                                <td>21</td>
+                                <td>13,44</td>
+                                <td class="percentage-column">91,30%</td>
+                                <td class="percentage-column">24,14%</td>
+                            </tr>
+                            <tr>
+                                <td>VT (HİH)</td>
+                                <td>1</td>
+                                <td>0,64</td>
+                                <td class="percentage-column">4,35%</td>
+                                <td class="percentage-column">1,15%</td>
+                            </tr>
+                            <tr>
+                                <td>LAZER</td>
+                                <td>1</td>
+                                <td>0,64</td>
+                                <td class="percentage-column">4,35%</td>
+                                <td class="percentage-column">1,15%</td>
+                            </tr>
+                            <tr class="highlight-row">
+                                <td>TOPLAM</td>
+                                <td>23</td>
+                                <td>14,72</td>
+                                <td class="percentage-column">100</td>
+                                <td class="percentage-column">26,44%</td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-  
-</div>
+    <script>
+        // Tab switching functionality
+        function showTab(tabName) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => content.classList.remove('active'));
 
-<script>
-    document.getElementById('currentDate').textContent=new Date().toLocaleDateString('tr-TR',{year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'});
+            // Remove active class from all tabs
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
 
-    // Çoklu seçim dropdown açma/kapama
-    function toggleDropdown(type) {
-        const dropdown = document.getElementById(type + 'Dropdown');
-        const display = document.getElementById(type + 'Display');
+            // Show selected tab content
+            document.getElementById(tabName + 'Tab').classList.add('active');
 
-        dropdown.classList.toggle('active');
-        display.classList.toggle('active');
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
 
-        // Diğer açık dropdownları kapat
-        document.querySelectorAll('.multiselect-dropdown').forEach(d => {
-            if (d.id !== type + 'Dropdown') {
-                d.classList.remove('active');
+        // Filter functionality
+        function filterData() {
+            const urunTipi = document.getElementById('urunTipi').value;
+            const raporTipi = document.getElementById('raporTipi').value;
+            const celikSinifi = document.getElementById('celikSinifi').value;
+            const musteri = document.getElementById('musteri').value;
+            const baslangic = document.getElementById('baslangicTarihi').value;
+            const bitis = document.getElementById('bitisTarihi').value;
+
+            // Switch to appropriate tab based on selection
+            if (urunTipi === 'ham') {
+                showTabByName('ham');
+            } else if (urunTipi === 'nihai') {
+                showTabByName('nihai');
+            }
+
+            console.log('Filtre Uygulandı:', {
+                urunTipi, raporTipi, celikSinifi, musteri, baslangic, bitis
+            });
+
+            alert('Filtre başarıyla uygulandı!\n\nÜrün Tipi: ' + (urunTipi || 'Seçilmedi') + 
+                  '\nRapor Tipi: ' + (raporTipi || 'Seçilmedi') +
+                  '\nTarih Aralığı: ' + baslangic + ' - ' + bitis);
+        }
+
+        function showTabByName(tabName) {
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => content.classList.remove('active'));
+
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            
+            tabs.forEach(tab => {
+                if (tab.textContent.toLowerCase().includes(tabName)) {
+                    tab.classList.add('active');
+                }
+            });
+        }
+
+        // Chart functionality
+        function showChart() {
+            alert('Grafik görüntüleme özelliği aktif edilecek.\n\nGrafik türü seçiniz:\n- Çubuk Grafik\n- Pasta Grafik\n- Çizgi Grafik');
+        }
+
+        // Excel export functionality
+        function exportExcel() {
+            alert('Rapor Excel formatında indiriliyor...\n\nDosya adı: Kalite_Ozet_Raporu_' + new Date().toLocaleDateString('tr-TR') + '.xlsx');
+        }
+
+        // Email functionality
+        function sendEmail() {
+            const email = prompt('Raporu göndermek istediğiniz e-posta adresini girin:');
+            if (email) {
+                alert('Rapor "' + email + '" adresine gönderiliyor...');
+            }
+        }
+
+        // Auto-select product type based on filter
+        document.getElementById('urunTipi').addEventListener('change', function() {
+            const value = this.value;
+            if (value === 'ham') {
+                showTabByName('ham');
+            } else if (value === 'nihai') {
+                showTabByName('nihai');
             }
         });
-        document.querySelectorAll('.multiselect-display').forEach(d => {
-            if (d.id !== type + 'Display') {
-                d.classList.remove('active');
-            }
-        });
-    }
-
-    // Dışarı tıklandığında dropdown'ları kapat
-    document.addEventListener('click', function(event) {
-        if (!event.target.closest('.multiselect-container')) {
-            document.querySelectorAll('.multiselect-dropdown').forEach(d => {
-                d.classList.remove('active');
-            });
-            document.querySelectorAll('.multiselect-display').forEach(d => {
-                d.classList.remove('active');
-            });
-        }
-    });
-
-    // Çoklu seçim güncelleme
-    function updateMultiselect(type) {
-        const dropdown = document.getElementById(type + 'Dropdown');
-        const textElement = document.getElementById(type + 'Text');
-        const tagsContainer = document.getElementById(type + 'Tags');
-
-        const checkedBoxes = dropdown.querySelectorAll('input[type="checkbox"]:checked');
-        const selectedValues = Array.from(checkedBoxes).map(cb => cb.value);
-
-        // Display metni güncelle
-        if (selectedValues.length === 0) {
-            textElement.textContent = 'Ürün Tipi Seçiniz';
-        } else if (selectedValues.length === 1) {
-            textElement.textContent = selectedValues[0];
-        } else {
-            textElement.textContent = selectedValues.length + ' ürün seçildi';
-        }
-
-        // Etiketleri oluştur
-        tagsContainer.innerHTML = '';
-        selectedValues.forEach(value => {
-            const tag = document.createElement('span');
-            tag.className = 'multiselect-tag';
-            tag.innerHTML = `
-                ${value}
-                <span class="multiselect-tag-remove" onclick="removeTag('${type}', '${value}')">×</span>
-            `;
-            tagsContainer.appendChild(tag);
-        });
-    }
-
-    // Etiket kaldırma
-    function removeTag(type, value) {
-        const dropdown = document.getElementById(type + 'Dropdown');
-        const checkbox = Array.from(dropdown.querySelectorAll('input[type="checkbox"]'))
-            .find(cb => cb.value === value);
-
-        if (checkbox) {
-            checkbox.checked = false;
-            updateMultiselect(type);
-        }
-    }
-
-    function filterData(){
-        const startDate = document.getElementById('startDate').value;
-        const endDate = document.getElementById('endDate').value;
-        const reportType = document.getElementById('reportType').value;
-        const steelClass = document.getElementById('steelClass').value;
-        const customer = document.getElementById('customer').value;
-
-        // Seçili ürün tiplerini al
-        const productTypeDropdown = document.getElementById('productTypeDropdown');
-        const checkedBoxes = productTypeDropdown.querySelectorAll('input[type="checkbox"]:checked');
-        const selectedProductTypes = Array.from(checkedBoxes).map(cb => cb.value);
-
-        let message = 'Filtreleme yapılıyor...\n\n';
-
-        if (selectedProductTypes.length > 0) {
-            message += `Ürün Tipi: ${selectedProductTypes.join(', ')}\n`;
-        } else {
-            message += 'Ürün Tipi: Seçilmedi\n';
-        }
-
-        message += `Rapor Tipi: ${reportType || 'Seçilmedi'}\n`;
-        message += `Çelik Sınıfı: ${steelClass || 'Tümü'}\n`;
-        message += `Müşteri: ${customer || 'Tümü'}\n`;
-        message += `Başlangıç: ${startDate}\n`;
-        message += `Bitiş: ${endDate}`;
-
-        alert(message);
-    }
-
-    function showChart(){
-        alert('Grafik görünümü açılıyor...');
-    }
-
-    function exportToExcel(){
-        alert('Excel dosyası hazırlanıyor...');
-    }
-
-    function sendEmail(){
-        alert('E-mail gönderme formu açılıyor...');
-    }
-</script>
+    </script>
 </body>
 </html>
