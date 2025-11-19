@@ -7,6 +7,76 @@
   <title> İş Emri Bilgileri</title>
   <link href="style.css" rel="stylesheet" />
   <style>
+    .page-signature {
+      /* Yerleşim */
+      margin-left: auto;
+      margin-top: 14px;
+      margin-right: 18px;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      /* PREMIUM KUTU TASARIMI */
+      background: linear-gradient(135deg, #ffffff 0%, #f0f4ff 100%);
+      border: 1px solid #c5d2e9;
+      border-left: 4px solid #e00f0f;
+      /* sol şerit: kurumsal MAVI */
+      padding: 10px 20px;
+      border-radius: 10px;
+
+      /* Gölgeli & yüksek kalite hissi */
+      box-shadow:
+        0 2px 4px rgba(255, 3, 3, 0.05),
+        0 6px 16px rgba(231, 15, 15, 0.1);
+      /* kardemir mavisiyle yumuşak gölge */
+
+      /* Animasyon */
+      animation: fadeInUp 0.6s ease-out;
+      cursor: default;
+      user-select: none;
+    }
+
+    /* İkon daha güçlü hale gelsin */
+    .signature-icon {
+      font-size: 22px;
+      color: #1976d2;
+      /* Kardemir mavisi */
+      text-shadow: 0 1px 2px rgb(234, 45, 45);
+    }
+
+    /* Yazı daha güçlü */
+    .signature-text {
+      font-size: 14.5px;
+      font-weight: 700;
+      color: #d10d0d;
+      /* koyu kurumsal mavi */
+      letter-spacing: .6px;
+    }
+
+    /* Hafif yukarıdan gelme animasyonu */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(-6px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Hover efekti (çok abartmadan) */
+    .page-signature:hover {
+      box-shadow:
+        0 3px 6px rgba(240, 44, 44, 0.925),
+        0 8px 20px rgba(210, 25, 25, 0.18);
+      transform: translateY(-1px);
+      transition: 0.25s ease;
+    }
+
+
     .page-header {
       background: #fff;
       padding: 20px 25px;
@@ -412,9 +482,16 @@
   </aside>
 
   <div class="content-wrapper">
+    <div class="page-signature">
+      <span class="signature-icon"></span>
+      <span class="signature-text">Üretim Yönetim Sistemleri Başmühendisliği Tarafından Prototip Olarak
+        Geliştirilmiştir.</span>
+    </div>
+    
+
     <header class="header">
       <div class="breadcrumbs">
-        <a href="#">Ana Sayfa</a><span>&gt;</span><span>ÇKH – İş Emri Sayfası</span>
+        <a href="#">Ana Sayfa</a><span>&gt;</span><span>DYTT – İş Emri Sayfası</span>
       </div>
 
       <!-- 🔹 Yeni Başlık -->
@@ -425,7 +502,7 @@
     text-transform: uppercase;
     letter-spacing: 1px;
   ">
-        ÇUBUK KANGAL HADDEHANESİ
+        DEMİRYOLU TEKERİ TESİSİ
       </div>
     </header>
 
@@ -624,9 +701,9 @@
       </div>
     </div>
 
-    <!-- 🔹 ÇKH Üretim Programı -->
+    <!-- 🔹 DYTT Üretim Programı -->
     <div class="table-section">
-      <h2 class="table-title">ÇKH Üretim Programı</h2>
+      <h2 class="table-title">DYTT Üretim Programı</h2>
       <div style="overflow-x:auto;">
         <table class="data-table" id="uretimTable">
           <thead>
@@ -755,27 +832,27 @@
     </script>
     <script>
 
-      // 🔹 Alt tablo (ÇKH Üretim Programı)
+      // 🔹 Alt tablo (DYTT Üretim Programı)
       const rows = [
         // Kampanya 1
         {
-          tarih: "01/11/2025", siparis: "400000001591", kod: "80000025",urunTanim: "Ø52,50 S275JR_02 12000 Kalın Kangal Y", ebat: "14", boy: "12", kalite: "C10C_00",
+          tarih: "01/11/2025", siparis: "400000001591", kod: "80000025", urunTanim: "Ø52,50 S275JR_02 12000 Kalın Kangal Y", ebat: "14", boy: "12", kalite: "C10C_00",
           kampUret: "9200", kampKalan: "10120", kampTuket: "9500", kampTuketKalan: "8800", uret: "1890", ymTuket: "2079", bagliYm: "2000"
         },
         {
-          tarih: "02/11/2025", siparis: "400000001591", kod: "80000026",urunTanim: "Ø52,50 S275JR_02 12000 Kalın Kangal Y", ebat: "14", boy: "12", kalite: "C4C_00",
+          tarih: "02/11/2025", siparis: "400000001591", kod: "80000026", urunTanim: "Ø52,50 S275JR_02 12000 Kalın Kangal Y", ebat: "14", boy: "12", kalite: "C4C_00",
           kampUret: "9200", kampKalan: "10120", kampTuket: "9500", kampTuketKalan: "8800", uret: "1890", ymTuket: "2079", bagliYm: "2090"
         },
 
         // Kampanya 2
         {
-          tarih: "03/11/2025", siparis: "400000001592", kod: "80000027",urunTanim: "Ø52,50 S275JR_02 12000 Kalın Kangal Y", ebat: "12", boy: "12", kalite: "C10C_01",
+          tarih: "03/11/2025", siparis: "400000001592", kod: "80000027", urunTanim: "Ø52,50 S275JR_02 12000 Kalın Kangal Y", ebat: "12", boy: "12", kalite: "C10C_01",
           kampUret: "11000", kampKalan: "12100", kampTuket: "11500", kampTuketKalan: "11000", uret: "1890", ymTuket: "2079", bagliYm: "2078"
         },
 
         // Kampanya 3
         {
-          tarih: "03/11/2025", siparis: "400000001593", kod: "80000029",urunTanim: "Ø52,50 S275JR_02 12000 Kalın Kangal Y", ebat: "18", boy: "12", kalite: "C10C_02",
+          tarih: "03/11/2025", siparis: "400000001593", kod: "80000029", urunTanim: "Ø52,50 S275JR_02 12000 Kalın Kangal Y", ebat: "18", boy: "12", kalite: "C10C_02",
           kampUret: "9000", kampKalan: "9900", kampTuket: "9600", kampTuketKalan: "9400", uret: "1640", ymTuket: "1804", bagliYm: "1500"
         }
       ];
@@ -830,7 +907,7 @@
   </div>
 
   <script>
-    // ÇKH'ye uygun örnek plan verileri (iş emri 4 ile başlar)
+    // DYTT'ye uygun örnek plan verileri (iş emri 4 ile başlar)
     document.addEventListener("DOMContentLoaded", function () {
       const planOrders = [
         {
