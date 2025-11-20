@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teker Ürün Tipi Raporu</title>
+    <link href="sidebar.css" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 80px rgba(26, 43, 74, 0.5);
+            display: flex;
+            flex-direction: column;
+            height: 95vh;
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #1a2b4a 0%, #2c4875 100%);
+            color: white;
+            padding: 30px 40px;
+            border-radius: 20px 20px 0 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            margin-bottom: 5px;
+        }
+
+        .header-subtitle {
+            font-size: 14px;
+            opacity: 0.95;
+            font-weight: 400;
+        }
+
+        .header-icon {
+            font-size: 48px;
+            opacity: 0.9;
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background: linear-gradient(to bottom, #f5f7fa 0%, #e8ecf1 100%);
+            padding: 25px 30px;
+            border-bottom: 4px solid #2c4875;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .filter-group label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #1a2b4a;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            padding: 12px 16px;
+            border: 2px solid #b8c5d6;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: white;
+            box-shadow: 0 2px 8px rgba(26, 43, 74, 0.08);
+        }
+
+        .filter-group input:focus,
+        .filter-group select:focus {
+            outline: none;
+            border-color: #2c4875;
+            box-shadow: 0 4px 16px rgba(44, 72, 117, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+            color: white;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+        }
+
+        .btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2c4875 0%, #1a2b4a 100%);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #5a6f8c 0%, #3d5a8c 100%);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #2c6b4f 0%, #1e5239 100%);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #3d5a8c 0%, #2c4875 100%);
+        }
+
+        /* Table Wrapper */
+        .table-wrapper {
+            flex: 1;
+            overflow: auto;
+            position: relative;
+            padding: 20px;
+            background: #fafbfc;
+        }
+
+        .table-wrapper::-webkit-scrollbar {
+            width: 12px;
+            height: 12px;
+        }
+
+        .table-wrapper::-webkit-scrollbar-track {
+            background: #e8ecf1;
+            border-radius: 10px;
+        }
+
+        .table-wrapper::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #2c4875 0%, #3d5a8c 100%);
+            border-radius: 10px;
+        }
+
+        .table-wrapper::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #1a2b4a 0%, #2c4875 100%);
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            white-space: nowrap;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(13, 71, 161, 0.15);
+        }
+
+        thead {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        th {
+            background: linear-gradient(135deg, #2c4875 0%, #1a2b4a 100%);
+            color: white;
+            border: 1px solid #1a2b4a;
+            padding: 16px 10px;
+            text-align: center;
+            font-weight: 700;
+            vertical-align: middle;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            line-height: 1.3;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        thead::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #3d5a8c 0%, #2c4875 50%, #1a2b4a 100%);
+        }
+
+        td {
+            border: 1px solid #e8ecf1;
+            padding: 12px 10px;
+            text-align: center;
+            color: #37474f;
+            font-size: 12px;
+        }
+
+        tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        tbody tr:hover {
+            background: linear-gradient(to right, #e8ecf1 0%, #d4dce6 100%);
+            transform: scale(1.002);
+            box-shadow: 0 4px 12px rgba(44, 72, 117, 0.15);
+            cursor: pointer;
+        }
+
+        /* Status Classes */
+        .status-ok {
+            color: #2e7d32;
+            font-weight: 700;
+        }
+
+        .status-error {
+            color: #c62828;
+            font-weight: 700;
+        }
+
+        /* Footer */
+        .footer-info {
+            padding: 18px 30px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+            border-top: 3px solid #2c4875;
+            font-size: 13px;
+            color: #37474f;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 0 0 20px 20px;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .record-count {
+            font-weight: 700;
+            color: #1a2b4a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .record-count::before {
+            content: "📊";
+            font-size: 18px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 20px;
+            }
+
+            .filter-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            table {
+                font-size: 10px;
+            }
+
+            th, td {
+                padding: 8px 6px;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: #2c4875;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .loading::before {
+            content: "⏳";
+            display: block;
+            font-size: 48px;
+            margin-bottom: 20px;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: #78909c;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .empty-state::before {
+            content: "📋";
+            display: block;
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+<!-- Sidebar -->
+  <aside id="sidebar" >
+    <div id="sidebar-container"></div>
+    <script>
+      fetch("sidebar.html")
+        .then(r=>r.text())
+        .then(html=>{document.getElementById("sidebar-container").innerHTML=html});
+    </script>
+  </aside>
+<div class="container" style="margin-left: 260px;">
+    <div class="header">
+        <div class="header-content">
+            <div>
+                <h1>TEKER ÜRÜN TİPİ RAPORU</h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="filter-section">
+        <div class="filter-grid">
+            <div class="filter-group">
+                <label>Başlangıç Tarihi</label>
+                <input type="date" id="filterBaslangic">
+            </div>
+
+            <div class="filter-group">
+                <label>Bitiş Tarihi</label>
+                <input type="date" id="filterBitis">
+            </div>
+
+            <div class="filter-group">
+                <label>Döküm No</label>
+                <select id="filterDokum">
+                    <option value="">Tümü</option>
+                    <option value="412864">412864</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>Ürün Tipi</label>
+                <select id="filterUrunTipi">
+                    <option value="">Tümü</option>
+                    <option value="BA 004">BA 004</option>
+                    <option value="BA 006">BA 006</option>
+                    <option value="BA 009">BA 009</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>Teker ID</label>
+                <input type="text" id="filterTeker" placeholder="Teker ID giriniz...">
+            </div>
+        </div>
+
+        <div class="filter-buttons">
+            <button class="btn btn-primary" onclick="applyFilters()">
+                <span>🔍 Filtrele</span>
+            </button>
+            <button class="btn btn-secondary" onclick="clearFilters()">
+                <span>🗑️ Filtreleri Temizle</span>
+            </button>
+            <button class="btn btn-success" onclick="exportToExcel()">
+                <span>📊 Excel'e Aktar</span>
+            </button>
+            <button class="btn btn-info" onclick="sendEmail()">
+                <span>📧 E-mail Gönder</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="table-wrapper">
+        <table id="mainTable">
+            <thead>
+            <tr>
+                <th>Sıra No</th>
+                <th>Döküm No</th>
+                <th>Id No</th>
+                <th>TEKER ID</th>
+                <th>Tip</th>
+                <th>Parti No</th>
+                <th>Üretim<br>Tarihi</th>
+                <th>Sertlik Ölçüm<br>Sonucu</th>
+                <th>Sertlik Ölçüm<br>Tarihi</th>
+                <th>Lazer Ölçüm<br>Sonucu</th>
+                <th>UT Ölçüm<br>Sonucu</th>
+                <th>MT Ölçüm<br>Sonucu</th>
+                <th>BALANS ÖLÇÜM<br>SONUCU</th>
+                <th>Balans<br>Tarihi</th>
+                <th>Görsel Muayene<br>Sonucu</th>
+                <th>TAHRİBATSIZ<br>MUAYENE SONUCU</th>
+                <th>Test Center<br>Tarihi</th>
+                <th>Son Test Center<br>Tarihi (TEKRAR)</th>
+                <th>KRD<br>Numarası</th>
+                <th>Kalıntı Gerilim<br>Tarihi</th>
+                <th>Kalıntı Gerilim<br>Sonucu</th>
+                <th>Gerilim<br>Değeri</th>
+                <th>FFG Öncesi<br>Dış Çap</th>
+                <th>Mekanik Test<br>Sonuçları</th>
+                <th>KIRILMA<br>TOKLUĞU DURUMU</th>
+                <th>Satılabilir<br>Teker</th>
+                <th>Nihai<br>Satış</th>
+                <th>Ham<br>Satış</th>
+                <th>Firma</th>
+                <th>Not</th>
+            </tr>
+            </thead>
+            <tbody id="tableBody">
+            <tr>
+                <td colspan="30" class="loading">Veriler yükleniyor...</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<script>
+    // Doğru veri yapısı - görsellere uygun
+    const rawData = [
+        {
+            sira: 20275, dokum: 412864, id: "30309", tekerId: "41286430309", tip: "BA 004", parti: 909,
+            uretim: "9.07.2024", sertlik: 280, sertlikTarih: "10.07.2024", lazer: "OK", ut: "OK", mt: "OK",
+            balans: "13,79", balansTarih: "30.07.2024", gorsel: "OK", tahribatsiz: "OK", testCenter: "30.07.2024",
+            sonTest: "", krd: "OK", kalintiTarih: "OK", kalintiSonuc: "OK", gerilim: "44447-3.VAGON",
+            ffg: "SATILDI MERVE HANIMIN LİSTEDEN", mekanik: "", kirilma: "", satilabilir: "", nihai: "", ham: "", firma: "", not: ""
+        },
+        {
+            sira: 20277, dokum: 412864, id: "30202", tekerId: "41286430202", tip: "BA 004", parti: 909,
+            uretim: "9.07.2024", sertlik: 279, sertlikTarih: "10.07.2024", lazer: "OK", ut: "OK", mt: "OK",
+            balans: "4,9", balansTarih: "30.07.2024", gorsel: "OK", tahribatsiz: "OK", testCenter: "30.07.2024",
+            sonTest: "", krd: "OK", kalintiTarih: "OK", kalintiSonuc: "OK", gerilim: "44447-3.VAGON",
+            ffg: "SATILDI MERVE HANIMIN LİSTEDEN", mekanik: "", kirilma: "", satilabilir: "", nihai: "", ham: "", firma: "", not: ""
+        },
+        {
+            sira: 20283, dokum: 412864, id: "10210", tekerId: "41286410210", tip: "BA 004", parti: 909,
+            uretim: "9.07.2024", sertlik: 271, sertlikTarih: "10.07.2024", lazer: "OK", ut: "OK", mt: "OK",
+            balans: "23,29", balansTarih: "30.07.2024", gorsel: "OK", tahribatsiz: "OK", testCenter: "30.07.2024",
+            sonTest: "", krd: "OK", kalintiTarih: "OK", kalintiSonuc: "OK", gerilim: "44447-4.VAGON",
+            ffg: "SATILDI MERVE HANIMIN LİSTEDEN", mekanik: "", kirilma: "", satilabilir: "", nihai: "", ham: "", firma: "", not: ""
+        }
+    ];
+
+    let filteredData = [...rawData];
+
+    // Sayfa Yüklendiğinde
+    window.onload = function() {
+        // Varsayılan tarih aralığı - son 1 ay
+        const today = new Date();
+        const lastMonth = new Date();
+        lastMonth.setMonth(lastMonth.getMonth() - 1);
+        document.getElementById('filterBaslangic').valueAsDate = lastMonth;
+        document.getElementById('filterBitis').valueAsDate = today;
+
+        renderTable(rawData);
+    };
+
+    // Tabloyu Render Et
+    function renderTable(data) {
+        const tbody = document.getElementById('tableBody');
+        tbody.innerHTML = '';
+
+        if (data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="30" class="empty-state">Kayıt bulunamadı</td></tr>';
+            return;
+        }
+
+        data.forEach(row => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                    <td>${row.sira}</td>
+                    <td>${row.dokum}</td>
+                    <td>${row.id}</td>
+                    <td style="font-weight:bold; color: #2c4875;">${row.tekerId}</td>
+                    <td><strong>${row.tip}</strong></td>
+                    <td>${row.parti}</td>
+                    <td>${row.uretim}</td>
+                    <td>${row.sertlik}</td>
+                    <td>${row.sertlikTarih}</td>
+                    <td class="${row.lazer === 'OK' ? 'status-ok' : 'status-error'}">${row.lazer}</td>
+                    <td class="${row.ut === 'OK' ? 'status-ok' : 'status-error'}">${row.ut}</td>
+                    <td class="${row.mt === 'OK' ? 'status-ok' : 'status-error'}">${row.mt}</td>
+                    <td>${row.balans}</td>
+                    <td>${row.balansTarih}</td>
+                    <td class="${row.gorsel === 'OK' ? 'status-ok' : 'status-error'}">${row.gorsel}</td>
+                    <td class="${row.tahribatsiz === 'OK' ? 'status-ok' : 'status-error'}">${row.tahribatsiz}</td>
+                    <td>${row.testCenter}</td>
+                    <td>${row.sonTest}</td>
+                    <td class="${row.krd === 'OK' ? 'status-ok' : 'status-error'}">${row.krd}</td>
+                    <td>${row.kalintiTarih}</td>
+                    <td>${row.kalintiSonuc}</td>
+                    <td>${row.gerilim}</td>
+                    <td style="font-size:11px; max-width: 180px; white-space: normal;">${row.ffg}</td>
+                    <td>${row.mekanik}</td>
+                    <td>${row.kirilma}</td>
+                    <td>${row.satilabilir}</td>
+                    <td>${row.nihai}</td>
+                    <td>${row.ham}</td>
+                    <td>${row.firma}</td>
+                    <td>${row.not}</td>
+                `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    // Filtreleme
+    function applyFilters() {
+        const baslangic = document.getElementById('filterBaslangic').value;
+        const bitis = document.getElementById('filterBitis').value;
+        const dokumVal = document.getElementById('filterDokum').value;
+        const urunTipi = document.getElementById('filterUrunTipi').value;
+        const tekerVal = document.getElementById('filterTeker').value.toLowerCase();
+
+        filteredData = rawData.filter(item => {
+            let match = true;
+
+            // Tarih filtreleme
+            if (baslangic && item.uretim) {
+                const itemDate = parseDate(item.uretim);
+                const startDate = new Date(baslangic);
+                if (itemDate < startDate) match = false;
+            }
+
+            if (bitis && item.uretim) {
+                const itemDate = parseDate(item.uretim);
+                const endDate = new Date(bitis);
+                if (itemDate > endDate) match = false;
+            }
+
+            if (dokumVal && item.dokum.toString() !== dokumVal) match = false;
+            if (urunTipi && item.tip !== urunTipi) match = false;
+            if (tekerVal && !item.tekerId.toLowerCase().includes(tekerVal)) match = false;
+
+            return match;
+        });
+
+        renderTable(filteredData);
+    }
+
+    // Tarihi parse et
+    function parseDate(dateStr) {
+        const parts = dateStr.split('.');
+        if (parts.length === 3) {
+            return new Date(parts[2], parts[1] - 1, parts[0]);
+        }
+        return new Date(dateStr);
+    }
+
+    // Filtreleri Temizle
+    function clearFilters() {
+        document.getElementById('filterBaslangic').value = '';
+        document.getElementById('filterBitis').value = '';
+        document.getElementById('filterDokum').value = '';
+        document.getElementById('filterUrunTipi').value = '';
+        document.getElementById('filterTeker').value = '';
+
+        filteredData = [...rawData];
+        renderTable(filteredData);
+    }
+
+    // Excel'e Aktar
+    function exportToExcel() {
+        const table = document.getElementById("mainTable");
+        const wb = XLSX.utils.table_to_book(table, {sheet: "Teker Raporu"});
+        const fileName = `Kardemir_Teker_Raporu_${new Date().toISOString().split('T')[0]}.xlsx`;
+        XLSX.writeFile(wb, fileName);
+    }
+
+    // E-mail Gönder
+    function sendEmail() {
+        const subject = 'Kardemir - Teker Ürün Tipi Raporu';
+        const body = `Sayın İlgili,\n\nKardemir Teker Ürün Tipi Raporu ektedir.\n\nToplam Kayıt: ${rawData.length}\nFiltrelenmiş Kayıt: ${filteredData.length}\n\nSaygılarımızla,\nKardemir Kalite Kontrol Departmanı`;
+
+        window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    }
+</script>
+</body>
+</html>
