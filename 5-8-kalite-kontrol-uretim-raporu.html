@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ÇKH Kalite Üretim Raporu </title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Kardemir DYT Üretim Raporu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="sidebar.css" rel="stylesheet" />
     <style>
         * {
@@ -14,2358 +15,949 @@
         }
 
         :root {
-            --primary-dark: #1e3a5f;
-            --primary-blue: #2d5986;
-            --accent-red: #c62828;
-            --accent-green: #2e7d32;
-            --bg-light: #f5f7fa;
-            --card-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            --card-shadow-hover: 0 4px 16px rgba(0,0,0,0.12);
+            /* Kardemir Renkleri */
+            --kardemir-blue: #003d82;
+            --kardemir-blue-dark: #002651;
+            --kardemir-blue-light: #0055b8;
+            --kardemir-red: #c1272d;
+            --kardemir-red-dark: #8b1c21;
+            --kardemir-gray: #4a5568;
+            --kardemir-gray-light: #e2e8f0;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --light-bg: #f8fafc;
+            --white: #ffffff;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #e8eef3 0%, #f5f7fa 100%);
-            padding: 20px;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f0f4f8 0%, #e6eef5 100%);
+            color: #1a202c;
             min-height: 100vh;
+            padding: 0;
         }
 
-        .main-container {
-            max-width: 1600px;
-            margin: 0 auto;
-        }
-
-        /* Header */
-        .header {
-            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 100%);
+        /* Header Section */
+        .main-header {
+            background: linear-gradient(135deg, var(--kardemir-blue-dark) 0%, var(--kardemir-blue) 100%);
             color: white;
-            padding: 30px 40px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            box-shadow: var(--card-shadow);
+            padding: 30px 50px;
+            box-shadow: 0 4px 20px rgba(0, 61, 130, 0.3);
+            position: relative;
+            overflow: hidden;
         }
 
-        .header h1 {
-            font-size: 28px;
-            font-weight: 600;
-            margin-bottom: 8px;
+        .main-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--kardemir-red), var(--kardemir-blue-light));
+        }
+
+        .main-header::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-left {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 25px;
         }
 
-        .header p {
-            font-size: 14px;
-            opacity: 0.9;
-        }
-
-        /* Summary Cards */
-        .summary-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            margin-bottom: 25px;
-        }
-
-        .summary-card {
+        .logo-box {
+            width: 80px;
+            height: 80px;
             background: white;
-            border-radius: 12px;
-            padding: 24px;
-            box-shadow: var(--card-shadow);
-            transition: all 0.3s ease;
-            border-left: 4px solid transparent;
-            cursor: pointer;
-        }
-
-        .summary-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--card-shadow-hover);
-        }
-
-        .summary-card.blue { border-left-color: var(--primary-blue); }
-        .summary-card.green { border-left-color: var(--accent-green); }
-        .summary-card.red { border-left-color: var(--accent-red); }
-        .summary-card.orange { border-left-color: #f57c00; }
-
-        .card-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 16px;
-        }
-
-        .card-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 10px;
+            border-radius: 16px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
 
-        .card-icon.blue { background: rgba(45, 89, 134, 0.1); }
-        .card-icon.green { background: rgba(46, 125, 50, 0.1); }
-        .card-icon.red { background: rgba(198, 40, 40, 0.1); }
-        .card-icon.orange { background: rgba(245, 124, 0, 0.1); }
-
-        .card-label {
-            font-size: 13px;
-            color: #666;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+        .logo-box i {
+            font-size: 40px;
+            color: var(--kardemir-blue);
         }
 
-        .card-value {
-            font-size: 32px;
-            font-weight: 700;
-            color: var(--primary-dark);
+        .header-title h1 {
+            font-size: 36px;
+            font-weight: 800;
             margin-bottom: 8px;
+            letter-spacing: -0.5px;
         }
 
-        .card-unit {
-            font-size: 14px;
-            color: #999;
+        .header-title p {
+            font-size: 16px;
+            opacity: 0.9;
+            font-weight: 400;
         }
 
-        .card-percentage {
-            font-size: 20px;
-            font-weight: 600;
-            margin-top: 8px;
+        /* Container */
+        .container {
+            max-width: 100%;
+            padding: 30px 50px;
         }
-
-        .card-percentage.good { color: var(--accent-green); }
-        .card-percentage.warning { color: #f57c00; }
-        .card-percentage.bad { color: var(--accent-red); }
 
         /* Filter Section */
         .filter-section {
             background: white;
-            border-radius: 12px;
-            padding: 25px;
-            margin-bottom: 25px;
-            box-shadow: var(--card-shadow);
+            border-radius: 20px;
+            padding: 35px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border-left: 5px solid var(--kardemir-blue);
+        }
+
+        .filter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
         }
 
         .filter-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--primary-dark);
-            margin-bottom: 20px;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--kardemir-blue);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
         }
 
         .filter-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 25px;
         }
 
-        .filter-group label {
+        .input-group label {
             display: block;
             font-size: 13px;
             font-weight: 600;
-            color: #555;
-            margin-bottom: 8px;
+            color: var(--kardemir-gray);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .filter-group input,
-        .filter-group select {
+        .input-group input,
+        .input-group select {
             width: 100%;
-            padding: 10px 14px;
-            border: 1.5px solid #ddd;
-            border-radius: 8px;
-            font-size: 14px;
+            padding: 14px 18px;
+            border: 2px solid var(--kardemir-gray-light);
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 500;
+            background: white;
+            color: #1a202c;
             transition: all 0.3s ease;
             font-family: inherit;
         }
 
-        .filter-group input:focus,
-        .filter-group select:focus {
+        .input-group input:focus,
+        .input-group select:focus {
             outline: none;
-            border-color: var(--primary-blue);
-            box-shadow: 0 0 0 3px rgba(45, 89, 134, 0.1);
+            border-color: var(--kardemir-blue);
+            box-shadow: 0 0 0 4px rgba(0, 61, 130, 0.1);
         }
 
-        .button-group {
+        .input-group select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath fill='%23003d82' d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            padding-right: 45px;
+        }
+
+        .filter-actions {
             display: flex;
-            gap: 12px;
+            gap: 15px;
             justify-content: flex-end;
-            flex-wrap: wrap;
         }
 
         .btn {
-            padding: 11px 24px;
+            padding: 14px 32px;
             border: none;
-            border-radius: 8px;
-            font-size: 14px;
+            border-radius: 10px;
             font-weight: 600;
+            font-size: 14px;
             cursor: pointer;
             transition: all 0.3s ease;
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
             font-family: inherit;
         }
 
         .btn-primary {
-            background: var(--primary-blue);
+            background: linear-gradient(135deg, var(--kardemir-blue), var(--kardemir-blue-light));
             color: white;
+            box-shadow: 0 6px 20px rgba(0, 61, 130, 0.3);
         }
 
         .btn-primary:hover {
-            background: var(--primary-dark);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(45, 89, 134, 0.3);
+            box-shadow: 0 8px 30px rgba(0, 61, 130, 0.4);
         }
 
         .btn-secondary {
-            background: #546e7a;
-            color: white;
+            background: var(--kardemir-gray-light);
+            color: var(--kardemir-gray);
+            border: 2px solid #cbd5e0;
         }
 
         .btn-secondary:hover {
-            background: #455a64;
-            transform: translateY(-2px);
+            background: #cbd5e0;
+            border-color: var(--kardemir-gray);
         }
 
-        .btn-success {
-            background: var(--accent-green);
-            color: white;
+        /* Stats Grid */
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
         }
 
-        .btn-success:hover {
-            background: #1b5e20;
-            transform: translateY(-2px);
+        .stat-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border-left: 5px solid var(--card-color);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 120px;
+            height: 120px;
+            background: var(--card-color);
+            opacity: 0.05;
+            border-radius: 50%;
+            transform: translate(30%, -30%);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.12);
+        }
+
+        .stat-card.success { --card-color: var(--success); }
+        .stat-card.danger { --card-color: var(--danger); }
+        .stat-card.primary { --card-color: var(--kardemir-blue); }
+        .stat-card.warning { --card-color: var(--warning); }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            background: var(--card-color);
+            opacity: 0.1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: var(--card-color);
+        }
+
+        .stat-label {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--kardemir-gray);
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .stat-value {
+            font-size: 42px;
+            font-weight: 900;
+            color: #1a202c;
+            line-height: 1;
+            margin-bottom: 15px;
+        }
+
+        .stat-trend {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .stat-trend.down {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
         }
 
         /* Table Section */
         .table-section {
             background: white;
-            border-radius: 12px;
-            padding: 0;
-            box-shadow: var(--card-shadow);
+            border-radius: 20px;
             overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border-top: 5px solid var(--kardemir-blue);
         }
 
-        .table-container {
-            overflow-x: auto;
-            overflow-y: auto;
-            max-height: 600px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-        }
-
-        thead {
-            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 100%);
+        .table-header {
+            background: linear-gradient(135deg, var(--kardemir-blue-dark) 0%, var(--kardemir-blue) 100%);
             color: white;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        thead tr:first-child th {
-            background: var(--primary-dark);
-            border: 2px solid white;
-            border-bottom: 3px solid var(--accent-red);
-            padding: 14px 10px;
-            text-align: center;
-            font-weight: 700;
-            font-size: 11px;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-        }
-
-        thead tr:last-child th {
-            background: var(--primary-blue);
-            border: 1px solid rgba(255,255,255,0.3);
-            border-top: none;
-            padding: 10px 8px;
-            text-align: center;
-            font-weight: 600;
-            font-size: 10px;
-            letter-spacing: 0.3px;
-            text-transform: uppercase;
-        }
-
-        th {
-            white-space: nowrap;
-        }
-
-        tbody tr {
-            border-bottom: 1px solid #f0f0f0;
-            transition: all 0.2s ease;
-        }
-
-        tbody tr:hover {
-            background: #f8f9fa;
-        }
-
-        td {
-            padding: 14px 12px;
-            color: #333;
-            white-space: nowrap;
-        }
-
-        .text-center {
-            text-align: center;
-        }
-
-        .text-right {
-            text-align: right;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 600;
-        }
-
-        .badge-success {
-            background: rgba(46, 125, 50, 0.15);
-            color: var(--accent-green);
-        }
-
-        .badge-danger {
-            background: rgba(198, 40, 40, 0.15);
-            color: var(--accent-red);
-        }
-
-        .status-good {
-            color: var(--accent-green);
-            font-weight: 600;
-        }
-
-        .status-warning {
-            color: #f57c00;
-            font-weight: 600;
-        }
-
-        .status-bad {
-            color: var(--accent-red);
-            font-weight: 600;
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(30, 58, 95, 0.85);
-            backdrop-filter: blur(4px);
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal.active {
-            display: flex;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 16px;
-            max-width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            animation: slideUp 0.4s ease;
-        }
-
-        @keyframes slideUp {
-            from {
-                transform: translateY(50px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .modal-header {
-            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-blue) 100%);
-            color: white;
-            padding: 25px 30px;
-            border-radius: 16px 16px 0 0;
+            padding: 25px 35px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .modal-header h2 {
+        .table-header h3 {
             font-size: 22px;
-            font-weight: 600;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
-        .close {
-            color: white;
-            font-size: 32px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 40px;
-            height: 40px;
+        .table-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .action-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 50%;
+            cursor: pointer;
             transition: all 0.3s ease;
-        }
-
-        .close:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: rotate(90deg);
-        }
-
-        .modal-body {
-            padding: 30px;
-        }
-
-        .chart-container {
-            background: white;
-            padding: 30px;
-            border-radius: 12px;
-            margin-top: 20px;
-        }
-
-        .chart-container canvas {
-            max-height: 400px;
-        }
-
-        .detail-table {
-            width: 100%;
-            margin-top: 20px;
-            border-collapse: collapse;
-        }
-
-        .detail-table th {
-            background: var(--primary-dark);
             color: white;
-            padding: 12px;
-            text-align: left;
-            font-size: 13px;
         }
 
-        .detail-table td {
-            padding: 12px;
-            border-bottom: 1px solid #e0e0e0;
+        .action-btn:hover {
+            background: rgba(255,255,255,0.2);
+            transform: scale(1.05);
         }
 
-        .detail-table tr:hover {
-            background: #f8f9fa;
+        .table-wrapper {
+            overflow-x: auto;
+            overflow-y: auto;
+            max-height: 650px;
         }
 
-        .detail-label {
-            font-weight: 600;
-            color: var(--primary-dark);
-        }
-
-        .detail-value {
-            text-align: right;
-            font-weight: 600;
-            font-family: 'Courier New', monospace;
-        }
-
-        .section-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--primary-dark);
-            margin: 30px 0 20px 0;
-            padding-bottom: 10px;
-            border-bottom: 3px solid var(--accent-red);
-        }
-
-        .no-data {
-            text-align: center;
-            padding: 60px;
-            color: #999;
-            font-size: 16px;
-        }
-
-        .total-row {
-            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%) !important;
-            font-weight: 700;
-            border-top: 4px solid var(--accent-red) !important;
-            position: sticky;
-            bottom: 0;
-            z-index: 50;
-            box-shadow: 0 -4px 12px rgba(198, 40, 40, 0.2);
-        }
-
-        .total-row td {
-            padding: 14px 10px;
-            font-size: 12px;
-            color: var(--primary-dark);
-            font-weight: 700;
-        }
-
-        /* Scrollbar */
-        .table-container::-webkit-scrollbar {
+        .table-wrapper::-webkit-scrollbar {
             width: 10px;
             height: 10px;
         }
 
-        .table-container::-webkit-scrollbar-track {
-            background: #f0f0f0;
+        .table-wrapper::-webkit-scrollbar-track {
+            background: #f1f5f9;
         }
 
-        .table-container::-webkit-scrollbar-thumb {
-            background: var(--primary-blue);
+        .table-wrapper::-webkit-scrollbar-thumb {
+            background: var(--kardemir-blue);
             border-radius: 5px;
         }
 
-        .table-container::-webkit-scrollbar-thumb:hover {
-            background: var(--primary-dark);
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 2800px;
         }
 
-        .total-row {
-            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%) !important;
+        thead th {
+            background: #f8fafc;
+            color: var(--kardemir-blue-dark);
             font-weight: 700;
-            border-top: 4px solid var(--accent-red) !important;
+            text-align: center;
+            padding: 15px 10px;
+            border: 1px solid #e2e8f0;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
             position: sticky;
-            bottom: 0;
-            z-index: 50;
-            box-shadow: 0 -4px 12px rgba(198, 40, 40, 0.2);
+            top: 0;
+            z-index: 10;
         }
 
-        .total-row td {
-            padding: 14px 10px;
-            font-size: 12px;
-            color: var(--primary-dark);
+        .th-yellow-main {
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: white;
+        }
+        .th-yellow-sub {
+            background: #fef3c7;
+            color: #92400e;
+            font-size: 10px;
+        }
+        .th-green {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+        .th-gray {
+            background: var(--kardemir-gray-light);
+            color: var(--kardemir-blue-dark);
+        }
+        .th-unit {
+            background: #dbeafe;
+            font-size: 10px;
+            color: var(--kardemir-blue);
+        }
+
+        tbody td {
+            padding: 15px 10px;
+            border: 1px solid #e2e8f0;
+            text-align: center;
+            font-weight: 500;
+            font-size: 13px;
+            color: #1a202c;
+        }
+
+        tbody tr {
+            transition: all 0.2s ease;
+            background: white;
+        }
+
+        tbody tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        tbody tr:hover {
+            background: #e6f2ff;
+            transform: scale(1.002);
+        }
+
+        .cell-highlight {
+            background: #fef3c7;
             font-weight: 700;
+            color: #92400e;
+        }
+
+        .cell-result-green {
+            background: linear-gradient(135deg, #6ee7b7, #34d399);
+            font-weight: 900;
+            color: white;
+            border-radius: 8px;
+        }
+
+        .cell-hold {
+            color: var(--kardemir-red);
+            font-weight: 700;
+            font-style: italic;
+        }
+
+        .cell-red-bg {
+            background: #fee2e2;
+            color: #991b1b;
+            font-weight: 700;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: white;
+            padding: 20px 25px;
+            border-radius: 15px;
+            border-left: 5px solid var(--kardemir-blue);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            z-index: 9999;
+            animation: slideIn 0.4s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(400px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .toast-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--kardemir-blue);
+            color: white;
+            font-size: 20px;
+        }
+
+        .toast-content h4 {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--kardemir-blue-dark);
+            margin-bottom: 4px;
+        }
+
+        .toast-content p {
+            font-size: 13px;
+            color: var(--kardemir-gray);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .container { padding: 20px 30px; }
+            .main-header { padding: 25px 30px; }
+            .stats-section { grid-template-columns: repeat(2, 1fr); }
         }
 
         @media (max-width: 768px) {
-            .summary-cards {
-                grid-template-columns: 1fr;
-            }
-
-            .filter-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .button-group {
-                flex-direction: column;
-            }
-
-            .btn {
-                width: 100%;
-                justify-content: center;
-            }
+            .header-content { flex-direction: column; gap: 20px; }
+            .header-left { flex-direction: column; text-align: center; }
+            .stats-section { grid-template-columns: 1fr; }
+            .filter-grid { grid-template-columns: 1fr; }
+            .filter-actions { flex-direction: column; }
+            .btn { width: 100%; justify-content: center; }
         }
     </style>
 </head>
 <body>
-    <aside id="sidebar">
-    <div id="sidebar-container"></div>
+<!-- Sidebar -->
+<aside id="sidebar">
+    <div id="sidebar-container" class="sidebar-container"></div>
     <script>
-      fetch("sidebar.html").then(res => res.text()).then(html => { document.getElementById("sidebar-container").innerHTML = html; });
+        fetch("sidebar.html")
+            .then((res) => res.text())
+            .then((data) => (document.getElementById("sidebar-container").innerHTML = data));
     </script>
-  </aside>
-<div class="main-container" style="margin-left: 240px;">
-    <!-- Header -->
-    <div class="header">
-        <h1>
-            <svg width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
-                <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"/>
-                <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.901 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319z"/>
-            </svg>
-            ÇKH Kalite Üretim Raporu
-        </h1>
-
+</aside>
+<!-- Main Header -->
+<header class="main-header" style="margin-left: 260px;">
+    <div class="header-content">
+        <div class="header-left">
+            </div>
+            <div class="header-title">
+                <h1>DYTT Üretim Raporu</h1>
+            </div>
+        </div>
     </div>
+</header>
+
+<!-- Main Container -->
+<div class="container" style="margin-left: 260px;">
+    
 
     <!-- Filter Section -->
-    <div class="filter-section">
-        <div class="filter-section">
+    <section class="filter-section">
+        <div class="filter-header">
             <div class="filter-title">
-                <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-                    <path d="M6 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z"/>
-                </svg>
-                Filtreleme Paneli
-            </div>
-
-            <div class="filter-grid">
-                <div class="filter-group">
-                    <label for="baslangicTarihi">Başlangıç Tarihi</label>
-                    <input type="date" id="baslangicTarihi" value="2025-01-01">
-                </div>
-
-                <div class="filter-group">
-                    <label for="bitisTarihi">Bitiş Tarihi</label>
-                    <input type="date" id="bitisTarihi" value="2025-12-31">
-                </div>
-
-                <div class="filter-group">
-                    <label for="vardiya">Vardiya</label>
-                    <select id="vardiya">
-                        <option value="">Tümü</option>
-                        <option value="1. Vardiya">1. Vardiya</option>
-                        <option value="2. Vardiya">2. Vardiya</option>
-                        <option value="3. Vardiya">3. Vardiya</option>
-                    </select>
-                </div>
-
-                <div class="filter-group">
-                    <label for="kalite">Kalite</label>
-                    <select id="kalite">
-                        <option value="">Tümü</option>
-                        <option value="S220">S220</option>
-                        <option value="S235">S235</option>
-                        <option value="S420">S420</option>
-                        <option value="S500">S500</option>
-                    </select>
-                </div>
-
-                <div class="filter-group">
-                    <label for="cap">Çap (mm)</label>
-                    <input type="number" id="cap" placeholder="Çap...">
-                </div>
-            </div>
-
-            <div class="button-group">
-                <button class="btn btn-secondary" onclick="showSummaryModal()">
-                    <span>📊 Özet Bilgiler</span>
-                </button>
-                <button class="btn btn-success" onclick="exportToExcel()">
-                    <span>📥 Excel İndir</span>
-                </button>
-                <button class="btn btn-primary" onclick="filtrele()">
-                    <span>🔍 Filtrele</span>
-                </button>
-                <button class="btn btn-secondary" onclick="temizle()">
-                    <span>🔄 Temizle</span>
-                </button>
-
+                <i class="fas fa-filter"></i>
+                Gelişmiş Filtreleme
             </div>
         </div>
-
-        <!-- Summary Cards -->
-        <div class="summary-cards">
-            <div class="summary-card green" onclick="showDetailModal('kalite1')">
-                <div class="card-header">
-                    <div class="card-label">1. KALİTE</div>
-                    <div class="card-icon green">✓</div>
-                </div>
-                <div class="card-value" id="card-kalite1">0</div>
-                <div class="card-unit">ton</div>
+        <div class="filter-grid">
+            <div class="input-group">
+                <label><i class="fas fa-calendar-alt"></i> Başlangıç Tarihi</label>
+                <input type="date" id="startDate">
             </div>
-
-            <div class="summary-card orange" onclick="showDetailModal('kalite2')">
-                <div class="card-header">
-                    <div class="card-label">2. KALİTE</div>
-                    <div class="card-icon orange">⚠</div>
-                </div>
-                <div class="card-value" id="card-kalite2">0</div>
-                <div class="card-unit">ton</div>
+            <div class="input-group">
+                <label><i class="fas fa-calendar-check"></i> Bitiş Tarihi</label>
+                <input type="date" id="endDate">
             </div>
-
-            <div class="summary-card red" onclick="showDetailModal('hurda')">
-                <div class="card-header">
-                    <div class="card-label">HURDA</div>
-                    <div class="card-icon red">✗</div>
-                </div>
-                <div class="card-value" id="card-hurda">0</div>
-                <div class="card-unit">ton</div>
+            <div class="input-group">
+                <label><i class="fas fa-box"></i> Ürün Tipi</label>
+                <select id="productType">
+                    <option value="all">Tümü</option>
+                    <option value="nihai">Nihai Teker</option>
+                    <option value="ham">Ham Teker</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label><i class="fas fa-cog"></i> Teker Tipi</label>
+                <select id="wheelType">
+                    <option value="all">Tümü</option>
+                    <option value="M3">M3</option>
+                    <option value="M5">M5</option>
+                    <option value="BA314">BA 314</option>
+                </select>
             </div>
         </div>
-
-        <!-- Table Section -->
-        <div class="table-section">
-            <div class="table-container">
-                <table id="dataTable">
-                    <thead>
-                    <tr>
-                        <!-- TEMEL BİLGİLER -->
-                        <th rowspan="2">Üretim<br>Tarihi</th>
-                        <th rowspan="2">Vardiya</th>
-                        <th rowspan="2">Malzeme<br>Kodu</th>
-                        <th rowspan="2">Kalite</th>
-                        <th rowspan="2">Çap<br>(mm)</th>
-
-                        <!-- KÜTÜK BİLGİLERİ -->
-                        <th rowspan="2">Kütük<br>Ebatı<br>(mm)</th>
-                        <th rowspan="2">Kütük<br>Boyu<br>(mm)</th>
-                        <th rowspan="2">Kütük Birim<br>Ağırlığı<br>(kg/m)</th>
-
-                        <!-- ŞARJ -->
-                        <th colspan="2">ŞARJ</th>
-
-                        <!-- HADDEHANE PROSES KAYBI -->
-                        <th colspan="2">Haddehane<br>Proses Kaybı</th>
-
-                        <!-- UÇ-BAŞ/TUFAL -->
-                        <th colspan="2">Uç-Baş/<br>Tufal</th>
-
-                        <!-- HADDE BOZUĞU -->
-                        <th colspan="3">Hadde<br>Bozuğu</th>
-
-                        <!-- KONTROLE VERİLEN -->
-                        <th colspan="2">Kontrole<br>Verilen</th>
-
-                        <!-- 1. KALİTE -->
-                        <th colspan="3">1. Kalite</th>
-
-                        <!-- FARKLI KALİTEYE UYGULANAN -->
-                        <th colspan="5">Farklı Kaliteye<br>Uygulanan</th>
-
-                        <!-- 2. KALİTE -->
-                        <th colspan="3">2. Kalite</th>
-
-                        <!-- HURDA -->
-                        <th colspan="3">Hurda</th>
-
-                        <!-- HOLD -->
-                        <th colspan="4">Hold</th>
-
-                        <!-- KULLANIM KARARI -->
-                        <th colspan="3">Kullanım<br>Kararı</th>
-
-                        <!-- İNSİYATİFLİ ONAY -->
-                        <th colspan="3">İnsiyatifli<br>Onay</th>
-
-                        <!-- 2. KALİTE DETAY -->
-                        <th colspan="47">2. KALİTE DETAY (ton)</th>
-
-                        <!-- HURDA DETAY -->
-                        <th colspan="43">HURDA DETAY (ton)</th>
-
-                        <!-- VERİMLİLİK -->
-                        <th rowspan="2" class="section-divider">MALZEME<br>VERİMİ<br>(%)</th>
-                        <th rowspan="2">SATILABİLİR<br>ÜRÜN<br>(%)</th>
-
-                        <!-- OTOMOTİV -->
-                        <th rowspan="2">OTOMOTİV</th>
-                    </tr>
-                    <tr>
-                        <!-- ŞARJ -->
-                        <th>(Adet)</th>
-                        <th>(ton)</th>
-
-                        <!-- HADDEHANE PROSES KAYBI -->
-                        <th>(ton)</th>
-                        <th>(%)</th>
-
-                        <!-- UÇ-BAŞ/TUFAL -->
-                        <th>(ton)</th>
-                        <th>(%)</th>
-
-                        <!-- HADDE BOZUĞU -->
-                        <th>(Adet)</th>
-                        <th>(ton)</th>
-                        <th>(%)</th>
-
-                        <!-- KONTROLE VERİLEN -->
-                        <th>(Adet)</th>
-                        <th>(ton)</th>
-
-                        <!-- 1. KALİTE -->
-                        <th>(Adet)</th>
-                        <th>(ton)</th>
-                        <th>(%)</th>
-
-                        <!-- FARKLI KALİTEYE UYGULANAN -->
-                        <th>Mamul<br>Kalitesi</th>
-                        <th>(Adet)</th>
-                        <th>(ton)</th>
-                        <th>(%)</th>
-                        <th>(Sebep)</th>
-
-                        <!-- 2. KALİTE -->
-                        <th>(Adet)</th>
-                        <th>(ton)</th>
-                        <th>(%)</th>
-
-                        <!-- HURDA -->
-                        <th>(Adet)</th>
-                        <th>(ton)</th>
-                        <th>(%)</th>
-
-                        <!-- HOLD -->
-                        <th>Mamul<br>Kalitesi</th>
-                        <th>(Adet)</th>
-                        <th>(ton)</th>
-                        <th>(Sebep)</th>
-
-                        <!-- KULLANIM KARARI -->
-                        <th>(Adet)</th>
-                        <th>(ton)</th>
-                        <th>İşlemi Yapan</th>
-
-                        <!-- İNSİYATİFLİ ONAY -->
-                        <th>(Adet)</th>
-                        <th>(ton)</th>
-                        <th>Açıklama</th>
-
-                        <!-- 2. KALİTE DETAY (47 sütun) -->
-                        <th>Ovalite</th>
-                        <th>Ölçü-Tolerans<br>Harici</th>
-                        <th>Parçalı<br>Paket</th>
-                        <th>Çizik<br>(Hadde)</th>
-                        <th>Çatlak<br>(Hadde)</th>
-                        <th>Çatlak<br>(Çelikhane)</th>
-                        <th>Bozuk<br>Sarım</th>
-                        <th>Katlama</th>
-                        <th>Kangal Ağırlığı<br>Düşük</th>
-                        <th>Kangal Ağırlığı<br>Yüksek</th>
-                        <th>Birim Ağırlığı<br>Düşük</th>
-                        <th>Birim Ağırlığı<br>Yüksek</th>
-                        <th>Kasa<br>Kaçığı</th>
-                        <th>Çapak<br>(Hadde)</th>
-                        <th>Y.M.K<br>Çapak</th>
-                        <th>Trim<br>Yetersizliği</th>
-                        <th>Fitil</th>
-                        <th>Mukavemet<br>Düşük</th>
-                        <th>Mukavemet<br>Yüksek</th>
-                        <th>Ring<br>Kırığı</th>
-                        <th>Ring<br>Kaçığı</th>
-                        <th>Serme Kafa<br>Yarası</th>
-                        <th>Yağlı</th>
-                        <th>Sıcak<br>Haddelenmiş</th>
-                        <th>Soğuk<br>Haddelenmiş</th>
-                        <th>Atmosferik<br>Korozyon</th>
-                        <th>Hadde<br>Korozyonu</th>
-                        <th>Vinç<br>Hasarı</th>
-                        <th>Forklift<br>Hasarı</th>
-                        <th>Hasarlı</th>
-                        <th>Makara<br>İzi</th>
-                        <th>Şalomo<br>Yarası</th>
-                        <th>Pinch Roll<br>Yarası</th>
-                        <th>Sertleştirilebilirlik<br>Uygun Olmayan</th>
-                        <th>Stok Zemini<br>Hasarı</th>
-                        <th>Mikro<br>Çatlak</th>
-                        <th>Ezmede Çatlak<br>(ÇH)</th>
-                        <th>Ezmede Çatlak<br>(ÇKH)</th>
-                        <th>Makro<br>Çatlak</th>
-                        <th>Proses<br>Uygunsuzluğu</th>
-                        <th>Segregasyon</th>
-                        <th>Bağlama<br>Hasarı</th>
-                        <th>Bağ Teli<br>Uygunsuz</th>
-                        <th>Paket<br>Uygunsuz</th>
-                        <th>Etiket<br>Uygunsuz</th>
-                        <th>Paslı</th>
-                        <th>Diğer</th>
-
-                        <!-- HURDA DETAY (43 sütun) -->
-                        <th>Ölçü-Tolerans<br>Harici</th>
-                        <th>Katlama</th>
-                        <th>Fitil</th>
-                        <th>Çapak<br>(Hadde)</th>
-                        <th>YMK<br>Çapak</th>
-                        <th>Ovalite</th>
-                        <th>Sarım<br>Bozuğu</th>
-                        <th>Mukavemet<br>Düşük</th>
-                        <th>Mukavemet<br>Yüksek</th>
-                        <th>YMK<br>Çatlak</th>
-                        <th>HH<br>Çizik</th>
-                        <th>Ring<br>Kırığı</th>
-                        <th>Makara<br>Kırığı</th>
-                        <th>Pinch Roll<br>Yarası</th>
-                        <th>Ring<br>Kaçığı</th>
-                        <th>Kasa<br>Kaçığı</th>
-                        <th>Sıcak<br>Haddelenmiş</th>
-                        <th>Soğuk<br>Haddelenmiş</th>
-                        <th>Atmosferik<br>Korozyon</th>
-                        <th>Hadde<br>Korozyonu</th>
-                        <th>Vinç<br>Hasarı</th>
-                        <th>Forklift<br>Hasarı</th>
-                        <th>Bağ Teli<br>Kopması</th>
-                        <th>Stok Zemini<br>Hasarı</th>
-                        <th>Trim<br>Yetersizliği</th>
-                        <th>Hadde<br>Yarası</th>
-                        <th>Mikro<br>Çatlak</th>
-                        <th>Ezmede Çatlak<br>(ÇH)</th>
-                        <th>Ezmede Çatlak<br>(ÇKH)</th>
-                        <th>Parçalı<br>Paket</th>
-                        <th>HH<br>Çatlak</th>
-                        <th>Makro<br>Çatlak</th>
-                        <th>Proses<br>Uygunsuzluğu</th>
-                        <th>Yağlı</th>
-                        <th>Bağ Teli<br>Uygunsuz</th>
-                        <th>Paket<br>Uygunsuz</th>
-                        <th>Etiket<br>Uygunsuz</th>
-                        <th>Ölçü<br>Dalgalanması</th>
-                        <th>Bağlama<br>Hasarı</th>
-                        <th>Kangal Ağırlığı<br>Yüksek</th>
-                        <th>Kangal Ağırlığı<br>Düşük</th>
-                        <th>Birim Ağırlığı<br>Yüksek</th>
-                        <th>Birim Ağırlığı<br>Düşük</th>
-                    </tr>
-                    </thead>
-                    <tbody id="tableBody">
-                    </tbody>
-                </table>
-            </div>
+        <div class="filter-actions">
+            <button class="btn btn-secondary" onclick="resetFilters()">
+                <i class="fas fa-redo"></i> Temizle
+            </button>
+            <button class="btn btn-primary" onclick="applyFilters()">
+                <i class="fas fa-search"></i> Filtrele
+            </button>
         </div>
-    </div>
+    </section>
 
-    <!-- Detail Modal -->
-    <div id="detailModal" class="modal">
-        <div class="modal-content" style="min-width: 800px;">
-            <div class="modal-header">
-                <h2 id="modalTitle">Detay Bilgiler</h2>
-                <span class="close" onclick="closeDetailModal()">&times;</span>
-            </div>
-            <div class="modal-body">
-                <div id="modalContent"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Özet Bilgiler Modal -->
-    <div id="summaryModal" class="modal">
-        <div class="modal-content" style="min-width: 1000px;">
-            <div class="modal-header">
-                <h2>📊 Özet Bilgiler ve Analiz</h2>
-                <span class="close" onclick="closeSummaryModal()">&times;</span>
-            </div>
-            <div class="modal-body">
-                <!-- 3 Tablo Yan Yana -->
-                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px;">
-                    <!-- GENEL TABLO -->
-                    <div>
-                        <div class="section-title" style="font-size: 16px;">GENEL TABLO</div>
-                        <table class="detail-table" style="font-size: 11px;">
-                            <thead>
-                            <tr>
-                                <th style="background: var(--primary-blue); text-align: left;"></th>
-                                <th style="background: var(--primary-blue); text-align: right;">Miktar (ton)</th>
-                                <th style="background: var(--primary-blue); text-align: right;">%</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td class="detail-label">ŞARJ</td>
-                                <td class="detail-value" style="text-align: right;" id="sum-sarj-1">0</td>
-                                <td class="detail-value" style="text-align: right;">-</td>
-                            </tr>
-                            <tr>
-                                <td class="detail-label">KONTROLE VERİLEN</td>
-                                <td class="detail-value" style="text-align: right;" id="sum-kontrole-1">0</td>
-                                <td class="detail-value" style="text-align: right;">-</td>
-                            </tr>
-                            <tr>
-                                <td class="detail-label">HADDEHANE PROSES KAYBI</td>
-                                <td class="detail-value" style="text-align: right;" id="sum-proses-1">0</td>
-                                <td class="detail-value" style="text-align: right;" id="sum-proses-percent-1">0.00</td>
-                            </tr>
-                            <tr>
-                                <td class="detail-label">HADDE BOZUĞU</td>
-                                <td class="detail-value" style="text-align: right;" id="sum-bozuk-1">0</td>
-                                <td class="detail-value" style="text-align: right;" id="sum-bozuk-percent-1">0.00</td>
-                            </tr>
-                            <tr>
-                                <td class="detail-label">UÇ-BAŞ/TUFAL</td>
-                                <td class="detail-value" style="text-align: right;" id="sum-tufal-1">0</td>
-                                <td class="detail-value" style="text-align: right;" id="sum-tufal-percent-1">0.00</td>
-                            </tr>
-                            <tr>
-                                <td class="detail-label">HOLD</td>
-                                <td class="detail-value" style="text-align: right;">0.000</td>
-                                <td class="detail-value" style="text-align: right;">0.00</td>
-                            </tr>
-                            <tr style="background: #e3f2fd;">
-                                <td class="detail-label"><strong>1.KALİTE</strong></td>
-                                <td class="detail-value" style="text-align: right;"><strong id="sum-kalite1-1">0</strong></td>
-                                <td class="detail-value" style="text-align: right;"><strong id="sum-kalite1-percent-1">0.00</strong></td>
-                            </tr>
-                            <tr>
-                                <td class="detail-label">FARKLI KALİTEYE UYGULANAN</td>
-                                <td class="detail-value" style="text-align: right;" id="sum-farkli-1">0</td>
-                                <td class="detail-value" style="text-align: right;" id="sum-farkli-percent-1">0.00</td>
-                            </tr>
-                            <tr>
-                                <td class="detail-label">2.KALİTE</td>
-                                <td class="detail-value" style="text-align: right;" id="sum-kalite2-1">0</td>
-                                <td class="detail-value" style="text-align: right;" id="sum-kalite2-percent-1">0.00</td>
-                            </tr>
-                            <tr>
-                                <td class="detail-label">HADDEHANE KAYNAKLI 2.KALİTE</td>
-                                <td class="detail-value" style="text-align: right;">0.000</td>
-                                <td class="detail-value" style="text-align: right;">0.00</td>
-                            </tr>
-                            <tr>
-                                <td class="detail-label">ÇELİKHANE KAYNAKLI 2.KALİTE</td>
-                                <td class="detail-value" style="text-align: right;" id="sum-kalite2-celikhane">0</td>
-                                <td class="detail-value" style="text-align: right;" id="sum-kalite2-celikhane-percent">0.00</td>
-                            </tr>
-                            <tr style="background: #ffebee;">
-                                <td class="detail-label"><strong>MAMUL HURDASI</strong></td>
-                                <td class="detail-value" style="text-align: right;"><strong id="sum-hurda-1">0</strong></td>
-                                <td class="detail-value" style="text-align: right;"><strong id="sum-hurda-percent-1">0.00</strong></td>
-                            </tr>
-                            <tr>
-                                <td class="detail-label">Haddehane Kaynaklı Hurda</td>
-                                <td class="detail-value" style="text-align: right;">0.000</td>
-                                <td class="detail-value" style="text-align: right;">0.00</td>
-                            </tr>
-                            <tr>
-                                <td class="detail-label">Çelikhane Kaynaklı Hurda</td>
-                                <td class="detail-value" style="text-align: right;">0.000</td>
-                                <td class="detail-value" style="text-align: right;">0.00</td>
-                            </tr>
-                            <tr style="background: #c8e6c9;">
-                                <td class="detail-label"><strong>Satılabilir Ürün</strong></td>
-                                <td class="detail-value" style="text-align: right;"><strong id="sum-satilabilir-1">0</strong></td>
-                                <td class="detail-value" style="text-align: right;"><strong id="sum-satilabilir-percent-1">0.00</strong></td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- 2. KALİTE HATA DAĞILIMI -->
-                    <div>
-                        <div class="section-title" style="font-size: 16px;">2.KALİTE HATA DAĞILIMI</div>
-                        <table class="detail-table" style="font-size: 11px;" id="kalite2HataTable2">
-                        </table>
-                    </div>
-
-                    <!-- HURDA HATA DAĞILIMI -->
-                    <div>
-                        <div class="section-title" style="font-size: 16px;">HURDA HATA DAĞILIMI</div>
-                        <table class="detail-table" style="font-size: 11px;" id="hurdaHataTable">
-                        </table>
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="stat-card success">
+            <div class="stat-header">
+                <div>
+                    <div class="stat-label">1. Kalite Oranı</div>
+                    <div class="stat-value">73.25%</div>
+                    <div class="stat-trend">
+                        <i class="fas fa-arrow-up"></i> +5.2%
                     </div>
                 </div>
-
-                <!-- Grafikler -->
-                <div class="section-title">Grafikler</div>
-                <div class="button-group" style="margin-bottom: 20px; justify-content: flex-start;">
-                    <button class="btn btn-primary" onclick="showSummaryChart('ikinci')">
-                        <span>2. KALİTE HATA DAĞILIMI</span>
-                    </button>
-                    <button class="btn btn-primary" onclick="showSummaryChart('hurda')">
-                        <span>HURDA HATA DAĞILIMI</span>
-                    </button>
-                </div>
-                <div class="chart-container" id="summaryChartContainer" style="display:none;">
-                    <canvas id="summaryChart"></canvas>
+                <div class="stat-icon">
+                    <i class="fas fa-check-circle"></i>
                 </div>
             </div>
         </div>
-    </div>
 
-    <script>
-        const sampleData = [
-            {
-                tarih: '2025-01-15',
-                vardiya: '1. Vardiya',
-                malzemeKodu: 'KNG-08-S220',
-                kalite: 'S220',
-                cap: 8,
-                kutukEbati: 130,
-                kutukBoyu: 12000,
-                kutukBirimAgirlik: 104.5,
-                sarjAdet: 180,
-                sarjTon: 22.5,
-                prosesKaybiTon: 1.2,
-                prosesKaybiYuzde: 5.3,
-                ucBasTufalTon: 0.8,
-                ucBasTufalYuzde: 3.6,
-                haddeBozukAdet: 5,
-                haddeBozukTon: 0.65,
-                haddeBozukYuzde: 2.9,
-                kontroleVerilenAdet: 175,
-                kontroleVerilenTon: 21.2,
-                kalite1Adet: 165,
-                kalite1Ton: 19.8,
-                kalite1Yuzde: 93.4,
-                farkliKaliteMamul: '-',
-                farkliKaliteAdet: 0,
-                farkliKaliteTon: 0,
-                farkliKaliteYuzde: 0,
-                farkliKaliteSebep: '-',
-                kalite2Adet: 8,
-                kalite2Ton: 1.0,
-                kalite2Yuzde: 4.7,
-                hurdaAdet: 2,
-                hurdaTon: 0.25,
-                hurdaYuzde: 1.2,
-                holdMamul: '-',
-                holdAdet: 0,
-                holdTon: 0,
-                holdSebep: '-',
-                kullanimKarariAdet: 0,
-                kullanimKarariTon: 0,
-                kullanimKarariYapan: '-',
-                insiyatifliOnayAdet: 0,
-                insiyatifliOnayTon: 0,
-                insiyatifliOnayAciklama: '-',
-                malzemeVerimi: 88.0,
-                satilabilirUrun: 93.4,
-                otomotiv: 'HAYIR',
-                kalite2Detay: {
-                    ovalite: 0.3,
-                    olcuTolerans: 0.2,
-                    parcaliPaket: 0,
-                    cizikHadde: 0.15,
-                    catlakHadde: 0.1,
-                    catlakCelikhane: 0,
-                    bozukSarim: 0.12,
-                    katlama: 0,
-                    kangalAgirlikDusuk: 0,
-                    kangalAgirlikYuksek: 0,
-                    birimAgirlikDusuk: 0,
-                    birimAgirlikYuksek: 0,
-                    kasaKacigi: 0,
-                    capakHadde: 0,
-                    ymkCapak: 0,
-                    trimYetersizligi: 0,
-                    fitil: 0,
-                    mukavemetDusuk: 0,
-                    mukavemetYuksek: 0,
-                    ringKirigi: 0,
-                    ringKacigi: 0,
-                    sermeKafaYarasi: 0,
-                    yagli: 0,
-                    sicakHaddelenmis: 0,
-                    sogukHaddelenmis: 0,
-                    atmosferikKorozyon: 0,
-                    haddeKorozyonu: 0,
-                    vincHasari: 0,
-                    forkliftHasari: 0,
-                    hasarli: 0,
-                    makaraIzi: 0,
-                    salomoYarasi: 0,
-                    pinchRollYarasi: 0,
-                    sertlestirilebilirlikUygunOlmayan: 0,
-                    stokZeminiHasari: 0,
-                    mikroCatlak: 0,
-                    ezmedeCatlakCH: 0,
-                    ezmedeCatlakCKH: 0,
-                    makroCatlak: 0,
-                    prosesUygunsuzlugu: 0,
-                    segregasyon: 0,
-                    baglamaHasari: 0,
-                    bagTeliUygunsuz: 0,
-                    paketUygunsuz: 0,
-                    etiketUygunsuz: 0,
-                    pasli: 0,
-                    diger: 0.13
-                },
-                hurdaDetay: {
-                    olcuTolerans: 0,
-                    katlama: 0,
-                    fitil: 0,
-                    capakHadde: 0,
-                    ymkCapak: 0,
-                    ovalite: 0,
-                    sarimBozugu: 0,
-                    mukavemetDusuk: 0,
-                    mukavemetYuksek: 0,
-                    ymkCatlak: 0,
-                    hhCizik: 0,
-                    ringKirigi: 0,
-                    makaraKirigi: 0,
-                    pinchRollYarasi: 0,
-                    ringKacigi: 0,
-                    kasaKacigi: 0,
-                    sicakHaddelenmis: 0,
-                    sogukHaddelenmis: 0,
-                    atmosferikKorozyon: 0,
-                    haddeKorozyonu: 0,
-                    vincHasari: 0,
-                    forkliftHasari: 0,
-                    bagTeliKopmasi: 0,
-                    stokZeminiHasari: 0,
-                    trimYetersizligi: 0,
-                    haddeYarasi: 0,
-                    mikroCatlak: 0,
-                    ezmedeCatlakCH: 0,
-                    ezmedeCatlakCKH: 0,
-                    parcaliPaket: 0,
-                    hhCatlak: 0,
-                    makroCatlak: 0,
-                    prosesUygunsuzlugu: 0,
-                    yagli: 0,
-                    bagTeliUygunsuz: 0,
-                    paketUygunsuz: 0,
-                    etiketUygunsuz: 0,
-                    olcuDalgalanmasi: 0,
-                    baglamaHasari: 0,
-                    kangalAgirlikYuksek: 0,
-                    kangalAgirlikDusuk: 0,
-                    birimAgirlikYuksek: 0,
-                    birimAgirlikDusuk: 0
-                }
-            },
-            {
-                tarih: '2025-01-15',
-                vardiya: '2. Vardiya',
-                malzemeKodu: 'NRV-10-S420',
-                kalite: 'S420',
-                cap: 10,
-                kutukEbati: 140,
-                kutukBoyu: 12000,
-                kutukBirimAgirlik: 121.6,
-                sarjAdet: 165,
-                sarjTon: 24.1,
-                prosesKaybiTon: 1.3,
-                prosesKaybiYuzde: 5.4,
-                ucBasTufalTon: 0.9,
-                ucBasTufalYuzde: 3.7,
-                haddeBozukAdet: 6,
-                haddeBozukTon: 0.72,
-                haddeBozukYuzde: 3.0,
-                kontroleVerilenAdet: 159,
-                kontroleVerilenTon: 22.1,
-                kalite1Adet: 150,
-                kalite1Ton: 20.8,
-                kalite1Yuzde: 94.1,
-                farkliKaliteMamul: '-',
-                farkliKaliteAdet: 0,
-                farkliKaliteTon: 0,
-                farkliKaliteYuzde: 0,
-                farkliKaliteSebep: '-',
-                kalite2Adet: 7,
-                kalite2Ton: 0.95,
-                kalite2Yuzde: 4.3,
-                hurdaAdet: 2,
-                hurdaTon: 0.28,
-                hurdaYuzde: 1.3,
-                holdMamul: '-',
-                holdAdet: 0,
-                holdTon: 0,
-                holdSebep: '-',
-                kullanimKarariAdet: 0,
-                kullanimKarariTon: 0,
-                kullanimKarariYapan: '-',
-                insiyatifliOnayAdet: 0,
-                insiyatifliOnayTon: 0,
-                insiyatifliOnayAciklama: '-',
-                malzemeVerimi: 86.3,
-                satilabilirUrun: 94.1,
-                otomotiv: 'HAYIR',
-                kalite2Detay: {
-                    'Ovalite': 0.28,
-                    'Ölçü-Tolerans': 0.25,
-                    'Çizik': 0.18,
-                    'Çatlak': 0.12,
-                    'Bozuk Sarım': 0.08,
-                    'Diğer': 0.04
-                }
-            },
-            {
-                tarih: '2025-01-16',
-                vardiya: '1. Vardiya',
-                malzemeKodu: 'IND-12-S500',
-                kalite: 'S500',
-                cap: 12,
-                kutukEbati: 150,
-                kutukBoyu: 12000,
-                kutukBirimAgirlik: 139.0,
-                sarjAdet: 155,
-                sarjTon: 25.8,
-                prosesKaybiTon: 1.4,
-                prosesKaybiYuzde: 5.4,
-                ucBasTufalTon: 0.95,
-                ucBasTufalYuzde: 3.7,
-                haddeBozukAdet: 7,
-                haddeBozukTon: 0.85,
-                haddeBozukYuzde: 3.3,
-                kontroleVerilenAdet: 148,
-                kontroleVerilenTon: 23.5,
-                kalite1Adet: 140,
-                kalite1Ton: 22.2,
-                kalite1Yuzde: 94.5,
-                farkliKaliteMamul: 'S420',
-                farkliKaliteAdet: 2,
-                farkliKaliteTon: 0.3,
-                farkliKaliteYuzde: 1.3,
-                farkliKaliteSebep: 'Mukavemet düşük',
-                kalite2Adet: 5,
-                kalite2Ton: 0.75,
-                kalite2Yuzde: 3.2,
-                hurdaAdet: 1,
-                hurdaTon: 0.15,
-                hurdaYuzde: 0.6,
-                holdMamul: '-',
-                holdAdet: 0,
-                holdTon: 0,
-                holdSebep: '-',
-                kullanimKarariAdet: 0,
-                kullanimKarariTon: 0,
-                kullanimKarariYapan: '-',
-                insiyatifliOnayAdet: 0,
-                insiyatifliOnayTon: 0,
-                insiyatifliOnayAciklama: '-',
-                malzemeVerimi: 89.5,
-                satilabilirUrun: 94.5,
-                otomotiv: 'EVET',
-                kalite2Detay: {
-                    'Ovalite': 0.25,
-                    'Ölçü-Tolerans': 0.18,
-                    'Çizik': 0.12,
-                    'Çatlak': 0.08,
-                    'Bozuk Sarım': 0.10,
-                    'Diğer': 0.02
-                }
-            }
-        ];
+        <div class="stat-card danger">
+            <div class="stat-header">
+                <div>
+                    <div class="stat-label">Toplam Hurda</div>
+                    <div class="stat-value">14.52%</div>
+                    <div class="stat-trend down">
+                        <i class="fas fa-arrow-down"></i> -2.1%
+                    </div>
+                </div>
+                <div class="stat-icon">
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+            </div>
+        </div>
 
-        let filteredData = [...sampleData];
-        let currentChart = null;
+        <div class="stat-card primary">
+            <div class="stat-header">
+                <div>
+                    <div class="stat-label">Haddehane Proses Kaybı</div>
+                    <div class="stat-value">10%</div>
+                    <div class="stat-trend">
+                        <i class="fas fa-plus"></i> -2.8%
+                    </div>
+                </div>
+                <div class="stat-icon">
+                    <i class="fas fa-clipboard-check"></i>
+                </div>
+            </div>
+        </div>
 
-        window.addEventListener('DOMContentLoaded', function() {
-            renderTable(filteredData);
-            updateSummaryCards(filteredData);
-        });
+        <div class="stat-card warning">
+            <div class="stat-header">
+                <div>
+                    <div class="stat-label">Satılabilir Ürün</div>
+                    <div class="stat-value">32.26%</div>
+                    <div class="stat-trend">
+                        <i class="fas fa-arrow-up"></i> +3.8%
+                    </div>
+                </div>
+                <div class="stat-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+            </div>
+        </div>
+    </section>
 
-        function filtrele() {
-            const baslangic = document.getElementById('baslangicTarihi').value;
-            const bitis = document.getElementById('bitisTarihi').value;
-            const vardiya = document.getElementById('vardiya').value;
-            const kalite = document.getElementById('kalite').value;
-            const cap = document.getElementById('cap').value;
+    <!-- Table Section -->
+    <section class="table-section">
+        <div class="table-header">
+            <h3>
+                <i class="fas fa-table"></i>
+                Detaylı Üretim Verileri
+            </h3>
+            <div class="table-actions">
+                <div class="action-btn" title="Excel'e Aktar">
+                    <i class="fas fa-file-excel"></i>
+                </div>
+                <div class="action-btn" title="PDF'e Aktar">
+                    <i class="fas fa-file-pdf"></i>
+                </div>
 
-            filteredData = sampleData.filter(item => {
-                let kosul = true;
-                if (baslangic && item.tarih < baslangic) kosul = false;
-                if (bitis && item.tarih > bitis) kosul = false;
-                if (vardiya && item.vardiya !== vardiya) kosul = false;
-                if (kalite && item.kalite !== kalite) kosul = false;
-                if (cap && item.cap != cap) kosul = false;
-                return kosul;
-            });
+                <div class="action-btn" title="Yenile">
+                    <i class="fas fa-sync-alt"></i>
+                </div>
+            </div>
+        </div>
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                <tr>
+                    <th rowspan="3" class="th-gray">ÜRETİM<br>TARİHİ</th>
+                    <th rowspan="3" class="th-gray">HAM TEKERLEK<br>BİRİM AĞIRLIĞI<br>(kg/m)</th>
+                    <th rowspan="3" class="th-gray">NİHAİ TEKER<br>BİRİM AĞIRLIĞI<br>(kg/m)</th>
+                    <th rowspan="3" class="th-gray">TEKER<br>TİPİ</th>
 
-            renderTable(filteredData);
-            updateSummaryCards(filteredData);
-        }
+                    <th colspan="2" rowspan="2" class="th-gray">CNC'DE İŞLENEN</th>
+                    <th colspan="2" rowspan="2" class="th-gray">HADDEHANE PROSES<br>KAYBI</th>
+                    <th colspan="2" rowspan="2" class="th-gray">TALAŞ</th>
+                    <th colspan="3" rowspan="2" class="th-gray">CNC HURDASI</th>
+                    <th colspan="2" rowspan="2" class="th-gray">KONTROLE VERİLEN</th>
 
-        function renderTable(data) {
-            const tbody = document.getElementById('tableBody');
+                    <th colspan="3" rowspan="2" class="th-gray">1.KALİTE</th>
+                    <th colspan="3" rowspan="2" class="th-gray">HURDA</th>
 
-            if (data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="150" class="no-data">Seçilen kriterlere uygun veri bulunamadı.</td></tr>';
-                return;
-            }
-
-            let html = '';
-            data.forEach(item => {
-                const kalite1Class = item.kalite1Yuzde >= 95 ? 'status-good' : (item.kalite1Yuzde >= 90 ? 'status-warning' : 'status-bad');
-                const verimClass = item.malzemeVerimi >= 90 ? 'status-good' : (item.malzemeVerimi >= 85 ? 'status-warning' : 'status-bad');
-                const prosesClass = item.prosesKaybiYuzde > 6 ? 'status-bad' : 'status-good';
-
-                html += `
-                    <tr>
-                        <td>${formatDate(item.tarih)}</td>
-                        <td><strong>${item.vardiya}</strong></td>
-                        <td>${item.malzemeKodu}</td>
-                        <td><strong>${item.kalite}</strong></td>
-                        <td class="text-center">${item.cap}</td>
-
-                        <td class="text-center">${item.kutukEbati}</td>
-                        <td class="text-right">${item.kutukBoyu.toLocaleString('tr-TR')}</td>
-                        <td class="text-right">${item.kutukBirimAgirlik.toFixed(1)}</td>
-
-                        <td class="text-right">${item.sarjAdet}</td>
-                        <td class="text-right"><strong>${item.sarjTon.toFixed(2)}</strong></td>
-
-                        <td class="text-right ${prosesClass}">${item.prosesKaybiTon.toFixed(2)}</td>
-                        <td class="text-center ${prosesClass}">${item.prosesKaybiYuzde.toFixed(1)}%</td>
-
-                        <td class="text-right">${item.ucBasTufalTon.toFixed(2)}</td>
-                        <td class="text-center">${item.ucBasTufalYuzde.toFixed(1)}%</td>
-
-                        <td class="text-right">${item.haddeBozukAdet}</td>
-                        <td class="text-right">${item.haddeBozukTon.toFixed(2)}</td>
-                        <td class="text-center">${item.haddeBozukYuzde.toFixed(1)}%</td>
-
-                        <td class="text-right">${item.kontroleVerilenAdet}</td>
-                        <td class="text-right">${item.kontroleVerilenTon.toFixed(2)}</td>
-
-                        <td class="text-right">${item.kalite1Adet}</td>
-                        <td class="text-right"><strong>${item.kalite1Ton.toFixed(2)}</strong></td>
-                        <td class="text-center ${kalite1Class}"><strong>${item.kalite1Yuzde.toFixed(1)}%</strong></td>
-
-                        <td class="text-center">${item.farkliKaliteMamul}</td>
-                        <td class="text-right">${item.farkliKaliteAdet}</td>
-                        <td class="text-right">${item.farkliKaliteTon.toFixed(2)}</td>
-                        <td class="text-center">${item.farkliKaliteYuzde.toFixed(1)}%</td>
-                        <td>${item.farkliKaliteSebep}</td>
-
-                        <td class="text-right">${item.kalite2Adet}</td>
-                        <td class="text-right">${item.kalite2Ton.toFixed(2)}</td>
-                        <td class="text-center">${item.kalite2Yuzde.toFixed(1)}%</td>
-
-                        <td class="text-right">${item.hurdaAdet}</td>
-                        <td class="text-right">${item.hurdaTon.toFixed(2)}</td>
-                        <td class="text-center">${item.hurdaYuzde.toFixed(1)}%</td>
-
-                        <td class="text-center">${item.holdMamul}</td>
-                        <td class="text-right">${item.holdAdet}</td>
-                        <td class="text-right">${item.holdTon.toFixed(2)}</td>
-                        <td>${item.holdSebep}</td>
-
-                        <td class="text-right">${item.kullanimKarariAdet}</td>
-                        <td class="text-right">${item.kullanimKarariTon.toFixed(2)}</td>
-                        <td>${item.kullanimKarariYapan}</td>
-
-                        <td class="text-right">${item.insiyatifliOnayAdet}</td>
-                        <td class="text-right">${item.insiyatifliOnayTon.toFixed(2)}</td>
-                        <td>${item.insiyatifliOnayAciklama}</td>
-
-                        <!-- 2. KALİTE DETAY (47 sütun) -->
-                        <td class="numeric">${(item.kalite2Detay?.ovalite || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.kalite2Detay?.olcuTolerans || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.kalite2Detay?.parcaliPaket || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.kalite2Detay?.cizikHadde || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.kalite2Detay?.catlakHadde || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.kalite2Detay?.catlakCelikhane || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.kalite2Detay?.bozukSarim || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.kalite2Detay?.katlama || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.kalite2Detay?.kangalAgirlikDusuk || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.kalite2Detay?.kangalAgirlikYuksek || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.kalite2Detay?.birimAgirlikDusuk || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.kalite2Detay?.birimAgirlikYuksek || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.kalite2Detay?.kasaKacigi || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.kalite2Detay?.capakHadde || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.kalite2Detay?.ymkCapak || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.kalite2Detay?.trimYetersizligi || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.kalite2Detay?.fitil || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.kalite2Detay?.mukavemetDusuk || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.kalite2Detay?.mukavemetYuksek || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.kalite2Detay?.ringKirigi || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.kalite2Detay?.ringKacigi || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.kalite2Detay?.sermeKafaYarasi || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.kalite2Detay?.yagli || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.kalite2Detay?.sicakHaddelenmis || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.kalite2Detay?.sogukHaddelenmis || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.kalite2Detay?.atmosferikKorozyon || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.kalite2Detay?.haddeKorozyonu || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.kalite2Detay?.vincHasari || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.kalite2Detay?.forkliftHasari || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.kalite2Detay?.hasarli || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.kalite2Detay?.makaraIzi || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.kalite2Detay?.salomoYarasi || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.kalite2Detay?.pinchRollYarasi || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.kalite2Detay?.sertlestirilebilirlikUygunOlmayan || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.kalite2Detay?.stokZeminiHasari || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.kalite2Detay?.mikroCatlak || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.kalite2Detay?.ezmedeCatlakCH || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.kalite2Detay?.ezmedeCatlakCKH || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.kalite2Detay?.makroCatlak || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.kalite2Detay?.prosesUygunsuzlugu || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.kalite2Detay?.segregasyon || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.kalite2Detay?.baglamaHasari || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.kalite2Detay?.bagTeliUygunsuz || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.kalite2Detay?.paketUygunsuz || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.kalite2Detay?.etiketUygunsuz || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.kalite2Detay?.pasli || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.kalite2Detay?.diger || 0).toFixed(2)}</td>
-
-                        <!-- HURDA DETAY (43 sütun) -->
-                        <td class="numeric">${(item.hurdaDetay?.olcuTolerans || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.hurdaDetay?.katlama || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.hurdaDetay?.fitil || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.hurdaDetay?.capakHadde || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.hurdaDetay?.ymkCapak || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.hurdaDetay?.ovalite || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.hurdaDetay?.sarimBozugu || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.hurdaDetay?.mukavemetDusuk || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.hurdaDetay?.mukavemetYuksek || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.hurdaDetay?.ymkCatlak || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.hurdaDetay?.hhCizik || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.hurdaDetay?.ringKirigi || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.hurdaDetay?.makaraKirigi || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.hurdaDetay?.pinchRollYarasi || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.hurdaDetay?.ringKacigi || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.hurdaDetay?.kasaKacigi || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.hurdaDetay?.sicakHaddelenmis || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.hurdaDetay?.sogukHaddelenmis || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.hurdaDetay?.atmosferikKorozyon || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.hurdaDetay?.haddeKorozyonu || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.hurdaDetay?.vincHasari || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.hurdaDetay?.forkliftHasari || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.hurdaDetay?.bagTeliKopmasi || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.hurdaDetay?.stokZeminiHasari || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.hurdaDetay?.trimYetersizligi || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.hurdaDetay?.haddeYarasi || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.hurdaDetay?.mikroCatlak || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.hurdaDetay?.ezmedeCatlakCH || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.hurdaDetay?.ezmedeCatlakCKH || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.hurdaDetay?.parcaliPaket || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.hurdaDetay?.hhCatlak || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.hurdaDetay?.makroCatlak || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.hurdaDetay?.prosesUygunsuzlugu || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.hurdaDetay?.yagli || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.hurdaDetay?.bagTeliUygunsuz || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.hurdaDetay?.paketUygunsuz || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.hurdaDetay?.etiketUygunsuz || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.hurdaDetay?.olcuDalgalanmasi || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.hurdaDetay?.baglamaHasari || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.hurdaDetay?.kangalAgirlikYuksek || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.hurdaDetay?.kangalAgirlikDusuk || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.hurdaDetay?.birimAgirlikYuksek || 0).toFixed(2)}</td>
-                        <td class="numeric">${(item.hurdaDetay?.birimAgirlikDusuk || 0).toFixed(2)}</td>
-
-                        <td class="text-center ${verimClass}"><strong>${item.malzemeVerimi.toFixed(1)}%</strong></td>
-                        <td class="text-center ${kalite1Class}"><strong>${item.satilabilirUrun.toFixed(1)}%</strong></td>
-
-                        <td class="text-center">
-                            <span class="badge ${item.otomotiv === 'EVET' ? 'badge-success' : 'badge-danger'}">
-                                ${item.otomotiv}
-                            </span>
-                        </td>
-                    </tr>
-                `;
-            });
-
-            // Toplam satırı hesapla
-            const toplamlar = hesaplaToplamlar(data);
-            html += generateToplamSatiri(toplamlar, data.length);
-
-            tbody.innerHTML = html;
-        }
-
-        function hesaplaToplamlar(data) {
-            return {
-                sarjAdet: data.reduce((sum, item) => sum + item.sarjAdet, 0),
-                sarjTon: data.reduce((sum, item) => sum + item.sarjTon, 0),
-                prosesKaybiTon: data.reduce((sum, item) => sum + item.prosesKaybiTon, 0),
-                ucBasTufalTon: data.reduce((sum, item) => sum + item.ucBasTufalTon, 0),
-                haddeBozukAdet: data.reduce((sum, item) => sum + item.haddeBozukAdet, 0),
-                haddeBozukTon: data.reduce((sum, item) => sum + item.haddeBozukTon, 0),
-                kontroleVerilenAdet: data.reduce((sum, item) => sum + item.kontroleVerilenAdet, 0),
-                kontroleVerilenTon: data.reduce((sum, item) => sum + item.kontroleVerilenTon, 0),
-                kalite1Adet: data.reduce((sum, item) => sum + item.kalite1Adet, 0),
-                kalite1Ton: data.reduce((sum, item) => sum + item.kalite1Ton, 0),
-                farkliKaliteTon: data.reduce((sum, item) => sum + item.farkliKaliteTon, 0),
-                kalite2Adet: data.reduce((sum, item) => sum + item.kalite2Adet, 0),
-                kalite2Ton: data.reduce((sum, item) => sum + item.kalite2Ton, 0),
-                hurdaAdet: data.reduce((sum, item) => sum + item.hurdaAdet, 0),
-                hurdaTon: data.reduce((sum, item) => sum + item.hurdaTon, 0),
-                ortalamaVerim: data.reduce((sum, item) => sum + item.malzemeVerimi, 0) / (data.length || 1),
-                ortalamaSatilabilir: data.reduce((sum, item) => sum + item.satilabilirUrun, 0) / (data.length || 1)
-            };
-        }
-
-        function generateToplamSatiri(toplamlar, kayitSayisi) {
-            return `
-                <tr class="total-row">
-                    <td colspan="8" style="text-align: right; padding-right: 20px;"><strong>📊 TOPLAM / ORTALAMA (${kayitSayisi} Kayıt):</strong></td>
-                    <td class="numeric"><strong>${toplamlar.sarjAdet}</strong></td>
-                    <td class="numeric"><strong>${toplamlar.sarjTon.toFixed(2)}</strong></td>
-                    <td class="numeric"><strong>${toplamlar.prosesKaybiTon.toFixed(2)}</strong></td>
-                    <td class="numeric">-</td>
-                    <td class="numeric"><strong>${toplamlar.ucBasTufalTon.toFixed(2)}</strong></td>
-                    <td class="numeric">-</td>
-                    <td class="numeric"><strong>${toplamlar.haddeBozukAdet}</strong></td>
-                    <td class="numeric"><strong>${toplamlar.haddeBozukTon.toFixed(2)}</strong></td>
-                    <td class="numeric">-</td>
-                    <td class="numeric"><strong>${toplamlar.kontroleVerilenAdet}</strong></td>
-                    <td class="numeric"><strong>${toplamlar.kontroleVerilenTon.toFixed(2)}</strong></td>
-                    <td class="numeric"><strong>${toplamlar.kalite1Adet}</strong></td>
-                    <td class="numeric"><strong>${toplamlar.kalite1Ton.toFixed(2)}</strong></td>
-                    <td class="numeric">-</td>
-                    <td colspan="5">-</td>
-                    <td class="numeric"><strong>${toplamlar.kalite2Adet}</strong></td>
-                    <td class="numeric"><strong>${toplamlar.kalite2Ton.toFixed(2)}</strong></td>
-                    <td class="numeric">-</td>
-                    <td class="numeric"><strong>${toplamlar.hurdaAdet}</strong></td>
-                    <td class="numeric"><strong>${toplamlar.hurdaTon.toFixed(2)}</strong></td>
-                    <td class="numeric">-</td>
-                    <td colspan="13">-</td>
-                    <td class="numeric" colspan="90"></td>
-
-                    <td>-</td>
+                    <th colspan="3" class="th-gray">HOLD</th>
+                    <th colspan="12" class="th-yellow-main">HURDA NEDEN DAĞILIMI (Adet)</th>
+                    <th rowspan="3" class="th-green">Satılabilir<br>Ürün (%)</th>
                 </tr>
-            `;
-        }
 
-        function updateSummaryCards(data) {
-            const toplamlar = {
-                kalite1Ton: data.reduce((sum, item) => sum + item.kalite1Ton, 0),
-                kalite2Ton: data.reduce((sum, item) => sum + item.kalite2Ton, 0),
-                hurdaTon: data.reduce((sum, item) => sum + item.hurdaTon, 0)
-            };
+                <tr>
+                    <th colspan="3" class="th-gray" style="font-size: 10px;">Kullanım Kararı Bekleyen</th>
 
-            document.getElementById('card-kalite1').textContent = toplamlar.kalite1Ton.toFixed(1);
-            document.getElementById('card-kalite2').textContent = toplamlar.kalite2Ton.toFixed(1);
-            document.getElementById('card-hurda').textContent = toplamlar.hurdaTon.toFixed(1);
-        }
+                    <th rowspan="2" class="th-yellow-sub">Lazer</th>
+                    <th rowspan="2" class="th-yellow-sub">UT</th>
+                    <th rowspan="2" class="th-yellow-sub">MT</th>
+                    <th rowspan="2" class="th-yellow-sub">VT (HH)</th>
+                    <th rowspan="2" class="th-yellow-sub">VT (ÇH)</th>
+                    <th rowspan="2" class="th-yellow-sub">YÜZEY<br>PÜRÜZLÜĞÜ</th>
+                    <th rowspan="2" class="th-yellow-sub">PASLI</th>
+                    <th rowspan="2" class="th-yellow-sub">MARKALAMA<br>HATASI</th>
+                    <th rowspan="2" class="th-yellow-sub">HASARLI</th>
+                    <th rowspan="2" class="th-yellow-sub">MASTAR</th>
+                    <th rowspan="2" class="th-yellow-sub">CNC<br>KAYNAKLI</th>
+                    <th rowspan="2" class="th-yellow-sub">MFT<br>HURDA</th>
+                </tr>
 
-        function showDetailModal(type) {
-            const modal = document.getElementById('detailModal');
-            const modalTitle = document.getElementById('modalTitle');
-            const modalContent = document.getElementById('modalContent');
-
-            const toplamlar = {
-                sarjTon: filteredData.reduce((sum, item) => sum + item.sarjTon, 0),
-                kontroleVerilenTon: filteredData.reduce((sum, item) => sum + item.kontroleVerilenTon, 0),
-                kalite1Ton: filteredData.reduce((sum, item) => sum + item.kalite1Ton, 0),
-                kalite2Ton: filteredData.reduce((sum, item) => sum + item.kalite2Ton, 0),
-                hurdaTon: filteredData.reduce((sum, item) => sum + item.hurdaTon, 0)
-            };
-
-            let content = '';
-
-            switch(type) {
-                case 'sarj':
-                    modalTitle.textContent = 'ŞARJ Detay';
-                    content = `
-                        <table class="detail-table">
-                            <tr>
-                                <td class="detail-label">Toplam Şarj</td>
-                                <td class="detail-value">${toplamlar.sarjTon.toFixed(2)} ton</td>
-                            </tr>
-                            <tr>
-                                <td class="detail-label">Kayıt Sayısı</td>
-                                <td class="detail-value">${filteredData.length}</td>
-                            </tr>
-                            <tr>
-                                <td class="detail-label">Ortalama/Kayıt</td>
-                                <td class="detail-value">${(toplamlar.sarjTon / filteredData.length).toFixed(2)} ton</td>
-                            </tr>
-                        </table>
-                    `;
-                    break;
-
-                case 'kalite1':
-                    modalTitle.textContent = '1. KALİTE Detay ve Grafik';
-                    const kalite1Yuzde = (toplamlar.kalite1Ton / toplamlar.kontroleVerilenTon * 100).toFixed(2);
-                    content = `
-                        <table class="detail-table">
-                            <tr>
-                                <td class="detail-label">Toplam 1. Kalite</td>
-                                <td class="detail-value">${toplamlar.kalite1Ton.toFixed(2)} ton</td>
-                            </tr>
-                            <tr>
-                                <td class="detail-label">Yüzde</td>
-                                <td class="detail-value">${kalite1Yuzde}%</td>
-                            </tr>
-                            <tr>
-                                <td class="detail-label">Kontrole Verilen</td>
-                                <td class="detail-value">${toplamlar.kontroleVerilenTon.toFixed(2)} ton</td>
-                            </tr>
-                        </table>
-                        <div class="chart-container">
-                            <canvas id="modalChart"></canvas>
-                        </div>
-                    `;
-                    setTimeout(() => {
-                        createQualityChart('modalChart', filteredData);
-                    }, 100);
-                    break;
-
-                case 'kalite2':
-                    modalTitle.textContent = '2. KALİTE Hata Dağılımı';
-                    const kalite2Detay = {};
-                    filteredData.forEach(item => {
-                        Object.entries(item.kalite2Detay || {}).forEach(([key, value]) => {
-                            kalite2Detay[key] = (kalite2Detay[key] || 0) + value;
-                        });
-                    });
-
-                    content = `
-                        <table class="detail-table">
-                            <tr>
-                                <td class="detail-label">Toplam 2. Kalite</td>
-                                <td class="detail-value">${toplamlar.kalite2Ton.toFixed(3)} ton</td>
-                            </tr>
-                        </table>
-                        <div class="section-title">Hata Dağılımı</div>
-                        <table class="detail-table">
-                            <thead>
-                                <tr>
-                                    <th>Hata Tipi</th>
-                                    <th class="text-right">Miktar (ton)</th>
-                                    <th class="text-right">Oran (%)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${Object.entries(kalite2Detay).map(([key, value]) => `
-                                    <tr>
-                                        <td class="detail-label">${key}</td>
-                                        <td class="detail-value">${value.toFixed(3)}</td>
-                                        <td class="detail-value">${((value / toplamlar.kalite2Ton) * 100).toFixed(2)}%</td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
-                        <div class="chart-container">
-                            <canvas id="modalChart"></canvas>
-                        </div>
-                    `;
-                    setTimeout(() => {
-                        createDefectChart('modalChart', kalite2Detay);
-                    }, 100);
-                    break;
-
-                case 'hurda':
-                    modalTitle.textContent = 'HURDA Detay';
-                    const hurdaYuzde = (toplamlar.hurdaTon / toplamlar.kontroleVerilenTon * 100).toFixed(2);
-                    content = `
-                        <table class="detail-table">
-                            <tr>
-                                <td class="detail-label">Toplam Hurda</td>
-                                <td class="detail-value">${toplamlar.hurdaTon.toFixed(2)} ton</td>
-                            </tr>
-                            <tr>
-                                <td class="detail-label">Yüzde</td>
-                                <td class="detail-value">${hurdaYuzde}%</td>
-                            </tr>
-                            <tr>
-                                <td class="detail-label">Kontrole Verilen</td>
-                                <td class="detail-value">${toplamlar.kontroleVerilenTon.toFixed(2)} ton</td>
-                            </tr>
-                        </table>
-                    `;
-                    break;
-
-                case 'verim':
-                    modalTitle.textContent = 'MALZEME VERİMİ Analizi';
-                    const ortalamaVerim = filteredData.reduce((sum, item) => sum + item.malzemeVerimi, 0) / filteredData.length;
-                    content = `
-                        <table class="detail-table">
-                            <tr>
-                                <td class="detail-label">Ortalama Verim</td>
-                                <td class="detail-value">${ortalamaVerim.toFixed(2)}%</td>
-                            </tr>
-                            <tr>
-                                <td class="detail-label">En Yüksek</td>
-                                <td class="detail-value">${Math.max(...filteredData.map(i => i.malzemeVerimi)).toFixed(2)}%</td>
-                            </tr>
-                            <tr>
-                                <td class="detail-label">En Düşük</td>
-                                <td class="detail-value">${Math.min(...filteredData.map(i => i.malzemeVerimi)).toFixed(2)}%</td>
-                            </tr>
-                        </table>
-                        <div class="chart-container">
-                            <canvas id="modalChart"></canvas>
-                        </div>
-                    `;
-                    setTimeout(() => {
-                        createEfficiencyChart('modalChart', filteredData);
-                    }, 100);
-                    break;
-
-                case 'satilabilir':
-                    modalTitle.textContent = 'SATILABİLİR ÜRÜN Analizi';
-                    const ortalamaSatilabilir = filteredData.reduce((sum, item) => sum + item.satilabilirUrun, 0) / filteredData.length;
-                    const satilabilirTon = toplamlar.kalite1Ton + toplamlar.kalite2Ton;
-                    content = `
-                        <table class="detail-table">
-                            <tr>
-                                <td class="detail-label">Toplam Satılabilir Ürün</td>
-                                <td class="detail-value">${satilabilirTon.toFixed(2)} ton</td>
-                            </tr>
-                            <tr>
-                                <td class="detail-label">Ortalama Oran</td>
-                                <td class="detail-value">${ortalamaSatilabilir.toFixed(2)}%</td>
-                            </tr>
-                            <tr>
-                                <td class="detail-label">1. Kalite</td>
-                                <td class="detail-value">${toplamlar.kalite1Ton.toFixed(2)} ton</td>
-                            </tr>
-                            <tr>
-                                <td class="detail-label">2. Kalite</td>
-                                <td class="detail-value">${toplamlar.kalite2Ton.toFixed(2)} ton</td>
-                            </tr>
-                        </table>
-                    `;
-                    break;
-            }
-
-            modalContent.innerHTML = content;
-            modal.classList.add('active');
-        }
-
-        function closeDetailModal() {
-            const modal = document.getElementById('detailModal');
-            modal.classList.remove('active');
-            if (currentChart) {
-                currentChart.destroy();
-                currentChart = null;
-            }
-        }
-
-        function createQualityChart(canvasId, data) {
-            const ctx = document.getElementById(canvasId).getContext('2d');
-
-            if (currentChart) {
-                currentChart.destroy();
-            }
-
-            const labels = data.map((item, index) => `Kayıt ${index + 1}`);
-            const kalite1Data = data.map(item => item.kalite1Yuzde);
-            const kalite2Data = data.map(item => item.kalite2Yuzde);
-            const hurdaData = data.map(item => item.hurdaYuzde);
-
-            currentChart = new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [
-                        {
-                            label: '1. Kalite',
-                            data: kalite1Data,
-                            backgroundColor: 'rgba(46, 125, 50, 0.8)',
-                            borderColor: 'rgba(46, 125, 50, 1)',
-                            borderWidth: 2
-                        },
-                        {
-                            label: '2. Kalite',
-                            data: kalite2Data,
-                            backgroundColor: 'rgba(245, 124, 0, 0.8)',
-                            borderColor: 'rgba(245, 124, 0, 1)',
-                            borderWidth: 2
-                        },
-                        {
-                            label: 'Hurda',
-                            data: hurdaData,
-                            backgroundColor: 'rgba(198, 40, 40, 0.8)',
-                            borderColor: 'rgba(198, 40, 40, 1)',
-                            borderWidth: 2
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Kalite Dağılımı (%)',
-                            font: { size: 18, weight: 'bold' },
-                            padding: 20
-                        },
-                        legend: {
-                            position: 'top'
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 100,
-                            ticks: {
-                                callback: function(value) {
-                                    return value + '%';
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        function createDefectChart(canvasId, defectData) {
-            const ctx = document.getElementById(canvasId).getContext('2d');
-
-            if (currentChart) {
-                currentChart.destroy();
-            }
-
-            const labels = Object.keys(defectData);
-            const values = Object.values(defectData);
-
-            currentChart = new Chart(ctx, {
-                type: 'doughnut',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        data: values,
-                        backgroundColor: [
-                            'rgba(30, 58, 95, 0.8)',
-                            'rgba(45, 89, 134, 0.8)',
-                            'rgba(198, 40, 40, 0.8)',
-                            'rgba(245, 124, 0, 0.8)',
-                            'rgba(46, 125, 50, 0.8)',
-                            'rgba(120, 120, 120, 0.8)'
-                        ],
-                        borderWidth: 2,
-                        borderColor: '#fff'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: '2. Kalite Hata Dağılımı',
-                            font: { size: 18, weight: 'bold' },
-                            padding: 20
-                        },
-                        legend: {
-                            position: 'right'
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return context.label + ': ' + context.parsed.toFixed(3) + ' ton';
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        function createEfficiencyChart(canvasId, data) {
-            const ctx = document.getElementById(canvasId).getContext('2d');
-
-            if (currentChart) {
-                currentChart.destroy();
-            }
-
-            const labels = data.map((item, index) => `${item.tarih}`);
-            const verimData = data.map(item => item.malzemeVerimi);
-
-            currentChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Malzeme Verimi (%)',
-                        data: verimData,
-                        borderColor: 'rgba(45, 89, 134, 1)',
-                        backgroundColor: 'rgba(45, 89, 134, 0.1)',
-                        borderWidth: 3,
-                        fill: true,
-                        tension: 0.4,
-                        pointRadius: 5,
-                        pointBackgroundColor: 'rgba(45, 89, 134, 1)'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: {
-                        title: {
-                            display: true,
-                            text: 'Malzeme Verimi Trendi',
-                            font: { size: 18, weight: 'bold' },
-                            padding: 20
-                        },
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: false,
-                            min: 80,
-                            max: 100,
-                            ticks: {
-                                callback: function(value) {
-                                    return value + '%';
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        function temizle() {
-            document.getElementById('baslangicTarihi').value = '2025-01-01';
-            document.getElementById('bitisTarihi').value = '2025-12-31';
-            document.getElementById('vardiya').value = '';
-            document.getElementById('kalite').value = '';
-            document.getElementById('cap').value = '';
-            filteredData = [...sampleData];
-            renderTable(filteredData);
-            updateSummaryCards(filteredData);
-        }
-
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            return date.toLocaleDateString('tr-TR');
-        }
-
-        function exportToExcel() {
-            const headers = [
-                'Üretim Tarihi', 'Vardiya', 'Malzeme Kodu', 'Kalite', 'Çap (mm)',
-                'Şarj (ton)', 'Kontrole Verilen (ton)', '1. Kalite (ton)', '1. Kalite (%)',
-                '2. Kalite (ton)', '2. Kalite (%)', 'Hurda (ton)', 'Hurda (%)',
-                'Malzeme Verimi (%)', 'Satılabilir Ürün (%)', 'Otomotiv'
-            ];
-
-            let csv = '\ufeff' + headers.join(',') + '\n';
-
-            filteredData.forEach(item => {
-                const row = [
-                    item.tarih,
-                    item.vardiya,
-                    item.malzemeKodu,
-                    item.kalite,
-                    item.cap,
-                    item.sarjTon.toFixed(2),
-                    item.kontroleVerilenTon.toFixed(2),
-                    item.kalite1Ton.toFixed(2),
-                    item.kalite1Yuzde.toFixed(1),
-                    item.kalite2Ton.toFixed(2),
-                    item.kalite2Yuzde.toFixed(1),
-                    item.hurdaTon.toFixed(2),
-                    item.hurdaYuzde.toFixed(1),
-                    item.malzemeVerimi.toFixed(1),
-                    item.satilabilirUrun.toFixed(1),
-                    item.otomotiv
-                ];
-                csv += row.join(',') + '\n';
-            });
-
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            const url = URL.createObjectURL(blob);
-            link.setAttribute('href', url);
-            link.setAttribute('download', `kardemir_uretim_${new Date().toISOString().split('T')[0]}.csv`);
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        function showSummaryModal() {
-            const toplamlar = {
-                sarjTon: filteredData.reduce((sum, item) => sum + item.sarjTon, 0),
-                kontroleVerilenTon: filteredData.reduce((sum, item) => sum + item.kontroleVerilenTon, 0),
-                prosesKaybiTon: filteredData.reduce((sum, item) => sum + item.prosesKaybiTon, 0),
-                ucBasTufalTon: filteredData.reduce((sum, item) => sum + item.ucBasTufalTon, 0),
-                haddeBozukTon: filteredData.reduce((sum, item) => sum + item.haddeBozukTon, 0),
-                kalite1Ton: filteredData.reduce((sum, item) => sum + item.kalite1Ton, 0),
-                farkliKaliteTon: filteredData.reduce((sum, item) => sum + item.farkliKaliteTon, 0),
-                kalite2Ton: filteredData.reduce((sum, item) => sum + item.kalite2Ton, 0),
-                hurdaTon: filteredData.reduce((sum, item) => sum + item.hurdaTon, 0)
-            };
-
-            // GENEL TABLO
-            document.getElementById('sum-sarj-1').textContent = toplamlar.sarjTon.toFixed(3);
-            document.getElementById('sum-kontrole-1').textContent = toplamlar.kontroleVerilenTon.toFixed(3);
-            document.getElementById('sum-proses-1').textContent = toplamlar.prosesKaybiTon.toFixed(3);
-            document.getElementById('sum-proses-percent-1').textContent = ((toplamlar.prosesKaybiTon / toplamlar.sarjTon) * 100).toFixed(2);
-            document.getElementById('sum-bozuk-1').textContent = toplamlar.haddeBozukTon.toFixed(3);
-            document.getElementById('sum-bozuk-percent-1').textContent = ((toplamlar.haddeBozukTon / toplamlar.sarjTon) * 100).toFixed(2);
-            document.getElementById('sum-tufal-1').textContent = toplamlar.ucBasTufalTon.toFixed(3);
-            document.getElementById('sum-tufal-percent-1').textContent = ((toplamlar.ucBasTufalTon / toplamlar.sarjTon) * 100).toFixed(2);
-            document.getElementById('sum-kalite1-1').textContent = toplamlar.kalite1Ton.toFixed(3);
-            document.getElementById('sum-kalite1-percent-1').textContent = ((toplamlar.kalite1Ton / toplamlar.kontroleVerilenTon) * 100).toFixed(2);
-            document.getElementById('sum-farkli-1').textContent = toplamlar.farkliKaliteTon.toFixed(3);
-            document.getElementById('sum-farkli-percent-1').textContent = ((toplamlar.farkliKaliteTon / toplamlar.kontroleVerilenTon) * 100).toFixed(2);
-            document.getElementById('sum-kalite2-1').textContent = toplamlar.kalite2Ton.toFixed(3);
-            document.getElementById('sum-kalite2-percent-1').textContent = ((toplamlar.kalite2Ton / toplamlar.kontroleVerilenTon) * 100).toFixed(2);
-
-            // Çelikhane kaynaklı 2. Kalite hesapla
-            const celikhaneKalite2 = filteredData.reduce((sum, item) =>
-                sum + (item.kalite2Detay?.catlakCelikhane || 0), 0);
-            document.getElementById('sum-kalite2-celikhane').textContent = celikhaneKalite2.toFixed(3);
-            document.getElementById('sum-kalite2-celikhane-percent').textContent =
-                toplamlar.kalite2Ton > 0 ? ((celikhaneKalite2 / toplamlar.kalite2Ton) * 100).toFixed(2) : '0.00';
-
-            document.getElementById('sum-hurda-1').textContent = toplamlar.hurdaTon.toFixed(3);
-            document.getElementById('sum-hurda-percent-1').textContent = ((toplamlar.hurdaTon / toplamlar.kontroleVerilenTon) * 100).toFixed(2);
-
-            const satilabilirTon = toplamlar.kalite1Ton + toplamlar.kalite2Ton;
-            document.getElementById('sum-satilabilir-1').textContent = satilabilirTon.toFixed(3);
-            document.getElementById('sum-satilabilir-percent-1').textContent = ((satilabilirTon / toplamlar.kontroleVerilenTon) * 100).toFixed(2);
-
-            // 2. KALİTE HATA DAĞILIMI
-            const kalite2Aggregate = {};
-            const kalite2Labels = {
-                ovalite: 'Ovalite',
-                olcuTolerans: 'Ölçü-Tolerans Harici',
-                cizikHadde: 'Çizik (Hadde)',
-                catlakHadde: 'Çatlak (Hadde)',
-                catlakCelikhane: 'Çatlak (Çelikhane)',
-                bozukSarim: 'Bozuk Sarım',
-                parcaliPaket: 'Parçalı Paket',
-                baglamaHasari: 'Bağlama Hasarı',
-                ymkCapak: 'Y.M.K Çapak',
-                sermeKafaYarasi: 'Serme Kafa Yarası',
-                hasarli: 'Hasarlı',
-                yagli: 'Yağlı',
-                salomoYarasi: 'Şalomo Yarası'
-            };
-
-            filteredData.forEach(item => {
-                Object.entries(item.kalite2Detay || {}).forEach(([key, value]) => {
-                    if (value > 0) {
-                        kalite2Aggregate[key] = (kalite2Aggregate[key] || 0) + value;
-                    }
-                });
-            });
-
-            let kalite2Html = `
-                <thead>
-                    <tr>
-                        <th style="background: var(--primary-blue); text-align: left;">2. Kalite Hata Dağılımı</th>
-                        <th style="background: var(--primary-blue); text-align: right;">Miktar, ton</th>
-                        <th style="background: var(--primary-blue); text-align: right;">%</th>
-                        <th style="background: var(--primary-blue); text-align: right;">%</th>
-                    </tr>
+                <tr>
+                    <th class="th-unit">Adet</th>
+                    <th class="th-unit">TON</th>
+                    <th class="th-unit">TON</th>
+                    <th class="th-unit">%</th>
+                    <th class="th-unit">TON</th>
+                    <th class="th-unit">%</th>
+                    <th class="th-unit">Adet</th>
+                    <th class="th-unit">TON</th>
+                    <th class="th-unit">%</th>
+                    <th class="th-unit">Adet</th>
+                    <th class="th-unit">TON</th>
+                    <th class="th-unit">Adet</th>
+                    <th class="th-unit">TON</th>
+                    <th class="th-unit">%</th>
+                    <th class="th-unit">Adet</th>
+                    <th class="th-unit">TON</th>
+                    <th class="th-unit">%</th>
+                    <th class="th-unit">Adet</th>
+                    <th class="th-unit">TON</th>
+                    <th class="th-unit">Neden</th>
+                </tr>
                 </thead>
                 <tbody>
-                    <tr style="background: #e3f2fd;">
-                        <td class="detail-label"><strong>TOPLAM</strong></td>
-                        <td class="detail-value" style="text-align: right;"><strong>${toplamlar.kalite2Ton.toFixed(3)}</strong></td>
-                        <td class="detail-value" style="text-align: right;"><strong>100.00</strong></td>
-                        <td class="detail-value" style="text-align: right;"><strong>${((toplamlar.kalite2Ton / toplamlar.sarjTon) * 100).toFixed(2)}</strong></td>
-                    </tr>
-            `;
+                <tr>
+                    <td>16.10.2025</td>
+                    <td>0,423</td>
+                    <td>0,313</td>
+                    <td>M3</td>
 
-            // Sıralı hata dağılımı (en yüksekten en düşüğe)
-            const sortedKalite2 = Object.entries(kalite2Aggregate)
-                .sort(([,a], [,b]) => b - a)
-                .slice(0, 15);
+                    <td>60</td>
+                    <td class="cell-highlight">25,38</td>
+                    <td class="cell-highlight">6,60</td>
+                    <td class="cell-highlight">26,00</td>
+                    <td class="cell-highlight">6,60</td>
+                    <td class="cell-highlight">26,00</td>
+                    <td></td>
+                    <td class="cell-highlight">0,00</td>
+                    <td class="cell-highlight">0,00</td>
+                    <td>60</td>
+                    <td class="cell-highlight">18,78</td>
+                    <td>18</td>
+                    <td class="cell-highlight">5,63</td>
+                    <td class="cell-highlight">30,00</td>
+                    <td>42</td>
+                    <td class="cell-highlight">13,15</td>
+                    <td class="cell-highlight">70,00</td>
+                    <td></td>
+                    <td class="cell-highlight">0,00</td>
+                    <td></td>
 
-            sortedKalite2.forEach(([key, value]) => {
-                const label = kalite2Labels[key] || key;
-                const percent = ((value / toplamlar.kalite2Ton) * 100).toFixed(2);
-                const percentSarj = ((value / toplamlar.sarjTon) * 100).toFixed(2);
-                kalite2Html += `
-                    <tr>
-                        <td class="detail-label">${label}</td>
-                        <td class="detail-value" style="text-align: right;">${value.toFixed(3)}</td>
-                        <td class="detail-value" style="text-align: right;">${percent}</td>
-                        <td class="detail-value" style="text-align: right;">${percentSarj}</td>
-                    </tr>
-                `;
-            });
+                    <td></td>
+                    <td class="cell-red-bg">16</td>
+                    <td></td>
+                    <td></td>
+                    <td class="cell-red-bg">26</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
 
-            kalite2Html += '</tbody>';
-            document.getElementById('kalite2HataTable2').innerHTML = kalite2Html;
+                    <td class="cell-result-green">22,20</td>
+                </tr>
 
-            // HURDA HATA DAĞILIMI
-            const hurdaAggregate = {};
-            filteredData.forEach(item => {
-                Object.entries(item.hurdaDetay || {}).forEach(([key, value]) => {
-                    if (value > 0) {
-                        hurdaAggregate[key] = (hurdaAggregate[key] || 0) + value;
-                    }
-                });
-            });
+                <tr>
+                    <td>17.10.2025</td>
+                    <td>0,423</td>
+                    <td>0,313</td>
+                    <td>M3</td>
 
-            let hurdaHtml = `
-                <thead>
-                    <tr>
-                        <th style="background: var(--primary-blue); text-align: left;">Hurda Hata Dağılımı</th>
-                        <th style="background: var(--primary-blue); text-align: right;">Miktar, ton</th>
-                        <th style="background: var(--primary-blue); text-align: right;">%</th>
-                        <th style="background: var(--primary-blue); text-align: right;">%</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr style="background: #ffebee;">
-                        <td class="detail-label"><strong>TOPLAM</strong></td>
-                        <td class="detail-value" style="text-align: right;"><strong>${toplamlar.hurdaTon.toFixed(3)}</strong></td>
-                        <td class="detail-value" style="text-align: right;"><strong>100.00</strong></td>
-                        <td class="detail-value" style="text-align: right;"><strong>${((toplamlar.hurdaTon / toplamlar.sarjTon) * 100).toFixed(2)}</strong></td>
-                    </tr>
-            `;
+                    <td>70</td>
+                    <td class="cell-highlight">29,61</td>
+                    <td class="cell-highlight">7,70</td>
+                    <td class="cell-highlight">26,00</td>
+                    <td class="cell-highlight">7,70</td>
+                    <td class="cell-highlight">26,00</td>
+                    <td></td>
+                    <td class="cell-highlight">0,00</td>
+                    <td class="cell-highlight">0,00</td>
+                    <td>70</td>
+                    <td class="cell-highlight">21,91</td>
+                    <td>22</td>
+                    <td class="cell-highlight">6,89</td>
+                    <td class="cell-highlight">31,43</td>
+                    <td>48</td>
+                    <td class="cell-highlight">15,02</td>
+                    <td class="cell-highlight">68,57</td>
+                    <td></td>
+                    <td class="cell-highlight">0,00</td>
+                    <td></td>
 
-            const sortedHurda = Object.entries(hurdaAggregate)
-                .sort(([,a], [,b]) => b - a)
-                .slice(0, 15);
+                    <td></td>
+                    <td class="cell-red-bg">24</td>
+                    <td></td>
+                    <td></td>
+                    <td class="cell-red-bg">24</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
 
-            sortedHurda.forEach(([key, value]) => {
-                const percent = toplamlar.hurdaTon > 0 ? ((value / toplamlar.hurdaTon) * 100).toFixed(2) : '0.00';
-                const percentSarj = ((value / toplamlar.sarjTon) * 100).toFixed(2);
-                hurdaHtml += `
-                    <tr>
-                        <td class="detail-label">${key}</td>
-                        <td class="detail-value" style="text-align: right;">${value.toFixed(3)}</td>
-                        <td class="detail-value" style="text-align: right;">${percent}</td>
-                        <td class="detail-value" style="text-align: right;">${percentSarj}</td>
-                    </tr>
-                `;
-            });
+                    <td class="cell-result-green">23,26</td>
+                </tr>
 
-            hurdaHtml += '</tbody>';
-            document.getElementById('hurdaHataTable').innerHTML = hurdaHtml;
+                <tr>
+                    <td>18.10.2025</td>
+                    <td>0,423</td>
+                    <td>0,313</td>
+                    <td>M3</td>
 
-            document.getElementById('summaryModal').classList.add('active');
-        }
+                    <td>62</td>
+                    <td class="cell-highlight">26,23</td>
+                    <td class="cell-highlight">6,82</td>
+                    <td class="cell-highlight">26,00</td>
+                    <td class="cell-highlight">6,82</td>
+                    <td class="cell-highlight">26,00</td>
+                    <td></td>
+                    <td class="cell-highlight">0,00</td>
+                    <td class="cell-highlight">0,00</td>
+                    <td>62</td>
+                    <td class="cell-highlight">19,41</td>
+                    <td>43</td>
+                    <td class="cell-highlight">13,46</td>
+                    <td class="cell-highlight">69,35</td>
+                    <td>18</td>
+                    <td class="cell-highlight">5,63</td>
+                    <td class="cell-highlight">29,03</td>
+                    <td>1</td>
+                    <td class="cell-highlight">0,31</td>
+                    <td class="cell-hold">VT</td>
 
-        function closeSummaryModal() {
-            document.getElementById('summaryModal').classList.remove('active');
-            if (currentChart) {
-                currentChart.destroy();
-                currentChart = null;
-            }
-            document.getElementById('summaryChartContainer').style.display = 'none';
-        }
+                    <td></td>
+                    <td class="cell-red-bg">1</td>
+                    <td></td>
+                    <td></td>
+                    <td class="cell-red-bg">17</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
 
-        let summaryChart = null;
+                    <td class="cell-result-green">51,32</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
 
-        function showSummaryChart(type) {
-            // Önce özet modalını aç
-            showSummaryModal();
+</div>
 
-            // Biraz bekle ki modal açılsın
-            setTimeout(() => {
-                if (summaryChart) {
-                    summaryChart.destroy();
-                }
+<script>
+    // Initialize dates
+    window.onload = function() {
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('endDate').value = today;
 
-                const ctx = document.getElementById('summaryChart').getContext('2d');
-                document.getElementById('summaryChartContainer').style.display = 'block';
+        const start = new Date();
+        start.setDate(start.getDate() - 7);
+        document.getElementById('startDate').value = start.toISOString().split('T')[0];
+    };
 
-                const kalite2Detay = {};
-                filteredData.forEach(item => {
-                    Object.entries(item.kalite2Detay || {}).forEach(([key, value]) => {
-                        kalite2Detay[key] = (kalite2Detay[key] || 0) + value;
-                    });
-                });
+    // Toast notification
+    function showToast(icon, title, message) {
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.innerHTML = `
+            <div class="toast-icon">
+                <i class="fas fa-${icon}"></i>
+            </div>
+            <div class="toast-content">
+                <h4>${title}</h4>
+                <p>${message}</p>
+            </div>
+        `;
+        document.body.appendChild(toast);
 
-                const toplamKalite2 = filteredData.reduce((sum, item) => sum + item.kalite2Ton, 0);
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(400px)';
+            setTimeout(() => toast.remove(), 400);
+        }, 3000);
+    }
 
-                if (type === 'ikinci') {
-                    const labels = Object.keys(kalite2Detay);
-                    const values = Object.values(kalite2Detay);
-                    const percentages = values.map(v => ((v / toplamKalite2) * 100).toFixed(2));
+    function applyFilters() {
+        const productType = document.getElementById('productType').value;
+        const wheelType = document.getElementById('wheelType').value;
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
 
-                    summaryChart = new Chart(ctx, {
-                        type: 'bar',
-                        data: {
-                            labels: labels,
-                            datasets: [{
-                                label: 'Oran (%)',
-                                data: percentages,
-                                backgroundColor: 'rgba(45, 89, 134, 0.8)',
-                                borderColor: 'rgba(30, 58, 95, 1)',
-                                borderWidth: 2
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: true,
-                            plugins: {
-                                title: {
-                                    display: true,
-                                    text: '2. KALİTE HATA DAĞILIMI (%)',
-                                    font: { size: 18, weight: 'bold' },
-                                    padding: 20
-                                },
-                                legend: {
-                                    display: false
-                                },
-                                tooltip: {
-                                    callbacks: {
-                                        label: function(context) {
-                                            const index = context.dataIndex;
-                                            return [
-                                                'Oran: ' + context.parsed.y + '%',
-                                                'Miktar: ' + values[index].toFixed(3) + ' ton'
-                                            ];
-                                        }
-                                    }
-                                }
-                            },
-                            scales: {
-                                y: {
-                                    beginAtZero: true,
-                                    ticks: {
-                                        callback: function(value) {
-                                            return value + '%';
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    });
-                } else if (type === 'hurda') {
-                    // Hurda detaylarını topla
-                    const hurdaDetay = {};
-                    filteredData.forEach(item => {
-                        Object.entries(item.hurdaDetay || {}).forEach(([key, value]) => {
-                            hurdaDetay[key] = (hurdaDetay[key] || 0) + value;
-                        });
-                    });
+        console.log('Filters:', { productType, wheelType, startDate, endDate });
+        showToast('check', 'Başarılı!', 'Filtreler uygulandı, veriler güncelleniyor...');
+    }
 
-                    const toplamHurda = filteredData.reduce((sum, item) => sum + item.hurdaTon, 0);
+    function resetFilters() {
+        document.getElementById('productType').value = 'all';
+        document.getElementById('wheelType').value = 'all';
+        showToast('redo', 'Temizlendi', 'Tüm filtreler varsayılana döndürüldü');
+    }
+</script>
 
-                    // En yüksek 15 hatayı al
-                    const sortedHurda = Object.entries(hurdaDetay)
-                        .sort(([,a], [,b]) => b - a)
-                        .slice(0, 15);
-
-                    const labels = sortedHurda.map(([key]) => key);
-                    const values = sortedHurda.map(([,value]) => value);
-                    const percentages = values.map(v => toplamHurda > 0 ? ((v / toplamHurda) * 100).toFixed(2) : 0);
-
-                    summaryChart = new Chart(ctx, {
-                        type: 'bar',
-                        data: {
-                            labels: labels,
-                            datasets: [{
-                                label: 'Oran (%)',
-                                data: percentages,
-                                backgroundColor: 'rgba(198, 40, 40, 0.8)',
-                                borderColor: 'rgba(183, 28, 28, 1)',
-                                borderWidth: 2
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: true,
-                            plugins: {
-                                title: {
-                                    display: true,
-                                    text: 'HURDA HATA DAĞILIMI (%)',
-                                    font: { size: 18, weight: 'bold' },
-                                    padding: 20
-                                },
-                                legend: {
-                                    display: false
-                                },
-                                tooltip: {
-                                    callbacks: {
-                                        label: function(context) {
-                                            const index = context.dataIndex;
-                                            return [
-                                                'Oran: ' + context.parsed.y + '%',
-                                                'Miktar: ' + values[index].toFixed(3) + ' ton'
-                                            ];
-                                        }
-                                    }
-                                }
-                            },
-                            scales: {
-                                y: {
-                                    beginAtZero: true,
-                                    ticks: {
-                                        callback: function(value) {
-                                            return value + '%';
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    });
-                }
-            }, 300); // Modal açılması için 300ms bekle
-        }
-
-        window.onclick = function(event) {
-            const detailModal = document.getElementById('detailModal');
-            const summaryModal = document.getElementById('summaryModal');
-            if (event.target == detailModal) {
-                closeDetailModal();
-            }
-            if (event.target == summaryModal) {
-                closeSummaryModal();
-            }
-        }
-    </script>
 </body>
 </html>
